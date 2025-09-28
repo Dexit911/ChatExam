@@ -1,4 +1,4 @@
-from utils.seb_encryptor import encrypt_seb_config
+from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
 
 class Seb_manager:
