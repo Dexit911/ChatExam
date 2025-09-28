@@ -1,13 +1,18 @@
-from flask import render_template, request, redirect, session
-from .models import Teacher
-from . import teacher_bp
+from flask import blueprints, render_template, session, redirect, request
+from datetime import datetime
 
-from utils.SEB_manager import SEB_manager
+# ===MODELS AND EXTENSIONS===
+from chat_exam.models import Teacher
+from chat_exam.extensions import db
 
-"""---TEACHER---"""
+# ===UTILS===
+from chat_exam.utils.seb_manager import Seb_manager
+from chat_exam.utils.link_creator import create_exam_link
+
+teacher_bp = blueprints.Blueprint('teacher', __name__)
 
 
-@teacher_bp.route('/login', methods=['GET', 'POST'])
+@teacher_bp.route('/teacher/login', methods=['GET', 'POST'])
 def teacher_login():
     if request.method == 'POST':
 
@@ -25,7 +30,7 @@ def teacher_login():
     return render_template("teacher_login.html")  # If no post method -> render the login page
 
 
-@teacher_bp.route('/create-exam', methods=['GET', 'POST'])
+@teacher_bp.route('/teacher/create-exam', methods=['GET', 'POST'])
 def create_exam():
     if "teacher_id" not in session:  # If there is no teacher id in session
         return redirect('/teacher/login')  # Go back to login page
@@ -40,7 +45,16 @@ def create_exam():
             "allowClipboard": request.form.get('allowClipboard'),
         }
 
-        seb_config = SEB_manager().create_config(config)  # create xml string
-        SEB_manager.create_configuration_file(seb_config)  # Save .seb file
+        # ==CREATE ENCRYPTED SEB CONFIG ==
+        seb_config = Seb_manager().create_config(config)  # create xml string
+        Seb_manager.create_configuration_file(seb_config)  # Save .seb file
+
+        # ==SAVE EXAM TO DB==
+        new_exam = Exam(title=request.form.get("title"), date=datetime.now())
+        db.session.add(new_exam)
+        db.session.commit()
+
+        link = create_exam_link()
+        print(link)
 
     return render_template("create_exam.html", username=username)  # When no method -> render page

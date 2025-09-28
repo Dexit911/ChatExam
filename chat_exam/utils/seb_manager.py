@@ -1,7 +1,7 @@
 from utils.seb_encryptor import encrypt_seb_config
 
 
-class SEB_manager:
+class Seb_manager:
     @staticmethod
     def create_config(setting: dict) -> str:
         """

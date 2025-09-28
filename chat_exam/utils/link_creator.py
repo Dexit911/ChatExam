@@ -1,5 +1,4 @@
 import socket
-
 from flask import url_for
 
 def create_exam_link() -> None:
