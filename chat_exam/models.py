@@ -48,3 +48,4 @@ class StudentExam(db.Model):
     link = db.Column(db.String(80), unique=True, nullable=False)
     ai_verdict = db.Column(db.String(80), nullable=False)
     ai_conversation = db.Column(db.String(256), nullable=False)
+

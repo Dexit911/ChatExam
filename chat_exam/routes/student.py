@@ -2,12 +2,12 @@ from flask import blueprints, render_template, session, redirect, request
 from chat_exam.models import Student
 from chat_exam.extensions import db
 
-student_bp = blueprints.Blueprint('student', __name__)
+student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
 
 
 
 """---STUDENT---"""
-@student_bp.route('/student/login', methods=['GET', 'POST'])
+@student_bp.route('/login', methods=['GET', 'POST'])
 def student_login():
     if request.method == 'POST':  # If the form is submitted
         email = request.form['email']  # Get email from the form
@@ -24,7 +24,7 @@ def student_login():
     return render_template("student_login.html")  # If the form is not submitted render the website
 
 
-@student_bp.route('/student/register', methods=['GET', 'POST'])
+@student_bp.route('/register', methods=['GET', 'POST'])
 def student_register():
     if request.method == 'POST':
         username = request.form['username']
@@ -47,7 +47,7 @@ def student_register():
     return render_template("student_register.html")
 
 
-@student_bp.route('/student/start-exam', methods=['GET', 'POST'])
+@student_bp.route('/start-exam', methods=['GET', 'POST'])
 def student_start_exam():
     if 'student_id' not in session:  # If no student id in session redirect back to login
         return redirect('/student/login')

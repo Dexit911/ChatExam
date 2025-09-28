@@ -2,17 +2,17 @@ from flask import blueprints, render_template, session, redirect, request
 from datetime import datetime
 
 # ===MODELS AND EXTENSIONS===
-from chat_exam.models import Teacher
+from chat_exam.models import Teacher, Exam
 from chat_exam.extensions import db
 
 # ===UTILS===
 from chat_exam.utils.seb_manager import Seb_manager
 from chat_exam.utils.link_creator import create_exam_link
 
-teacher_bp = blueprints.Blueprint('teacher', __name__)
+teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
 
 
-@teacher_bp.route('/teacher/login', methods=['GET', 'POST'])
+@teacher_bp.route('/login', methods=['GET', 'POST'])
 def teacher_login():
     if request.method == 'POST':
 
@@ -30,7 +30,7 @@ def teacher_login():
     return render_template("teacher_login.html")  # If no post method -> render the login page
 
 
-@teacher_bp.route('/teacher/create-exam', methods=['GET', 'POST'])
+@teacher_bp.route('/create-exam', methods=['GET', 'POST'])
 def create_exam():
     if "teacher_id" not in session:  # If there is no teacher id in session
         return redirect('/teacher/login')  # Go back to login page
