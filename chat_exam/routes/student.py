@@ -1,5 +1,5 @@
 from flask import blueprints, render_template, session, redirect, request
-from chat_exam.models import Student
+from chat_exam.models import Student, Teacher
 from chat_exam.extensions import db
 
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
@@ -37,11 +37,11 @@ def student_register():
         db.session.add(new_user)
         db.session.commit()
 
-        teacher = Teacher(username="admin")
+        """teacher = Teacher(username="admin")
         teacher.set_password("123")
 
         db.session.add(teacher)
-        db.session.commit()
+        db.session.commit()"""
 
         return redirect('/student/login')
     return render_template("student_register.html")
