@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: url("../img/background.png") no-repeat center center/cover;
+  display: flex;
+  justify-content: flex-end; /* move container to right */
+  align-items: center;       /* vertically center */
+  padding-right: 50px;       /* spacing from right edge */
+  font-family: Arial, sans-serif;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row; /* now they are side by side */
+  gap: 20px;           /* spacing between buttons */
+}
+
+.glass-btn {
+  display: inline-block;
+  padding: 15px 30px;
+  font-size: 18px;
+  text-decoration: none;
+  color: white;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1); /* transparent glass */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}

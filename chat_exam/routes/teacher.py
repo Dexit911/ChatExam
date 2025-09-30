@@ -1,9 +1,10 @@
-from flask import blueprints, render_template, session, redirect, request
+from flask import blueprints, render_template, session, redirect, request, url_for, flash
 from datetime import datetime
 
 # ===MODELS AND EXTENSIONS===
 from chat_exam.models import Teacher, Exam
 from chat_exam.extensions import db
+from chat_exam.templates import forms
 
 # ===UTILS===
 from chat_exam.utils.seb_manager import Seb_manager
@@ -13,22 +14,39 @@ teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
 
 
 @teacher_bp.route('/login', methods=['GET', 'POST'])
-def teacher_login():
-    if request.method == 'POST':
+def login():
+    form = forms.TeacherLoginForm()
 
-        username = request.form['username']  # Get username from form
-        password = request.form['password']  # Get password from form
+    # === If form is submitted ===
+    if form.validate_on_submit():
 
-        teacher = Teacher.query.filter_by(username=username).first()  # Find teacher by username in DataBase
+        # === Get data from form and search for user in db ===
+        email = form.email.data
+        password = form.password.data
+        teacher = Teacher.query.filter_by(email=email).first()  # Find the student by email
 
-        if teacher and teacher.check_password(password):  # If found teacher and password is correct
-            session["teacher_id"] = teacher.id  # Set current session teacher id
-            return redirect('/teacher/create-exam')  # Redirect to page where you can create your exam
+        # === If there is student and the password is matching, set session id and role ===
+        if teacher and teacher.check_password(password):
+            session['teacher_id'] = teacher.id
+            session['role'] = "teacher"
+            return redirect(url_for('teacher.dashboard'))
+
+        # === If login fails, give message to user ===
         else:
-            print("invalid username or password")  # Else wrong logins
+            flash("Login unsuccessful", "danger")
 
-    return render_template("teacher_login.html")  # If no post method -> render the login page
+    # === If no method, render the page ===
+    return render_template("teacher_login.html", title="Test Login", form=form)
 
+
+@teacher_bp.route("/dashboard", methods=['GET', 'POST'])
+def dashboard():
+    if "teacher_id" not in session and session["role"] != "teacher":
+        return redirect(url_for('teacher.login'))
+
+    teacher = Teacher.query.filter_by(id=session["teacher_id"]).first()
+    username = teacher.username
+    return render_template("teacher_dashboard.html")
 
 @teacher_bp.route('/create-exam', methods=['GET', 'POST'])
 def create_exam():
@@ -58,3 +76,4 @@ def create_exam():
         print(link)
 
     return render_template("create_exam.html", username=username)  # When no method -> render page
+

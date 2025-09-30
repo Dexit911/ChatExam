@@ -1,7 +1,8 @@
+import secrets
+
 from chat_exam.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-
 
 class Student(db.Model):
     __tablename__ = 'students'
@@ -24,6 +25,7 @@ class Teacher(db.Model):
     __tablename__ = 'teachers'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
 
     def set_password(self, password):
@@ -37,7 +39,12 @@ class Exam(db.Model):
     __tablename__ = 'exams'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), unique=True, nullable=False)
+    code = db.Column(db.String(8), unique=True, nullable=False)
     date = db.Column(db.DateTime, default=datetime.now)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
+
+    def  generate_code(self):
+        self.code = secrets.token_hex(3)
 
 
 class StudentExam(db.Model):
