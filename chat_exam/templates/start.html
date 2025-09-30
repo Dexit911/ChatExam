@@ -1,7 +1,21 @@
+{% extends "base.html" %}
+
 
 {%  block content %}
-<div class="button-container">
-  <a href="/student/login" class="glass-btn">I am Student</a>
-  <a href="/teacher/login" class="glass-btn">I am Teacher</a>
+
+
+<div class="container">
+  <h2>Log in as?</h2>
+  <div class="button-wrapper">
+    <a href="/student/login" class="crystal-btn">Student</a>
+    <a href="/teacher/login" class="crystal-btn">Teacher</a>
+  </div>
 </div>
+
+<svg width="0" height="0" style="position:absolute">
+    <filter id="distorsion">
+        <feTurbulence type="turbulence" baseFrequency="0.03" numOctaves="2" seed="7" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="G" yChannelSelector="B"/>
+    </filter>
+</svg>
 {% endblock %}
