@@ -3,7 +3,7 @@ from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
 class Seb_manager:
     @staticmethod
-    def create_config(setting: dict) -> str:
+    def create_config(settings: dict, exam_url: str) -> str:
         """
         This prepares string for SEB configuration file
 
@@ -12,11 +12,18 @@ class Seb_manager:
         "allowQuit": None <- or "on",
         "allowClipboard": None <- or "on",
 
+        :param id: id of the exam
+        :param debug: True or False, use if testing on local host
+
         :return: string with SEB configuration
         """
-        view_mode = "1" if setting.get("browserViewMode") else "0"
-        allow_quit = "true" if setting.get("allowQuit") else "false"
-        allow_clipboard = "true" if setting.get("allowClipboard") else "false"
+        view_mode = "1" if settings.get("browserViewMode") else "0"
+        allow_quit = "true" if settings.get("allowQuit") else "false"
+        allow_clipboard = "true" if settings.get("allowClipboard") else "false"
+
+        url = exam_url
+        print(f"=== SEB CONFIGURATION URL:\n{url}\n===")
+
 
         print(f"View Mode: {view_mode}\nAllow Quit: {allow_quit}\nallow Clipboard: {allow_clipboard}")
 
@@ -25,7 +32,7 @@ class Seb_manager:
         <plist version="1.0">
         <dict>
           <key>startURL</key>
-          <string>https://www.google.com</string>
+          <string>{url}</string>
         
           <key>sebConfigPurpose</key>
           <integer>0</integer>

@@ -1,53 +1,36 @@
+/* ===============================
+   Fonts
+================================= */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
 
-
-
+/* ===============================
+   Global Body & Background
+================================= */
 body {
     margin: 0;
     height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: url("../img/background1.png") center/cover no-repeat;
+
+    background: url("../img/background.png") center/cover no-repeat;
     animation: panBG 20s ease-in-out infinite;
+
     font-family: 'Montserrat', sans-serif;
 }
 
-
-/* Glassy input fields */
-.form-control {
-    background: transparent !important;   /* no white background */
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
-    border-radius: 25px;
-    color: #fff;
-    padding: 12px 18px;
-    transition: all 0.3s ease;
-}
-
-/* Placeholder text */
-.form-control::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 300;
-}
-
-/* Focus effect */
-.form-control:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-    background: transparent;
-    color: #fff;
+/* Background animation */
+@keyframes panBG {
+    0%, 100% { background-position: 50% 50%; }
+    30% { background-position: 20% 70%; }
+    60% { background-position: 80% 40%; }
 }
 
 
-
-
-
-
-
-
-
-
+/* ===============================
+   Layout Helpers
+================================= */
 .button-wrapper {
     display: flex;
 }
@@ -55,59 +38,82 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;  /* horizontal center */
-    justify-content: center;  /* vertical center */
+    align-items: center;   /* horizontal center */
+    justify-content: center; /* vertical center */
     text-align: center;
-
-    color: #f5efef ;
+    color: #f5efef;
 }
 
+/* ===============================
+   Glass Panels
+================================= */
+/* Small glassy panel (e.g. login/register forms) */
 .glass-panel {
-    background: rgba(255, 255, 255, 0.1); /* semi-transparent */
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 40px;
+
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
+
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 
-    /* center */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     max-width: 400px;
     margin: auto;
+
     color: #f5efef;
 }
 
-.border-top.pt-3 {
-    text-align: right;
+/* Large dashboard panel */
+.glass-dashboard {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+    color: #f5efef;
+
+    /* fixed size in center */
+    position: fixed;
+    top: 80px;      /* space from top */
+    bottom: 40px;   /* space from bottom */
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 80%;     /* horizontal stretch */
+    max-width: 1200px;
+
+    overflow-y: auto; /* scroll if content is tall */
 }
 
-@keyframes panBG {
-    0%, 100% {
-        background-position: 50% 50%;
-    }
-    30% {
-        background-position: 20% 70%;
-    }
-    60% {
-        background-position: 80% 40%;
-    }
-}
-
+/* ===============================
+   Crystal Button
+================================= */
 .crystal-btn {
-    width: 280px;
-    height: 120px;
-    border-radius: 50px;
+    width: 220px;
+    height: 100px;
+    border-radius: 15px;
     border: 2px solid rgba(255, 255, 255, 0.4);
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     background: transparent;
     backdrop-filter: url(#distorsion);
     -webkit-backdrop-filter: url(#distorsion);
+
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -120,7 +126,6 @@ body {
     font-weight: 700;
     font-size: 1.3rem;
     letter-spacing: 0.05em;
-
 }
 
 .crystal-btn span {
@@ -128,7 +133,7 @@ body {
     font-size: 2rem;
     font-weight: 600;
     color: #f5efef;
-    opacity: 0.5;
+    opacity: 0.3;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -137,8 +142,10 @@ body {
     transform: scale(1.1) rotate(-1deg);
     text-decoration: none;
     color: #f5efef;
+    text-shadow: #f5efef 0 0 3px;
 }
 
+/* glowing sweep effect */
 .crystal-btn::before {
     content: "";
     position: absolute;
@@ -153,4 +160,11 @@ body {
 
 .crystal-btn:hover::before {
     transform: translateX(100%) rotate(25deg);
+}
+
+/* ===============================
+   Utility
+================================= */
+.border-top.pt-3 {
+    text-align: right;
 }

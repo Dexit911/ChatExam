@@ -1,0 +1,17 @@
+{% extends "teacher/teacher_dashboard.html" %}
+
+{% block dashboard %}
+
+<h2>My Exams</h2>
+<ul>
+  {% for exam in exams %}
+    <li>
+        {{ exam.title }}
+        <ul>
+            <li>code: {{ exam.code }}</li>
+            <li>date: {{ exam.date }}</li>
+        </ul>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

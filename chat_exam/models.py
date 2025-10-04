@@ -1,4 +1,5 @@
 import secrets
+import json
 
 from chat_exam.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -19,6 +20,8 @@ class Student(db.Model):
 
     def __repr__(self):
         return f"<User {self.username}>"
+
+
 
 
 class Teacher(db.Model):
@@ -43,7 +46,7 @@ class Exam(db.Model):
     date = db.Column(db.DateTime, default=datetime.now)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
 
-    def  generate_code(self):
+    def generate_code(self):
         self.code = secrets.token_hex(3)
 
 
@@ -52,7 +55,16 @@ class StudentExam(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"))
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-    link = db.Column(db.String(80), unique=True, nullable=False)
-    ai_verdict = db.Column(db.String(80), nullable=False)
-    ai_conversation = db.Column(db.String(256), nullable=False)
+    github_link = db.Column(db.String(80),nullable=False)
+    ai_verdict = db.Column(db.String(80), nullable=True)
+    ai_conversation = db.Column(db.String(256), nullable=True)
+
+class StudentTeacher(db.Model):
+    __tablename__ = 'student_teachers'
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
+
+
+
 

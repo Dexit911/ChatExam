@@ -1,0 +1,53 @@
+.dashboard-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    color: #f5efef;
+    z-index: 1000;
+}
+
+.nav-left {
+    flex: 0 0 auto;
+}
+
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.nav-right {
+    flex: 0 0 auto;
+}
+
+.nav-right a {
+    text-decoration: none;
+    color: #f5efef;
+    font-weight: 600;
+
+
+}
+
+.dashboard-nav a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: #f5efef;
+    font-weight: 600;
+}
+
+.dashboard-nav a:hover {
+    transition: all 0.3s ease-in-out;
+    text-shadow: 0 0 2px #f5efef;
+}

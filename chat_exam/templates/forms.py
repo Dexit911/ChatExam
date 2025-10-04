@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from chat_exam.models import Student, Teacher
+
+#  === APPS MODELS AND UTILS ===
+from chat_exam.models import Student, Exam
+from chat_exam.utils.git_validator import check_github_link
 
 
 class StudentRegistrationForm(FlaskForm):
@@ -38,17 +41,24 @@ class TeacherLoginForm(FlaskForm):
 
 class StudentExamCode(FlaskForm):
     code = StringField("Code", validators=[DataRequired()])
+    github_link = StringField("GitHub link", validators=[DataRequired()])
     submit = SubmitField("Enter Exam")
+
+    def validate_code(self, field):
+        exam = Exam.query.filter_by(code=field.data).first()
+        if not exam:
+            raise ValidationError("Invalid code")
+
+    """def validate_github_link(self, field):
+        ok, msg = check_github_link(field.data)
+        if not ok:
+            raise ValidationError(msg)"""
+
 
 class CreatExamForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
-    lock_down = BooleanField("Lock Down", validators=[DataRequired()])
-    allow_quit = BooleanField("Allow Quit", validators=[DataRequired()])
-    allow_clipboard = BooleanField("Allow Clipboard", validators=[DataRequired()])
+    browser_view_mode = BooleanField("Lock Down")
+    allow_quit = BooleanField("Allow Quit")
+    allow_clipboard = BooleanField("Allow Clipboard")
 
     submit = SubmitField("Create Exam")
-
-
-
-
-
