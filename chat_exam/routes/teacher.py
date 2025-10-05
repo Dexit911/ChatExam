@@ -4,7 +4,7 @@ from flask import blueprints, render_template, session, redirect, url_for, flash
 import os
 
 # ===MODELS AND EXTENSIONS===
-from chat_exam.models import Teacher, Exam, StudentTeacher, Student
+from chat_exam.models import Teacher, Exam, StudentTeacher, Student, StudentExam
 from chat_exam.extensions import db
 from chat_exam.templates import forms
 from chat_exam.utils.seb_encryptor import encrypt_seb_config
@@ -87,7 +87,7 @@ def create_exam():
 
         # === CREATE EXAM URL AND SEB CONFIG ===
         exam_url = url_for("student.exam", code=new_exam.code, _external=True)
-        seb_config = Seb_manager().create_config(settings=settings, exam_url=exam_url )
+        seb_config = Seb_manager().create_config(settings=settings, exam_url=exam_url)
         encrypted = encrypt_seb_config(seb_config)
 
         # === SAVE .SEB FILE ===
@@ -122,6 +122,19 @@ def view_exams():
     return render_template("teacher/view_exams.html", exams=exams)
 
 
+@teacher_bp.route("/view-exams/<int:exam_id>/attempts", methods=['GET', 'POST'])
+@teacher_required
+def view_exam_attempts(exam_id):
+    exam = Exam.query.filter_by(id=exam_id, teacher_id=session["teacher_id"]).first_or_404()
+    attempts = StudentExam.query.filter_by(exam_id=exam.id).all()
+
+    return render_template(
+        "teacher/view_exam_attempts.html",
+        exam=exam,
+        attempts=attempts
+    )
+
+
 @teacher_bp.route("/view-students", methods=['GET', 'POST'])
 @teacher_required
 def view_students():
@@ -134,9 +147,3 @@ def view_students():
     )
 
     return render_template("teacher/view_students.html", students=students)
-
-
-
-
-
-

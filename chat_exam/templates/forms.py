@@ -62,3 +62,5 @@ class CreatExamForm(FlaskForm):
     allow_clipboard = BooleanField("Allow Clipboard")
 
     submit = SubmitField("Create Exam")
+
+

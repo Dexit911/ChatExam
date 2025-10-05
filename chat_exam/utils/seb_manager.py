@@ -56,7 +56,6 @@ class Seb_manager:
     def create_configuration_file(config: str) -> None:
        """
        Create encrypted SEB exam file. When this file is started, you drop to the exam.
-
        :param config: string SEB configuration file in xml format
        """
 

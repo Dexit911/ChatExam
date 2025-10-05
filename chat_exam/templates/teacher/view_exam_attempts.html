@@ -1,0 +1,43 @@
+{% extends "teacher/teacher_dashboard.html" %}
+{% block dashboard %}
+
+<h2 class="exam-title">{{ exam.title }}</h2>
+<p class="exam-meta"><strong>Code:</strong> {{ exam.code }}</p>
+<p class="exam-meta"><strong>Date:</strong> {{ exam.date.strftime("%Y-%m-%d") }}</p>
+
+<h3 class="exam-section">Student Attempts</h3>
+
+{% if attempts %}
+<div class="attempts-wrapper">
+    <table class="attempts-table">
+        <thead>
+        <tr>
+            <th>Student</th>
+            <th>GitHub</th>
+            <th>Verdict</th>
+            <th>Rating 1-5</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for attempt in attempts %}
+        <tr>
+            <td>{{ attempt.student.username }}</td>
+            <td><a href="{{ attempt.github_link }}" target="_blank" class="attempt-link">Open</a></td>
+            <td class="verdict-cell">
+                <span class="verdict-read">Read</span>
+                <div class="verdict-popup">{{ attempt.ai_verdict or 'No verdict yet' }}</div>
+            </td>
+            <td>{{ attempt.ai_rating or '-' }}</td>
+            <td>{{ attempt.status or 'In progress' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="no-attempts">No student attempts yet.</p>
+{% endif %}
+
+
+{% endblock %}

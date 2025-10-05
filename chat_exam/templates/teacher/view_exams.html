@@ -6,10 +6,10 @@
 <ul>
   {% for exam in exams %}
     <li>
-        {{ exam.title }}
+        {{ exam.title }}: <a href="{{ url_for('teacher.view_exam_attempts', exam_id=exam.id) }}">View</a>
         <ul>
             <li>code: {{ exam.code }}</li>
-            <li>date: {{ exam.date }}</li>
+            <li>date: {{ exam.date.strftime("%Y-%m-%d") }}</li>
         </ul>
     </li>
   {% endfor %}

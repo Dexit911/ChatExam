@@ -3,7 +3,6 @@ from chat_exam.extensions import db
 from chat_exam.routes import blueprints
 
 
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object("chat_exam.config.Config")
