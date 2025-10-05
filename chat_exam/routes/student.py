@@ -81,8 +81,8 @@ def dashboard():
 # @student_required
 def exam(code):
     # === Check if the request happens from SEB protocol ===
-    ua = request.headers.get("User-Agent", "")
-    """if "SafeExamBrowser" not in ua:
+    """ ua = request.headers.get("User-Agent", "")
+    if "SafeExamBrowser" not in ua:
         abort(403, description="This exam must be taken in Safe Exam Browser")
     print("===THE EXAM IS TAKEN IN SEB ENV ===")"""
 
@@ -97,7 +97,7 @@ def exam(code):
     print(f"\n\n===EXTRACTED CODE FROM GITHUB LINK===\n\n{code_text[0:100]}\n...")
 
     # === CREATE AI EXAMINATOR AND CREATE QUESTION BASED ON CODE ===
-    question_count = 3  # Parse this from exam setting in future
+    question_count = 10  # Parse this from exam setting in future
     examinator = AIExaminator(question_count=question_count)
     questions_dict = examinator.create_questions(code_text)
 

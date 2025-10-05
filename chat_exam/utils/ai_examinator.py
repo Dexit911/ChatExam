@@ -14,7 +14,7 @@ class AIExaminator:
 
         # === SETTINGS ===
         self.max_words = 12
-        self.max_questions = 6
+        self.max_questions = 10
         self.question_count = min(question_count, self.max_questions)
 
         # === QUESTION PROMPT ===

@@ -28,4 +28,6 @@ def exam_link(exam_id):
     # turn into SEB protocol link
     sebs_url = https_url.replace("http://", "seb://").replace("https://", "seb://")
     # redirect student’s browser to sebs://
+    print("===SEB URL===")
+    print(sebs_url)
     return redirect(sebs_url)

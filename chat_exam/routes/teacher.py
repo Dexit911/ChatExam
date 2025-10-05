@@ -95,8 +95,8 @@ def create_exam():
         os.makedirs(seb_dir, exist_ok=True)
         seb_path = os.path.join(seb_dir, f"exam_{new_exam.id}.seb")
 
-        with open(seb_path, "wb") as f:
-            f.write(encrypted)
+        with open(seb_path, "w") as f:
+            f.write(seb_config)
 
         # === Fina commit() ===
         db.session.commit()

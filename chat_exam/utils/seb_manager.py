@@ -22,6 +22,7 @@ class Seb_manager:
         allow_clipboard = "true" if settings.get("allowClipboard") else "false"
 
         url = exam_url
+        url = url.replace("https://", "").replace("http://", "")
         print(f"=== SEB CONFIGURATION URL:\n{url}\n===")
 
 
