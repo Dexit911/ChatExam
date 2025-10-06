@@ -1,10 +1,10 @@
 import secrets
-import json
+
+from datetime import datetime
 
 from chat_exam.extensions import db
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
-from chat_exam.config import MAX_QUESTION_COUNT
+from chat_exam.utils import security
+
 
 """STUDENT DATABASE"""
 class Student(db.Model):
@@ -15,10 +15,10 @@ class Student(db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = security.hash_password(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return security.verify_password(password, self.password_hash)
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -32,10 +32,10 @@ class Teacher(db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = security.hash_password(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return security.verify_password(password, self.password_hash)
 
 """EXAMS DATABASE"""
 class Exam(db.Model):

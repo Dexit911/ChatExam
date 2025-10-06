@@ -8,6 +8,9 @@ from chat_exam.models import Teacher, Exam, StudentTeacher, Student, StudentExam
 from chat_exam.extensions import db
 from chat_exam.templates import forms
 from chat_exam.utils.seb_encryptor import encrypt_seb_config
+from chat_exam.repositories import teacher_repo
+from chat_exam.services import teacher_service
+from chat_exam.utils import session_manager
 
 # ===UTILS===
 from chat_exam.utils.seb_manager import Seb_manager
@@ -31,22 +34,26 @@ def login():
     form = forms.TeacherLoginForm()
 
     # === If form is submitted ===
+    print("Form validated:", form.validate_on_submit())
+    print("Errors:", form.errors)
     if form.validate_on_submit():
+        try:
+            # Try login
+            teacher = teacher_service.login_teacher(
+                email=form.email.data,
+                password=form.password.data
+            )
+            session_manager.start_session(
+                user_id=teacher.id,
+                role="teacher",
+            )
 
-        # === Get data from form and search for user in db ===
-        email = form.email.data
-        password = form.password.data
-        teacher = Teacher.query.filter_by(email=email).first()  # Find the student by email
+            # If successful redirect to dashboard
+            flash("You have successfully logged in.", "success")
+            return redirect(url_for("teacher.dashboard"))
 
-        # === If there is student and the password is matching, set session id and role ===
-        if teacher and teacher.check_password(password):
-            session['teacher_id'] = teacher.id
-            session['role'] = "teacher"
-            return redirect(url_for('teacher.dashboard'))
-
-        # === If login fails, give message to user ===
-        else:
-            flash("Login unsuccessful", "danger")
+        except ValueError as e:
+            flash(str(e), "danger")
 
     # === If no method, render the page ===
     return render_template("teacher_login.html", title="Test Login", form=form)
@@ -55,12 +62,25 @@ def login():
 """DASHBOARD ROUTES"""
 
 
-@teacher_bp.route("/dashboard", methods=['GET', 'POST'])
+# noinspection PyUnreachableCode
+@teacher_bp.route("/dashboard", methods=["GET", "POST"])
 @teacher_required
-def dashboard():
-    teacher = Teacher.query.filter_by(id=session["teacher_id"]).first()
-    username = teacher.username
-    return render_template("teacher/teacher_dashboard.html")
+def dashboard() -> str:
+    """
+    Render the teacher dashboard if the account exists.
+    """
+    teacher_id = session_manager.current_id("teacher")
+    teacher = teacher_repo.get_teacher_by_id(teacher_id)
+
+    if not teacher:
+        flash("Your account no longer exists.", "danger")
+        session_manager.end_session()
+        return redirect(url_for("main.index"))
+
+    return render_template(
+        "teacher/teacher_dashboard.html",
+        username=teacher.username
+    )
 
 
 @teacher_bp.route('/create-exam', methods=['GET', 'POST'])

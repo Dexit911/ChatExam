@@ -1,16 +1,25 @@
-# === FLASK AND OTHER IMPORTS ===
-from flask import blueprints, render_template, session, redirect, flash, url_for, request, abort
+# === Standard library ===
 from functools import wraps
 import json
 
+# === Third-Party ===
+from flask import (
+    blueprints,
+    render_template,
+    session,
+    redirect,
+    flash,
+    url_for,
+)
 # === CHAT_EXAM IMPORTS ===
-from chat_exam.models import Student, Teacher, Exam, StudentExam, StudentTeacher
 from chat_exam.extensions import db
+from chat_exam.models import Exam, Student, StudentExam, StudentTeacher
+from chat_exam.services import student_service
 from chat_exam.templates import forms
-from chat_exam.config import TEST_LINK
-from chat_exam.utils.git_fecther import fetch_github_code
-from chat_exam.utils.generate_exam_form import generate_exam_form
+from chat_exam.utils import session_manager
 from chat_exam.utils.ai_examinator import AIExaminator
+from chat_exam.utils.generate_exam_form import generate_exam_form
+from chat_exam.utils.git_fecther import fetch_github_code
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
@@ -48,7 +57,7 @@ def dashboard():
             exam_id=exam_id,
             student_id=session["student_id"],
             github_link=github_link,
-            status = "ongoing",
+            status="ongoing",
         )
         db.session.add(attempt)
         print("===NEW ATTEMPT ADDED===")
@@ -88,7 +97,8 @@ def exam(code):
 
     # === GET STUDENTS GITHUB LINK ===
     exam_id = Exam.query.filter_by(code=code).first().id
-    student_github_link = StudentExam.query.filter_by(exam_id=exam_id, student_id=session["student_id"]).first().github_link
+    student_github_link = StudentExam.query.filter_by(exam_id=exam_id,
+                                                      student_id=session["student_id"]).first().github_link
     print(f"\n\n===GITHUB LINK===\n\n{student_github_link}")
 
     # === FETCH CODE, CONVERT TO TEXT AND JSON. TEXT -> AI, JSON -> WEB PAGE ===
@@ -151,30 +161,25 @@ def register():
 
     # === If user submits registration ===
     if form.validate_on_submit():
+        try:
+            # Try register
+            student = student_service.create_student(
+                email=form.email.data,
+                password=form.password.data,
+                username=form.username.data,
+            )
 
-        # === Save student to db ===
-        email = form.email.data
-        username = form.username.data
-        password = form.password.data
-        new_student = Student(username=username, email=email)
-        new_student.set_password(password)
-        db.session.add(new_student)
-        db.session.commit()
-
-        # === DEBUG ===
-        teacher = Teacher(username="admin", email="admin@exam.com")
-        teacher.set_password("123456")
-        db.session.add(teacher)
-        db.session.commit()
-
-        # === If valid saved registration, set session to current user and redirect to dashboard ===
-        student = Student.query.filter_by(email=email).first()
-        if student:
-            session['student_id'] = student.id
-            session['role'] = "student"
+            # Set session adn redirect to dashboard
+            session_manager.start_session(
+                user_id=student.id,
+                role="student"
+            )
 
             flash(f"Account created for {form.username.data}!", "success")
             return redirect(url_for('student.dashboard'))
+
+        except ValueError as e:
+            flash(str(e), "danger")
 
     # === If no method -> render page ===
     return render_template("student_register.html", title="Test Register", form=form)
@@ -187,25 +192,23 @@ def login():
 
     # === If form is submitted ===
     if form.validate_on_submit():
-        """# === Check if admin ===
-        if form.email.data == "admin@exam.com" and form.password.data == "1234":
-            flash("Login successful", "success")
-            return redirect(url_for('student.dashboard'))"""
+        try:
+            # Try login
+            student = student_service.login_student(
+                email=form.email.data,
+                password=form.password.data,
+            )
+            session_manager.start_session(
+                user_id=student.id,
+                role="student"
+            )
+            # If successful
+            flash(f"Login successful!", "success")
+            return redirect(url_for("student.dashboard"))
 
-        # === Get data from form and search for user in db ===
-        email = form.email.data
-        password = form.password.data
-        student = Student.query.filter_by(email=email).first()  # Find the student by email
-
-        # === If there is student and the password is matching, set session id and role ===
-        if student and student.check_password(password):
-            session['student_id'] = student.id
-            session['role'] = "student"
-            return redirect(url_for('student.dashboard'))
-
-        # === If login fails, give message to user ===
-        else:
-            flash("Login unsuccessful", "danger")
+        except ValueError as e:
+            # error (wrong/email password)
+            flash(str(e), "danger")
 
     # === If no method, render the page ===
     return render_template("student_login.html", title="Test Login", form=form)
