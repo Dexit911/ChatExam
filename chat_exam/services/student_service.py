@@ -1,5 +1,5 @@
-from chat_exam.repositories import student_repo, teacher_repo, student_teacher_repo, save
-from chat_exam.models import Student
+from chat_exam.repositories import student_repo, teacher_repo, student_teacher_repo, get_by,  save
+from chat_exam.models import Student, Teacher
 
 
 
@@ -27,8 +27,8 @@ def login_student(email: str, password: str) -> Student:
 
 def assign_teacher(student_id: int, teacher_id: int) -> None:
     """Assign a student to a teacher."""
-    student = student_repo.get_student_by_id(student_id)
-    teacher = teacher_repo.get_teacher_by_id(teacher_id)
+    student = get_by(Student, id=student_id)
+    teacher = get_by(Teacher, id=teacher_id)
 
     if not student or not teacher:
         raise ValueError("Invalid student or teacher")

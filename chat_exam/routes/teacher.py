@@ -1,20 +1,29 @@
-import flask
-from functools import wraps
-from flask import blueprints, render_template, session, redirect, url_for, flash
+# === Standard library ===
 import os
+from functools import wraps
 
-# ===MODELS AND EXTENSIONS===
-from chat_exam.models import Teacher, Exam, StudentTeacher, Student, StudentExam
+# === Third-Party ===
+from flask import (
+    blueprints,
+    render_template,
+    session,
+    redirect,
+    url_for,
+    flash
+)
+
+# ===Local===
+from chat_exam.models import Exam, StudentTeacher, Student, StudentExam, Teacher
 from chat_exam.extensions import db
 from chat_exam.templates import forms
-from chat_exam.utils.seb_encryptor import encrypt_seb_config
 from chat_exam.repositories import teacher_repo
 from chat_exam.services import teacher_service
 from chat_exam.utils import session_manager
-
-# ===UTILS===
+from chat_exam.repositories import get_by
 from chat_exam.utils.seb_manager import Seb_manager
+from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
+# === Blueprint for teache route ===
 teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
 
 
@@ -70,7 +79,7 @@ def dashboard() -> str:
     Render the teacher dashboard if the account exists.
     """
     teacher_id = session_manager.current_id("teacher")
-    teacher = teacher_repo.get_teacher_by_id(teacher_id)
+    teacher = get_by(Teacher, id=teacher_id)
 
     if not teacher:
         flash("Your account no longer exists.", "danger")

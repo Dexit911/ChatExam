@@ -11,15 +11,16 @@ from flask import (
     flash,
     url_for,
 )
-# === CHAT_EXAM IMPORTS ===
+# === Local ===
 from chat_exam.extensions import db
 from chat_exam.models import Exam, Student, StudentExam, StudentTeacher
-from chat_exam.services import student_service
+from chat_exam.services import student_service, exam_service
 from chat_exam.templates import forms
 from chat_exam.utils import session_manager
 from chat_exam.utils.ai_examinator import AIExaminator
 from chat_exam.utils.generate_exam_form import generate_exam_form
 from chat_exam.utils.git_fecther import fetch_github_code
+from chat_exam.repositories import get_by
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
@@ -45,8 +46,21 @@ def dashboard():
 
     # === If submit is valid, (The code, and github link) ===
     if form.validate_on_submit():
+        try:
+            attempt = exam_service.create_attempt(
+                student_id=session_manager.current_id("student"),
+                code=form.code.data,
+                github_link=form.github_link.data,
+            )
+            print("===NEW ATTEMPT ADDED! ENTERING EXAM===")
+
+        except ValueError as e:
+            flash(str(e), "danger")
+
+
+
         # === Get exam_id and github_link from form ===
-        print("Success! Entering exam")
+
         exam_id = Exam.query.filter_by(code=form.code.data).first().id
         teacher_id = Exam.query.filter_by(code=form.code.data).first().teacher_id
 
@@ -66,7 +80,7 @@ def dashboard():
         old_student = StudentTeacher.query.filter_by(student_id=session["student_id"]).first()
         if not old_student:
             student_to_teacher = StudentTeacher(
-                student_id=session["student_id"],
+                student_    id=session["student_id"],
                 teacher_id=teacher_id,
             )
             db.session.add(student_to_teacher)
