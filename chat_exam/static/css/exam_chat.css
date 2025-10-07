@@ -1,0 +1,116 @@
+/* ==============================
+   GLOBAL STYLES
+============================== */
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: "Segoe UI", sans-serif;
+    background: #0e0e0e;
+    color: #fff;
+}
+
+/* ==============================
+   NAVBAR
+============================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: #1e1e1e;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* ChatExam on right */
+    padding: 0 24px;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    user-select: none;
+}
+
+/* ==============================
+   MAIN LAYOUT (under navbar)
+============================== */
+.main-content {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 56px);
+    margin-top: 56px;
+}
+
+/* ==============================
+   LEFT: QUESTIONS PANEL
+============================== */
+.questions-panel {
+    width: 60%;
+    padding: 32px;
+    overflow-y: auto;
+    background: #0e0e0e;
+    border-right: 1px solid #2a2a2a;
+}
+
+.question {
+    margin-bottom: 24px;
+    margin-right: 24px;
+}
+
+textarea {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    resize: vertical;
+}
+
+/* ==============================
+   RIGHT: CODE PANEL
+============================== */
+.code-panel {
+    flex: 1;
+    background: #1b1b1b;
+    display: flex;
+    flex-direction: column;
+}
+
+#editor {
+    flex: 1;
+    height: 100%;
+}
+
+/* ==============================
+   BUTTON
+============================== */
+.btn-submit {
+    display: inline-block;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: linear-gradient(135deg, #2d8cff, #1a6fe2);
+    box-shadow: 0 0 20px rgba(45, 140, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(6px);
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(45, 140, 255, 0.6);
+    background: linear-gradient(135deg, #409eff, #2d8cff);
+}
+
+.btn-submit:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 10px rgba(45, 140, 255, 0.3);
+}

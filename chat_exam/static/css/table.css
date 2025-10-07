@@ -1,0 +1,136 @@
+/* ===============================
+   Teacher Exam Attempts Table
+=============================== */
+
+.attempts-wrapper {
+  margin-top: 25px;
+  border-radius: 16px;
+  overflow: visible; /* allows hover popups to escape table bounds */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.attempts-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #f5efef;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
+/* Center all text in table */
+.attempts-table th,
+.attempts-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.attempts-table th {
+  padding: 14px 16px;
+  color: #a8fff7;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.attempts-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.attempts-table tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.25s ease;
+}
+
+/* === Links === */
+.attempt-link {
+  color: #00eaff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.attempt-link:hover {
+  color: #b3fff2;
+}
+
+/* === Verdict hover popup === */
+.verdict-cell {
+  position: relative;
+  cursor: pointer;
+}
+
+.verdict-read {
+  color: #7afae0;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.verdict-read:hover {
+  color: #b2fff0;
+}
+
+/* Hidden popup */
+.verdict-popup {
+  display: none;
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 25, 30, 0.92);
+  color: #e9fff6;
+  padding: 10px 14px;
+  border-radius: 12px;
+  width: 260px;
+  max-width: 340px;
+  font-size: 0.9rem;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  white-space: normal;
+  word-wrap: break-word;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 9999; /* ensures popup appears over everything */
+}
+
+/* Show popup on hover */
+.verdict-cell:hover .verdict-popup {
+  display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
+  pointer-events: auto;
+}
+
+/* === Text and headers === */
+.exam-title {
+  font-size: 1.8rem;
+  color: #a5ffee;
+  margin-bottom: 0.3rem;
+  text-align: left;
+}
+
+.exam-meta {
+  font-size: 0.9rem;
+  color: #c7f8eb;
+  text-align: left;
+}
+
+.exam-section {
+  margin-top: 1.2rem;
+  font-size: 1.2rem;
+  color: #9ef5da;
+  text-align: left;
+}
+
+.no-attempts {
+  margin-top: 1rem;
+  text-align: center;
+  color: #aeeedd;
+  font-style: italic;
+}

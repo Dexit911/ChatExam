@@ -1,0 +1,17 @@
+{% extends "teacher/teacher_dashboard.html" %}
+
+{% block dashboard %}
+
+<h2>My Students</h2>
+<ul>
+  {% for student in students %}
+    <li>
+        {{ student.username }}
+        <ul>
+            <li>email: {{ student.email }}</li>
+        </ul>
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

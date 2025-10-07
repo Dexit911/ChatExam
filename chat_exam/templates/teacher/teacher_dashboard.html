@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav class="dashboard-nav">
+  <div class="nav-left">ChatExam</div>
+  <div class="nav-center">
+    <a href="{{ url_for('teacher.view_students') }}">Students</a>
+    <a href="{{ url_for('teacher.view_exams') }}">Exams</a>
+    <a href="{{ url_for('teacher.create_exam') }}">Create</a>
+  </div>
+  <div class="nav-right">
+    <a href="#">Logout</a>
+  </div>
+</nav>
+
+<div class="glass-dashboard">
+    {% block dashboard %}
+    <p>Some content here</p>
+    {% endblock %}
+</div>
+{% endblock %}

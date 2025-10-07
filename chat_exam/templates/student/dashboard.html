@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav class="dashboard-nav">
+  <div class="nav-left">ChatExam</div>
+  <div class="nav-center">
+    <a href="#">Students</a>
+    <a href="#">Exams</a>
+    <a href="#">Create</a>
+  </div>
+  <div class="nav-right">
+    <a href="#">Logout</a>
+  </div>
+</nav>
+
+<div class="glass-dashboard">
+    {% block dashboard %}
+    <p>Some content here</p>
+    {% endblock %}
+</div>
+{% endblock %}

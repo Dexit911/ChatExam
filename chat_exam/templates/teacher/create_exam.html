@@ -1,0 +1,37 @@
+{% extends "teacher/teacher_dashboard.html" %}
+
+{% block dashboard %}
+
+
+<div class="content-section">
+    <form method="POST" novalidate action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Create Exam</legend>
+            <div class="form-group">
+                {{ form.title.label() }}
+                {{ form.title(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.browser_view_mode.label() }}
+                {{ form.browser_view_mode(class="custom-checkbox") }}
+            </div>
+            <div class="form-group">
+                {{ form.allow_quit.label() }}
+                {{ form.allow_quit(class="custom-checkbox") }}
+            </div>
+            <div class="form-group">
+                {{ form.allow_clipboard.label() }}
+                {{ form.allow_clipboard(class="custom-checkbox") }}
+            </div>
+        </fieldset>
+        <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+
+
+
+
+{% endblock %}

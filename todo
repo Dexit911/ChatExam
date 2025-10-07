@@ -1,0 +1,5 @@
+Problem:
+Not getting response from the exam when entering it with .seb
+
+Maybe the seb protocol does not find the localhost link ->  try with server hosting
+.seb config is wronlgy created, turn of encryptor and check the file manually
