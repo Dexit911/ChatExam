@@ -137,7 +137,7 @@ def create_exam():
         return redirect(url_for('teacher.dashboard'))
     else:
         # === GIVE ERROR ===
-        flask.flash("Create exam failed", "danger")
+        flash("Create exam failed", "danger")
 
     # === If nothing happens render page ===
     return render_template("teacher/create_exam.html", form=form)  # When no method -> render page

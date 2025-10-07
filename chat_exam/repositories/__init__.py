@@ -20,6 +20,10 @@ def save(db_obj: M, auto_commit: bool = True) -> M:
     if auto_commit: db.session.commit()
     return db_obj
 
+def flush(db_obj: M) -> None:
+    """Create primary key fro object"""
+    db.flush(db_obj)
+
 
 def delete(db_obj: M, auto_commit: bool = True) -> None:
     """Delete any SQLAlchemy model instance"""
@@ -40,3 +44,5 @@ def get_by(model: M, **kwargs) -> Optional[M]:
 def filter_by(model: M, **kwargs) -> List[M]:
     """Return a list of models by **kwargs"""
     return model.query.filter_by(**kwargs).all()
+
+

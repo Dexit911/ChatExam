@@ -1,6 +1,8 @@
 from annotated_types.test_cases import cases
 from flask import session
 
+
+
 def end_session():
     """Clear the current session."""
     session.clear()

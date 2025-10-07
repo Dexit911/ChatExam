@@ -13,14 +13,14 @@ from flask import (
 )
 # === Local ===
 from chat_exam.extensions import db
-from chat_exam.models import Exam, Student, StudentExam, StudentTeacher
+from chat_exam.models import Exam, Student, StudentExam
 from chat_exam.services import student_service, exam_service
 from chat_exam.templates import forms
-from chat_exam.utils import session_manager
+from chat_exam.utils import session_manager as sm
 from chat_exam.utils.ai_examinator import AIExaminator
 from chat_exam.utils.generate_exam_form import generate_exam_form
 from chat_exam.utils.git_fecther import fetch_github_code
-from chat_exam.repositories import get_by
+from chat_exam.repositories import exam_repo, get_by_id
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
@@ -46,58 +46,38 @@ def dashboard():
 
     # === If submit is valid, (The code, and github link) ===
     if form.validate_on_submit():
+        # Try to create student attempt
         try:
-            attempt = exam_service.create_attempt(
-                student_id=session_manager.current_id("student"),
+            exam_service.create_attempt(
+                student_id=sm.current_id("student"),
                 code=form.code.data,
                 github_link=form.github_link.data,
             )
             print("===NEW ATTEMPT ADDED! ENTERING EXAM===")
 
+            seb_url = url_for(
+                "main.exam_link",
+                exam_id=exam_repo.get_exam_by_code(form.code.data).id,
+                _external=True)
+            return redirect(seb_url)
+
+        # Attempt already exists
         except ValueError as e:
             flash(str(e), "danger")
 
+    # Get student username by id
+    username = (
+        get_by_id(Student, sm.current_id("student"))
+        .username
+    )
 
-
-        # === Get exam_id and github_link from form ===
-
-        exam_id = Exam.query.filter_by(code=form.code.data).first().id
-        teacher_id = Exam.query.filter_by(code=form.code.data).first().teacher_id
-
-        github_link = form.github_link.data
-
-        # === Save student linked to exam ===
-        attempt = StudentExam(
-            exam_id=exam_id,
-            student_id=session["student_id"],
-            github_link=github_link,
-            status="ongoing",
-        )
-        db.session.add(attempt)
-        print("===NEW ATTEMPT ADDED===")
-
-        # === Check if the Teacher had this student, if not: link student to teacher ===
-        old_student = StudentTeacher.query.filter_by(student_id=session["student_id"]).first()
-        if not old_student:
-            student_to_teacher = StudentTeacher(
-                student_    id=session["student_id"],
-                teacher_id=teacher_id,
-            )
-            db.session.add(student_to_teacher)
-            print("===NEW STUDENT ADDED TO TEACHER===")
-
-        db.session.commit()
-
-        # === Redirect student to exam by the exam code ===
-        seb_url = url_for("main.exam_link", exam_id=exam_id, _external=True)
-        return redirect(seb_url)
-
-    # === Get the username by the session user id ===
-    student = Student.query.filter_by(id=session['student_id']).first()  # Else get student id from session
-    username = student.username
-
-    # === Render the page and pass the username ===
-    return render_template("student_dashboard.html", title="Enter exam", username=username, form=form)
+    # === Render the page. Pass username and form ===
+    return render_template(
+        template_name_or_list="student_dashboard.html",
+        title="Enter exam",
+        username=username,
+        form=form
+    )
 
 
 @student_bp.route("/exam/<code>", methods=['GET', 'POST'])
@@ -183,12 +163,13 @@ def register():
                 username=form.username.data,
             )
 
-            # Set session adn redirect to dashboard
-            session_manager.start_session(
+            # Set session and redirect to dashboard
+            sm.start_session(
                 user_id=student.id,
                 role="student"
             )
 
+            # Redirect student to dashboard
             flash(f"Account created for {form.username.data}!", "success")
             return redirect(url_for('student.dashboard'))
 
@@ -212,7 +193,7 @@ def login():
                 email=form.email.data,
                 password=form.password.data,
             )
-            session_manager.start_session(
+            sm.start_session(
                 user_id=student.id,
                 role="student"
             )
