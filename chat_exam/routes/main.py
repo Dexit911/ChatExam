@@ -11,9 +11,9 @@ def index():
 @main_bp.route("/seb-config/<int:exam_id>.seb")
 @student_required
 def seb_config(exam_id):
-    if "student_id" not in session or session.get("role") != "student":
+    """if "student_id" not in session or session.get("role") != "student":
         flash("You must be logged in as a student to access this exam.", "danger")
-        return redirect(url_for("student.login"))
+        return redirect(url_for("student.login"))"""
 
     return send_file(
         os.path.join("seb_config", f"exam_{exam_id}.seb"),
