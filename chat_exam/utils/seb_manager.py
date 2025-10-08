@@ -1,5 +1,7 @@
 import os
 
+from pathlib import Path
+
 from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
 
@@ -68,10 +70,12 @@ class Seb_manager:
         else:
             seb_config_str = xml_str
 
-        # Setup saving path
-        seb_dir = "seb_config"
-        os.makedirs(seb_dir, exist_ok=True)
-        seb_path = os.path.join(seb_dir, f"exam_{exam_id}.seb")
+        # Create seb_config in project root (one level above chat_exam)
+        base_dir = Path(__file__).resolve().parents[2]  # → chat_exam/
+        seb_dir = base_dir / "instance" / "seb_config"
+        seb_dir.mkdir(parents=True, exist_ok=True)
+
+        seb_path = seb_dir / f"exam_{exam_id}.seb"
 
         # Write down .seb file and save it
         with open(seb_path, "w") as f:
