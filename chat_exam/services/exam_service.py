@@ -20,7 +20,7 @@ from datetime import datetime
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
 # === Local ===
-from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo, flush, get_by_id, delete
+from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo, flush, get_by_id, delete, add
 from chat_exam.models import StudentExam, Exam
 from chat_exam.utils.seb_manager import Seb_manager
 
@@ -95,7 +95,7 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
     try:
         # Create empty Exam model
         exam = Exam()
-        flush()
+
 
         # Insert values in exam
         exam.generate_code()
@@ -104,6 +104,9 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
         exam.settings = settings
         exam.date = datetime.now()
         exam.question_count = question_count
+
+        add(exam)
+        flush()
 
         # Create exam.seb file
         exam_url = create_exam_url(exam.code)
@@ -144,6 +147,10 @@ def create_exam_file(exam_id: int, exam_url: str, settings: dict) -> None:
         settings=settings,
         exam_url=exam_url,
     )
+
+
+    print("=== CREATED exam_id.seb with id: ===")
+    print(exam_id)
 
     # Save .seb exam file
     Seb_manager().save_configuration_file(
