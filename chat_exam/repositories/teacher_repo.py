@@ -8,5 +8,3 @@ def get_teacher_by_email(email: str) -> Optional[Teacher]:
 
 
 
-
-

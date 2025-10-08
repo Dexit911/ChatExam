@@ -1,5 +1,4 @@
 import requests
-import re
 
 def github_blob_to_raw(url: str) -> str:
     if "github.com" in url and "/blob/" in url:
@@ -7,6 +6,13 @@ def github_blob_to_raw(url: str) -> str:
     return url
 
 def fetch_github_code(url: str, remove_comments: bool = False) -> str:
+    """
+    Fetches raw github code from the given url and returns it.
+
+    :param url: url to public github code
+    :param remove_comments: Decide whether to remove comments
+    :return: string with raw github code
+    """
     raw_url = github_blob_to_raw(url)
     try:
         resp = requests.get(raw_url, timeout=10)
@@ -24,6 +30,7 @@ def fetch_github_code(url: str, remove_comments: bool = False) -> str:
 def strip_comments(code: str) -> str:
     """
     Remove comments from Python code.
+
     - Removes lines starting with #
     - Removes inline # comments
     """

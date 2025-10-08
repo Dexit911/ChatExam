@@ -1,6 +1,21 @@
-from chat_exam.repositories import student_repo, teacher_repo, save
-from chat_exam.models import Teacher, Student
-from chat_exam.utils import security
+"""
+Teacher Service
+===============
+
+Core business logic for managing teachers in ChatExam.
+
+Responsibilities:
+- Handle student registration and authentication.
+
+This module is part of the ChatExam service layer — designed for clarity,
+testability, and future scaling into API or background services.
+
+"""
+
+# === Local ===
+from chat_exam.repositories import teacher_repo, save
+from chat_exam.models import Teacher
+
 
 def create_teacher(username: str, email: str, password: str) -> Teacher:
     """Create a new teacher"""

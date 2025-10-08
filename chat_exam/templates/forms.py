@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 
 #  === APPS MODELS AND UTILS ===
 from chat_exam.models import Student, Exam
@@ -57,10 +57,10 @@ class StudentExamCode(FlaskForm):
 
 class CreatExamForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired()])
+    question_count = IntegerField("Number of questions", validators=[DataRequired(), NumberRange(min=1, max=10)])
     browser_view_mode = BooleanField("Lock Down")
     allow_quit = BooleanField("Allow Quit")
     allow_clipboard = BooleanField("Allow Clipboard")
-
     submit = SubmitField("Create Exam")
 
 

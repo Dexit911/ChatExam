@@ -14,14 +14,10 @@ from flask import (
 
 # ===Local===
 from chat_exam.models import Exam, StudentTeacher, Student, StudentExam, Teacher
-from chat_exam.extensions import db
 from chat_exam.templates import forms
-from chat_exam.repositories import teacher_repo
-from chat_exam.services import teacher_service
-from chat_exam.utils import session_manager
+from chat_exam.services import teacher_service, exam_service
+from chat_exam.utils import session_manager as sm
 from chat_exam.repositories import get_by
-from chat_exam.utils.seb_manager import Seb_manager
-from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
 # === Blueprint for teache route ===
 teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
@@ -52,7 +48,7 @@ def login():
                 email=form.email.data,
                 password=form.password.data
             )
-            session_manager.start_session(
+            sm.start_session(
                 user_id=teacher.id,
                 role="teacher",
             )
@@ -78,12 +74,12 @@ def dashboard() -> str:
     """
     Render the teacher dashboard if the account exists.
     """
-    teacher_id = session_manager.current_id("teacher")
+    teacher_id = sm.current_id("teacher")
     teacher = get_by(Teacher, id=teacher_id)
 
     if not teacher:
         flash("Your account no longer exists.", "danger")
-        session_manager.end_session()
+        sm.end_session()
         return redirect(url_for("main.index"))
 
     return render_template(
@@ -100,48 +96,28 @@ def create_exam():
 
     # === If submit is valid ===
     if form.validate_on_submit():  # If teacher clicks on create exam -> POST
-        settings = {  # Write down values from form checkboxes
-            "browserViewMode": form.browser_view_mode.data,
-            "allowQuit": form.allow_quit.data,
-            "allowClipboard": form.allow_clipboard.data,
-        }
 
-        # ==SAVE EXAM TO DB==
-        new_exam = Exam(title=form.title.data)
-        new_exam.generate_code()
-        new_exam.teacher_id = session["teacher_id"]
+        try:
+            # Try to create exam
+            exam_service.create_exam(
+                title=form.title.data,
+                teacher_id=sm.current_id("teacher"),
+                question_count=form.question_count.data,
+                settings={
+                    "browserViewMode": form.browser_view_mode.data,
+                    "allowQuit": form.allow_quit.data,
+                    "allowClipboard": form.allow_clipboard.data,
+                }
+            )
 
-        db.session.add(new_exam)
-        db.session.flush()  # ensures new_exam.id is generated
+            # If created exam, redirect to dashboard
+            flash("You have successfully created a new exam.")
+            return redirect(url_for("teacher.dashboard"))
 
-        # === CREATE EXAM URL AND SEB CONFIG ===
-        exam_url = url_for("student.exam", code=new_exam.code, _external=True)
-        seb_config = Seb_manager().create_config(settings=settings, exam_url=exam_url)
-        encrypted = encrypt_seb_config(seb_config)
+        except ValueError as e:
+            flash(str(e), "danger")
 
-        # === SAVE .SEB FILE ===
-        seb_dir = "seb_config"
-        os.makedirs(seb_dir, exist_ok=True)
-        seb_path = os.path.join(seb_dir, f"exam_{new_exam.id}.seb")
-
-        with open(seb_path, "w") as f:
-            f.write(seb_config)
-
-        # === Fina commit() ===
-        db.session.commit()
-
-        # Debug
-        print(new_exam.code)
-
-        # === When exam created redirect teacher to dashboard ===
-        return redirect(url_for('teacher.dashboard'))
-    else:
-        # === GIVE ERROR ===
-        flash("Create exam failed", "danger")
-
-    # === If nothing happens render page ===
-    return render_template("teacher/create_exam.html", form=form)  # When no method -> render page
-
+    return render_template("teacher/create_exam.html", form=form)
 
 @teacher_bp.route("/view-exams", methods=['GET', 'POST'])
 @teacher_required

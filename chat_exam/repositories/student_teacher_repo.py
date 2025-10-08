@@ -20,7 +20,7 @@ def unlink(student_id: int, teacher_id: int, auto_commit: bool = True) -> None:
         if auto_commit:
             db.session.commit()
 
-def exists_link(student_id: int, teacher_id: int) -> bool:
+def link_exists(student_id: int, teacher_id: int) -> bool:
     """Check if a link exists."""
     return (
         db.session.query(StudentTeacher)

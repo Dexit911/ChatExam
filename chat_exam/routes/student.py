@@ -79,9 +79,8 @@ def dashboard():
         form=form
     )
 
-
 @student_bp.route("/exam/<code>", methods=['GET', 'POST'])
-# @student_required
+#@student_required
 def exam(code):
     # === Check if the request happens from SEB protocol ===
     """ ua = request.headers.get("User-Agent", "")
@@ -90,6 +89,18 @@ def exam(code):
     print("===THE EXAM IS TAKEN IN SEB ENV ===")"""
 
     # === GET STUDENTS GITHUB LINK ===
+
+
+
+
+
+
+
+
+
+
+
+
     exam_id = Exam.query.filter_by(code=code).first().id
     student_github_link = StudentExam.query.filter_by(exam_id=exam_id,
                                                       student_id=session["student_id"]).first().github_link

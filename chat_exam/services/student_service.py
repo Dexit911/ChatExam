@@ -1,6 +1,21 @@
-from chat_exam.repositories import student_repo, teacher_repo, student_teacher_repo, get_by,  save
-from chat_exam.models import Student, Teacher
+"""
+Student Service
+===============
 
+Core business logic for student management in ChatExam.
+
+Responsibilities:
+- Handle student registration and authentication.
+- Manage teacher-student linking through StudentTeacher relations.
+
+This module is part of the ChatExam service layer — designed for clarity,
+testability, and future scaling into API or background services.
+"""
+
+
+# === Local ===
+from chat_exam.repositories import student_repo, student_teacher_repo, get_by,  save
+from chat_exam.models import Student, Teacher
 
 
 def create_student(username: str, email: str, password: str) -> Student:
@@ -33,7 +48,7 @@ def assign_teacher(student_id: int, teacher_id: int) -> None:
     if not student or not teacher:
         raise ValueError("Invalid student or teacher")
 
-    if student_teacher_repo.exists_link(student_id, teacher_id):
+    if student_teacher_repo.link_exists(student_id, teacher_id):
         return
 
     student_teacher_repo.link(student_id, teacher_id)

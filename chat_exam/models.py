@@ -53,16 +53,20 @@ class Exam(db.Model):
     def generate_code(self):
         self.code = secrets.token_hex(3)
 
+
 """STUDENT LINKED TO EXAM"""
 class StudentExam(db.Model):
     __tablename__ = 'student_exams'
     id = db.Column(db.Integer, primary_key=True)
     exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"))
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
+
     github_link = db.Column(db.String(80), nullable=False)
+
     ai_verdict = db.Column(db.String(80), nullable=True)
     ai_conversation = db.Column(db.String(256), nullable=True)
     ai_rating =  db.Column(db.String(1), nullable=True)
+
     status = db.Column(db.String(80), nullable=False)
 
     student = db.relationship("Student", backref="student_exams", lazy=True)

@@ -1,3 +1,5 @@
+import os
+
 from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
 
@@ -25,7 +27,6 @@ class Seb_manager:
         url = url.replace("https://", "").replace("http://", "")
         print(f"=== SEB CONFIGURATION URL:\n{url}\n===")
 
-
         print(f"View Mode: {view_mode}\nAllow Quit: {allow_quit}\nallow Clipboard: {allow_clipboard}")
 
         return f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -52,16 +53,26 @@ class Seb_manager:
         </dict>
         </plist>"""
 
-
     @staticmethod
-    def create_configuration_file(config: str) -> None:
-       """
-       Create encrypted SEB exam file. When this file is started, you drop to the exam.
-       :param config: string SEB configuration file in xml format
-       """
+    def save_configuration_file(xml_str: str, exam_id: int, encrypt: bool = True) -> None:
+        """
+        Create SEB exam file. When this file is started, you drop to the exam.
+        :param xml_str: string with SEB configuration
+        :param exam_id: id of the exam
+        :param encrypt: True to encrypt SEB configuration
+        """
 
-       encrypted_config = encrypt_seb_config(config)
+        # Encrypt
+        if encrypt:
+            seb_config_str = encrypt_seb_config(xml_str)
+        else:
+            seb_config_str = xml_str
 
+        # Setup saving path
+        seb_dir = "seb_config"
+        os.makedirs(seb_dir, exist_ok=True)
+        seb_path = os.path.join(seb_dir, f"exam_{exam_id}.seb")
 
-       with open("exam.seb", "wb") as f:
-           f.write(encrypted_config)
+        # Write down .seb file and save it
+        with open(seb_path, "w") as f:
+            f.write(seb_config_str)
