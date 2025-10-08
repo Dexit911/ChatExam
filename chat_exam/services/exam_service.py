@@ -20,13 +20,19 @@ from datetime import datetime
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
 # === Local ===
-from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo, flush
+from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo, flush, get_by_id, delete
 from chat_exam.models import StudentExam, Exam
 from chat_exam.utils.seb_manager import Seb_manager
 
 """ATTEMPT"""
 def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
-    """Create student exam attempt"""
+    """
+    Create student exam attempt
+    :param student_id: id of student who attempts
+    :param code: the unique code of the exam
+    :param github_link: link to students github code
+    :return: StudentExam
+    """
     # Get exam by code
     exam = exam_repo.get_exam_by_code(code)
     # Look if the attempt already exists
@@ -54,6 +60,15 @@ def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
 
     return save(attempt)
 
+
+# noinspection PyUnreachableCode
+def delete_attempt(attempt_id: int) -> None:
+    """Delete student exam attempt"""
+    attempt = get_by_id(StudentExam, attempt_id)
+    if not attempt:
+        raise ValueError("Student exam attempt does not exist")
+
+    return delete(attempt, auto_commit=True)
 
 def get_attempt_data():
     pass
@@ -102,6 +117,9 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
 
     except SQLAlchemyError as e:
         raise ValueError(f"###Failed to create exam, SQLAlchemyError:\n{e}\n###")
+
+
+
 
 
 def create_exam_url(code: int) -> str:

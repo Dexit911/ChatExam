@@ -30,6 +30,12 @@
             </td>
             <td>{{ attempt.ai_rating or '-' }}</td>
             <td>{{ attempt.status or 'In progress' }}</td>
+            <td>
+                <form action="{{ url_for('teacher.delete_attempt', attempt_id=attempt.id) }}" method="POST"
+                      onsubmit="return confirm('Delete this attempt?');">
+                    <button type="submit" class="delete-btn">🗑️</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
         </tbody>

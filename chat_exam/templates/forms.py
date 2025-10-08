@@ -4,6 +4,8 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 
 #  === APPS MODELS AND UTILS ===
 from chat_exam.models import Student, Exam
+from chat_exam.repositories import get_by
+from chat_exam.models import Exam
 from chat_exam.utils.git_validator import check_github_link
 
 
@@ -56,11 +58,13 @@ class StudentExamCode(FlaskForm):
 
 
 class CreatExamForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired()])
+    title = StringField("Title", validators=[DataRequired(), Length(min=1, max=50)])
     question_count = IntegerField("Number of questions", validators=[DataRequired(), NumberRange(min=1, max=10)])
     browser_view_mode = BooleanField("Lock Down")
     allow_quit = BooleanField("Allow Quit")
     allow_clipboard = BooleanField("Allow Clipboard")
     submit = SubmitField("Create Exam")
 
-
+    def validate_title(self, title):
+        if get_by(Exam, title=title.data):
+            raise ValidationError("Exam with this title already exists, please choose a different one.")

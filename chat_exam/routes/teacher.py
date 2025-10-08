@@ -139,6 +139,27 @@ def view_exam_attempts(exam_id):
         attempts=attempts
     )
 
+@teacher_bp.route("/delete-attempt/<int:attempt_id>", methods=["POST"])
+@teacher_required
+def delete_attempt(attempt_id):
+    """Delete student exam attempt"""
+
+    try:
+        attempt = get_by(StudentExam, id=attempt_id)
+        exam_service.delete_attempt(attempt_id)
+
+        flash("Attempt deleted", "success")
+        return redirect(url_for("teacher.view_exam_attempts", exam_id=attempt.exam_id))
+
+    except ValueError as e:
+        flash(str(e), "danger")
+
+    return redirect(url_for("teacher.view_exams"))
+
+
+
+
+
 
 @teacher_bp.route("/view-students", methods=['GET', 'POST'])
 @teacher_required

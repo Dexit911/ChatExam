@@ -1,7 +1,7 @@
 from typing import Optional
 
-from chat_exam.repositories import save, delete, get_by_id, get_by
-from chat_exam.models import Teacher, Student, StudentTeacher, Exam
+from chat_exam.repositories import get_by
+from chat_exam.models import Exam, StudentExam
 
 
 def get_exam_by_code(code: str) -> Optional[Exam]:

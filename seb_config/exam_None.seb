@@ -3,7 +3,7 @@
         <plist version="1.0">
         <dict>
           <key>startURL</key>
-          <string>192.168.0.221:5000/student/exam/582805</string>
+          <string>192.168.0.221:5000/student/exam/f54d7e</string>
         
           <key>sebConfigPurpose</key>
           <integer>0</integer>
@@ -12,7 +12,7 @@
           <integer>0</integer>
         
           <key>allowQuit</key>
-          <true/>
+          <false/>
         
           <key>allowClipboard</key>
           <false/>

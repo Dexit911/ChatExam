@@ -8,6 +8,8 @@ that can be reused across all repositories in the application.
 """
 
 from typing import TypeVar, Optional, List
+
+# === Local ===
 from chat_exam.extensions import db
 
 # Generic type variable bound to SQLAlchemy models
