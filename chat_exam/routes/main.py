@@ -9,7 +9,7 @@ def index():
     return render_template("start.html")
 
 @main_bp.route("/seb-config/<int:exam_id>.seb")
-@student_required
+#@student_required
 def seb_config(exam_id):
     """if "student_id" not in session or session.get("role") != "student":
         flash("You must be logged in as a student to access this exam.", "danger")
@@ -21,7 +21,7 @@ def seb_config(exam_id):
         mimetype="application/seb"
     )
 @main_bp.route("/exam-link/<int:exam_id>")
-@student_required
+#@student_required
 def exam_link(exam_id):
     # normal https URL for config
     https_url = url_for("main.seb_config", exam_id=exam_id, _external=True)
