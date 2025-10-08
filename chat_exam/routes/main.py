@@ -16,10 +16,12 @@ def seb_config(exam_id):
         return redirect(url_for("student.login"))"""
 
     return send_file(
-        os.path.join("seb_config", f"exam_{exam_id}.seb"),
+        os.path.join(os.path.dirname(__file__), "..", "seb_config", f"exam_{exam_id}.seb"),
         as_attachment=True,
         mimetype="application/seb"
     )
+
+
 @main_bp.route("/exam-link/<int:exam_id>")
 #@student_required
 def exam_link(exam_id):
