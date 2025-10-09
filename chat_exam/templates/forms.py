@@ -68,3 +68,10 @@ class CreatExamForm(FlaskForm):
     def validate_title(self, title):
         if get_by(Exam, title=title.data):
             raise ValidationError("Exam with this title already exists, please choose a different one.")
+
+class RenameExamForm(FlaskForm):
+    class RenameExamForm(FlaskForm):
+        title = StringField("New Title", validators=[
+            DataRequired(message="Title cannot be empty"),
+            Length(min=1, max=50, message="Title must be between 1 and 50 characters")
+        ])

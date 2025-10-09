@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bubble.css') }}">
+
 
 
     {% if title %}
@@ -38,5 +40,8 @@
 {% block body %}{% endblock %}
 
 {% block content %}{% endblock %}
+
+
 </body>
+<script src="{{ url_for('static', filename='js/bubble.js') }}"></script>
 </html>

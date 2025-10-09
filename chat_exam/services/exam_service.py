@@ -24,6 +24,15 @@ from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo
 from chat_exam.models import StudentExam, Exam
 from chat_exam.utils.seb_manager import Seb_manager
 
+"""UPDATE"""
+
+def rename_exam(exam_id: int, new_title: str) -> None:
+    """Rename exam"""
+    exam = get_by_id(Exam, exam_id)
+    exam.title = new_title
+    return save(exam)
+
+
 """ATTEMPT"""
 def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
     """

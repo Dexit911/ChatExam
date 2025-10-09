@@ -17,7 +17,7 @@ from chat_exam.models import Exam, StudentTeacher, Student, StudentExam, Teacher
 from chat_exam.templates import forms
 from chat_exam.services import teacher_service, exam_service
 from chat_exam.utils import session_manager as sm
-from chat_exam.repositories import get_by
+from chat_exam.repositories import get_by, delete
 
 # === Blueprint for teache route ===
 teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
@@ -119,12 +119,31 @@ def create_exam():
 
     return render_template("teacher/create_exam.html", form=form)
 
+
 @teacher_bp.route("/view-exams", methods=['GET', 'POST'])
 @teacher_required
 def view_exams():
     # === Get list of all exams created by current teacher ===
     exams = Exam.query.filter_by(teacher_id=session["teacher_id"]).all()
     return render_template("teacher/view_exams.html", exams=exams)
+
+
+@teacher_bp.route("/view-exams/<int:exam_id>/rename", methods=["POST"])
+@teacher_required
+def change_exam_title(exam_id):
+    form = forms.RenameExamForm()
+    if form.validate_on_submit():
+        exam_service.rename_exam(exam_id, form.title.data.strip())
+    return redirect(url_for("teacher.dashboard"))
+
+
+
+@teacher_bp.route("/delete-exam/<exam_id>", methods=['GET', 'POST'])
+@teacher_required
+def delete_exam(exam_id):
+    exam = get_by(Exam, id=exam_id)
+    delete(exam, exam_id)
+    return redirect(url_for("teacher.view_exams"))
 
 
 @teacher_bp.route("/view-exams/<int:exam_id>/attempts", methods=['GET', 'POST'])
@@ -138,6 +157,7 @@ def view_exam_attempts(exam_id):
         exam=exam,
         attempts=attempts
     )
+
 
 @teacher_bp.route("/delete-attempt/<int:attempt_id>", methods=["POST"])
 @teacher_required
@@ -155,10 +175,6 @@ def delete_attempt(attempt_id):
         flash(str(e), "danger")
 
     return redirect(url_for("teacher.view_exams"))
-
-
-
-
 
 
 @teacher_bp.route("/view-students", methods=['GET', 'POST'])
