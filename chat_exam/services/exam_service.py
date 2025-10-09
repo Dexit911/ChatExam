@@ -13,7 +13,6 @@ This module is part of the ChatExam service layer — designed for clarity,
 testability, and future scaling into API or background services.
 """
 
-
 # === Built-in ===
 from datetime import datetime
 # === Add-on ===
@@ -24,19 +23,12 @@ from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo
 from chat_exam.models import StudentExam, Exam
 from chat_exam.utils.seb_manager import Seb_manager
 
-"""UPDATE"""
-
-def rename_exam(exam_id: int, new_title: str) -> None:
-    """Rename exam"""
-    exam = get_by_id(Exam, exam_id)
-    exam.title = new_title
-    return save(exam)
-
-
 """ATTEMPT"""
+
+
 def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
     """
-    Create student exam attempt
+    Create student exam attempt.
     :param student_id: id of student who attempts
     :param code: the unique code of the exam
     :param github_link: link to students github code
@@ -79,20 +71,25 @@ def delete_attempt(attempt_id: int) -> None:
 
     return delete(attempt, auto_commit=True)
 
+
 def get_attempt_data():
     pass
+
 
 def save_attempt_results():
     pass
 
+
 """CREATE EXAM"""
+
+
 def create_exam(title: str, teacher_id: int, question_count: str, settings: dict) -> Exam:
     """
-    Creates Exam
-    :param title: Exam title
+    Creates exam.
+    :param title: exam title
     :param teacher_id: id of teacher that is creating this exam
     :param question_count: question count for this exam
-    :param settings: Exam settings in dict format. Example:
+    :param settings: exam settings in dict format. Example:
         {
             "browserViewMode": form.browser_view_mode.data,
             "allowQuit": form.allow_quit.data,
@@ -104,7 +101,6 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
     try:
         # Create empty Exam model
         exam = Exam()
-
 
         # Insert values in exam
         exam.generate_code()
@@ -131,9 +127,6 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
         raise ValueError(f"###Failed to create exam, SQLAlchemyError:\n{e}\n###")
 
 
-
-
-
 def create_exam_url(code: int) -> str:
     """
     Create exam url
@@ -146,24 +139,16 @@ def create_exam_url(code: int) -> str:
 
 def create_exam_file(exam_id: int, exam_url: str, settings: dict) -> None:
     """
-    Create exam.seb file. When is starts - person goes in seb kiosk env
+    Creates and saves id.seb configuration file.
     :param exam_id: id of exam that is going to be created
     :param exam_url: url to exam page
     :param settings: settings in dict format.
     """
-    # Create xml config string
-    seb_config_str = Seb_manager().create_config(
-        settings=settings,
-        exam_url=exam_url,
-    )
 
-
-    print("=== CREATED exam_id.seb with id: ===")
-    print(exam_id)
-
-    # Save .seb exam file
-    Seb_manager().save_configuration_file(
-        xml_str=seb_config_str,
+    seb_manager = Seb_manager()
+    seb_manager.create_seb_file(
         exam_id=exam_id,
+        exam_url=exam_url,
+        settings=settings,
         encrypt=False,
     )

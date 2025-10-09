@@ -6,18 +6,37 @@ from chat_exam.utils.seb_encryptor import encrypt_seb_config
 
 
 class Seb_manager:
+
     @staticmethod
-    def create_config(settings: dict, exam_url: str) -> str:
+    def create_seb_file(settings: dict, exam_url: str, exam_id: int, encrypt: bool = True) -> None:
+        """Create seb file."""
+        # Extra arguments
+
+        seb_manager = Seb_manager()
+
+        # === Create xml ===
+        xml_str = seb_manager.create_xml(
+            settings=settings,
+            exam_url=exam_url,
+        )
+
+        # === Save file ===
+        seb_manager.save_configuration_file(
+            xml_str=xml_str,
+            exam_id=exam_id,
+            encrypt=encrypt,
+        )
+
+    @staticmethod
+    def create_xml(settings: dict, exam_url: str) -> str:
         """
         This prepares string for SEB configuration file
 
-        :param setting: dict with keys for settings. Example ->
+        :param settings: dict with keys for settings. Example ->
         "browserViewMode": None <- or "on",
         "allowQuit": None <- or "on",
         "allowClipboard": None <- or "on",
-
-        :param id: id of the exam
-        :param debug: True or False, use if testing on local host
+        :param exam_url: string with exam url
 
         :return: string with SEB configuration
         """
@@ -31,7 +50,7 @@ class Seb_manager:
 
         print(f"View Mode: {view_mode}\nAllow Quit: {allow_quit}\nallow Clipboard: {allow_clipboard}")
 
-        return f"""<?xml version="1.0" encoding="UTF-8"?>
+        return f"""<?xml version="1.0" encoding=<W"UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
         <dict>

@@ -24,19 +24,7 @@
                 </button>
 
                 <div class="exam-icons">
-                    <div class="icon-wrapper">
-                        <img src="{{ url_for('static', filename='img/icons/pen.png') }}"
-                             alt="Edit"
-                             class="icon-btn"
-                             onclick="toggleRenameBubble(event, {{ exam.id }}, '{{ exam.title }}')">
-
-                        <div class="rename-bubble" id="rename-bubble-{{ exam.id }}">
-                            <form method="POST" action="{{ url_for('teacher.change_exam_title', exam_id=exam.id) }}">
-                                <input type="text" name="title" value="{{ exam.title }}" maxlength="50" required>
-                                <button type="submit">Save</button>
-                            </form>
-                        </div>
-                    </div>
+                    <img src="{{ url_for('static', filename='img/icons/pen.png') }}" alt="Rename">
                     <img src="{{ url_for('static', filename='img/icons/settings.png') }}" alt="Settings">
                     <a href="{{ url_for('teacher.delete_exam', exam_id=exam.id) }}"
                        onclick="return confirm('Delete this exam?');">
