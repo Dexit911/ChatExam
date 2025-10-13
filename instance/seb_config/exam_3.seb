@@ -3,7 +3,7 @@
         <plist version="1.0">
         <dict>
           <key>startURL</key>
-          <string>192.168.0.221/student/exam/661cf3</string>
+          <string>http://192.168.0.221/student/exam/d00180</string>
         
           <key>sebConfigPurpose</key>
           <integer>0</integer>

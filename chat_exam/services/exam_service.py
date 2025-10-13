@@ -15,11 +15,22 @@ testability, and future scaling into API or background services.
 
 # === Built-in ===
 from datetime import datetime
+import json
 # === Add-on ===
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
 # === Local ===
-from chat_exam.repositories import exam_repo, save, get_by, student_teacher_repo, flush, get_by_id, delete, add
+from chat_exam.repositories import (
+    exam_repo,
+    save,
+    get_by,
+    student_teacher_repo,
+    flush,
+    get_by_id,
+    delete,
+    add,
+    commit
+)
 from chat_exam.models import StudentExam, Exam
 from chat_exam.utils.seb_manager import Seb_manager
 
@@ -76,8 +87,33 @@ def get_attempt_data():
     pass
 
 
-def save_attempt_results():
-    pass
+def save_attempt_results(attempt_id: int, **kwargs):
+    """
+    Update and save exam results.
+
+    :param attempt_id: (int) id of attempt
+
+    **kwargs:
+        - questions_dict (dict): All questions student were answering on the exam
+        - answers_dict (dict): All answers student gave to questions
+        - code_string (str): student provided code
+        - ai_verdict (str): Short verdict from AI how did student do on the exam
+        - ai_rating (str): Rating, 1 - 5
+    """
+
+    # Get attempt by id
+    attempt = get_by_id(StudentExam, attempt_id)
+
+    attempt.questions_json = json.dumps(kwargs.get("questions_dict"))
+    attempt.answers_json = json.dumps(kwargs.get("answers_dict"))
+    attempt.code = kwargs.get("code_string")
+    attempt.ai_verdict = kwargs.get("ai_verdict")
+    attempt.ai_rating = kwargs.get("ai_rating")
+
+    attempt.ai_conversation = ""
+    attempt.status = "done"
+
+    commit()
 
 
 """CREATE EXAM"""

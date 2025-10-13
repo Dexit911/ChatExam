@@ -45,17 +45,18 @@ class Seb_manager:
         allow_clipboard = "true" if settings.get("allowClipboard") else "false"
 
         url = exam_url
+        """
         url = url.replace("https://", "").replace("http://", "")
-        print(f"=== SEB CONFIGURATION URL:\n{url}\n===")
+        print(f"=== SEB CONFIGURATION URL:\n{url}\n===")"""
 
         print(f"View Mode: {view_mode}\nAllow Quit: {allow_quit}\nallow Clipboard: {allow_clipboard}")
 
-        return f"""<?xml version="1.0" encoding=<W"UTF-8"?>
+        return f"""<?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
         <dict>
           <key>startURL</key>
-          <string>{url}</string>
+          <string>seb://{url}</string>
         
           <key>sebConfigPurpose</key>
           <integer>0</integer>

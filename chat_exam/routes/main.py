@@ -10,7 +10,7 @@ def index():
 
 
 @main_bp.route("/seb-config/<int:exam_id>.seb")
-@student_required
+#@student_required
 def seb_config(exam_id):
     # Path to instance/seb_config/exam_<id>.seb
     path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{exam_id}.seb"
@@ -23,7 +23,7 @@ def seb_config(exam_id):
 
 
 @main_bp.route("/exam-link/<int:exam_id>")
-@student_required
+#@student_required
 def exam_link(exam_id):
     # Normal HTTPS URL for config
     https_url = url_for("main.seb_config", exam_id=exam_id, _external=True)

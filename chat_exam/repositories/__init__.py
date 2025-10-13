@@ -30,9 +30,11 @@ def add(db_obj: M) -> None:
     """Create and commit any SQLAlchemy model instance"""
     db.session.add(db_obj)
 
-def commit(db_obj: M) -> None:
+def commit(db_obj: M | None = None) -> None:
     """Create and commit any SQLAlchemy model instance"""
-    db.session.commit(db_obj)
+    if db_obj:
+        db.session.add(db_obj)
+    db.session.commit()
 
 def delete(db_obj: M, auto_commit: bool = True) -> None:
     """Delete any SQLAlchemy model instance"""

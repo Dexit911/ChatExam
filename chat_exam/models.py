@@ -57,15 +57,20 @@ class StudentExam(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"))
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
+    github_link = db.Column(db.String(80), nullable=True)
 
-    github_link = db.Column(db.String(80), nullable=False)
+    questions_json = db.Column(db.JSON, nullable=True)
+    answers_json = db.Column(db.JSON, nullable=True)
+    code_text = db.Column(db.String(3000), nullable=True)
 
     ai_verdict = db.Column(db.String(80), nullable=True)
     ai_conversation = db.Column(db.String(256), nullable=True)
     ai_rating =  db.Column(db.String(1), nullable=True)
 
-    status = db.Column(db.String(80), nullable=False)
+    status = db.Column(db.String(80), nullable=True)
 
+
+    # Relations
     student = db.relationship("Student", backref="student_exams", lazy=True)
     exam = db.relationship("Exam", backref="exam_attempts", lazy=True)
 

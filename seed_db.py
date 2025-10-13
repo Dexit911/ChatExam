@@ -18,7 +18,7 @@ def create_start_db():
         db.session.add(teacher)
         db.session.commit()
 
-        # === Create test students ===
+        """# === Create test students ===
         students = []
         for i in range(1, 6):
             s = Student(
@@ -59,7 +59,7 @@ def create_start_db():
                 db.session.add(attempt)
         db.session.commit()
 
-        print("✅ Created 1 teacher, 5 students, 10 exams, and all student attempts!")
+        print("✅ Created 1 teacher, 5 students, 10 exams, and all student attempts!")"""
 
 if __name__ == '__main__':
     create_start_db()

@@ -53,7 +53,7 @@ class StudentExamCode(FlaskForm):
 
     """def validate_github_link(self, field):
         ok, msg = check_github_link(field.data)
-        if not ok:
+        if not ok:z
             raise ValidationError(msg)"""
 
 
