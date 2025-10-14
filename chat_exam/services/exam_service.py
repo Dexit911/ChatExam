@@ -149,42 +149,8 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
         add(exam)
         flush()
 
-        # Create exam.seb file
-        exam_url = create_exam_url(exam.code)
-        create_exam_file(
-            exam_id=exam.id,
-            exam_url=exam_url,
-            settings=settings,
-        )
-
         return save(exam)
 
     except SQLAlchemyError as e:
         raise ValueError(f"###Failed to create exam, SQLAlchemyError:\n{e}\n###")
 
-
-def create_exam_url(code: int) -> str:
-    """
-    Create exam url
-    :param code: exam code (int)
-    :return: exam url (str)
-    """
-
-    return url_for("student.exam", code=code, _external=True)
-
-
-def create_exam_file(exam_id: int, exam_url: str, settings: dict) -> None:
-    """
-    Creates and saves id.seb configuration file.
-    :param exam_id: id of exam that is going to be created
-    :param exam_url: url to exam page
-    :param settings: settings in dict format.
-    """
-
-    seb_manager = Seb_manager()
-    seb_manager.create_seb_file(
-        exam_id=exam_id,
-        exam_url=exam_url,
-        settings=settings,
-        encrypt=False,
-    )

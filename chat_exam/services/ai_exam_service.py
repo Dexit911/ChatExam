@@ -67,7 +67,7 @@ def generate_questions_async(github_link: str, question_count: int, student_id: 
 
 
 def generate_verdict(code_string: str, questions_dict: dict, answers_dict: dict) -> tuple[str, int]:
-
+    """UNDER CONSTRUCTION"""
     verdict, rating = AIExaminator().create_verdict(
         code=code_string,
         questions=questions_dict,
@@ -75,6 +75,29 @@ def generate_verdict(code_string: str, questions_dict: dict, answers_dict: dict)
     )
 
     return verdict, rating
+
+
+def ensure_questions_ready(student_id: int, github_link: str, question_count: int):
+    """
+    Ensure questions exist in cache or trigger async generation.
+    :param student_id: id of the student to generate questions for
+    :param github_link: url of students github code
+    :param question_count: number of questions to generate on exam
+
+    """
+    existing_task = next(
+        (tid for tid, data in exam_cache.items() if data.get("student_id") == student_id),
+        None
+    )
+    if not existing_task:
+        task_id = generate_questions_async(github_link, question_count, student_id)
+    else:
+        task_id = existing_task
+
+    data = exam_cache.get(task_id)
+    if not data:
+        return task_id, None, "pending"
+    return task_id, data, data["status"]
 
 
 

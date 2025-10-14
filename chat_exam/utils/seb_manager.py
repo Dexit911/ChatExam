@@ -8,55 +8,40 @@ from chat_exam.utils.seb_encryptor import encrypt_seb_config
 class Seb_manager:
 
     @staticmethod
-    def create_seb_file(settings: dict, exam_url: str, exam_id: int, encrypt: bool = True) -> None:
-        """Create seb file."""
-        # Extra arguments
-
-        seb_manager = Seb_manager()
-
-        # === Create xml ===
-        xml_str = seb_manager.create_xml(
-            settings=settings,
-            exam_url=exam_url,
-        )
-
-        # === Save file ===
-        seb_manager.save_configuration_file(
-            xml_str=xml_str,
-            exam_id=exam_id,
-            encrypt=encrypt,
-        )
-
-    @staticmethod
-    def create_xml(settings: dict, exam_url: str) -> str:
+    def generate_seb_file(settings: dict, attempt_id: int, exam_code: str, token: str, encrypt: bool = True) -> str:
         """
-        This prepares string for SEB configuration file
+        Generates individual SEB file for student with their own token url.
 
-        :param settings: dict with keys for settings. Example ->
-        "browserViewMode": None <- or "on",
-        "allowQuit": None <- or "on",
-        "allowClipboard": None <- or "on",
-        :param exam_url: string with exam url
+        :param settings: (dict) with keys for settings. Example ->
+            "browserViewMode": None <- or "on",
+            "allowQuit": None <- or "on",
+            "allowClipboard": None <- or "on",
+        :param attempt_id: (int) id of the attempt
+        :param exam_code: (str) string with exam code
+        :param token: (str) with token for url
+        :param encrypt: (bool) True to encrypt SEB configuration
 
-        :return: string with SEB configuration
+        :return: (str) path to SEB config file
         """
+
+        # === Get settings for xml string ===
         view_mode = "1" if settings.get("browserViewMode") else "0"
         allow_quit = "true" if settings.get("allowQuit") else "false"
         allow_clipboard = "true" if settings.get("allowClipboard") else "false"
 
-        url = exam_url
-        """
-        url = url.replace("https://", "").replace("http://", "")
-        print(f"=== SEB CONFIGURATION URL:\n{url}\n===")"""
+        # === Generate tokenized url for xml string ===
+        exam_url = Seb_manager.generate_exam_url(
+            exam_code=exam_code,
+            token=token,
+        )
 
-        print(f"View Mode: {view_mode}\nAllow Quit: {allow_quit}\nallow Clipboard: {allow_clipboard}")
-
-        return f"""<?xml version="1.0" encoding="UTF-8"?>
+        # === Put every thing in this template ===
+        xml_str = f"""<?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
         <dict>
           <key>startURL</key>
-          <string>seb://{url}</string>
+          <string>{exam_url}</string>
         
           <key>sebConfigPurpose</key>
           <integer>0</integer>
@@ -69,34 +54,93 @@ class Seb_manager:
         
           <key>allowClipboard</key>
           <{allow_clipboard}/>
+            
+          <key>ignoreServerCertificate</key>
+          <true/>
+
+          <key>allowBrowsingBackForward</key>
+          <true/>
+          
+          <key>enableJavaScript</key>
+          <true/>
+          
+          <key>blockPopUpWindows</key>
+          <false/>
+          
+          <key>allowDownloads</key>
+          <true/>
         
-          <key>additionalResources</key>
-          <array/>
+          <key>additionalResources</key><array/>
+
+          <key>allowURLFilter</key>
+          <false/>
+          
+          <key>allowQuitURL</key>
+          <true/>
+          
+          <key>quitURL</key>
+          <string>safeexambrowser://quit</string>
+          
+          <key>allowContentReload</key>
+          <true/>
+          
+          <key>ignoreServerCertificate</key>
+          <true/>
+          
+          
         </dict>
         </plist>"""
 
-    @staticmethod
-    def save_configuration_file(xml_str: str, exam_id: int, encrypt: bool = True) -> None:
-        """
-        Create SEB exam file. When this file is started, you drop to the exam.
-        :param xml_str: string with SEB configuration
-        :param exam_id: id of the exam
-        :param encrypt: True to encrypt SEB configuration
-        """
+        # === Save config and return its path ===
+        Seb_manager.save_seb_file(
+            xml_str=xml_str,
+            attempt_id=attempt_id,
+            encrypt=encrypt,
+        )
 
-        # Encrypt
+    @staticmethod
+    def generate_exam_url(exam_code: str, token: str) -> str:
+        return f"http://192.168.0.221/student/exam/{exam_code}?token={token}"""
+
+    @staticmethod
+    def save_seb_file(xml_str: str, attempt_id: int, encrypt: bool = True):
+        """
+        Saves exam file with attempt id in its name
+
+        :param xml_str: (str) xml string
+        :param attempt_id: (int) id of the attempt
+        :param encrypt: (bool) True to encrypt SEB configuration
+        """
+        # Encrypt if needed
         if encrypt:
-            seb_config_str = encrypt_seb_config(xml_str)
-        else:
-            seb_config_str = xml_str
+            xml_str = encrypt_seb_config(xml_str)
 
         # Create seb_config in project root (one level above chat_exam)
         base_dir = Path(__file__).resolve().parents[2]  # → chat_exam/
         seb_dir = base_dir / "instance" / "seb_config"
         seb_dir.mkdir(parents=True, exist_ok=True)
-
-        seb_path = seb_dir / f"exam_{exam_id}.seb"
+        seb_path = seb_dir / f"exam_{attempt_id}.seb"
 
         # Write down .seb file and save it
         with open(seb_path, "w") as f:
-            f.write(seb_config_str)
+            f.write(xml_str)
+
+    @staticmethod
+    def delete_seb_file(attempt_id: int) -> None:
+        """
+        Delete a SEB config file safely.
+        :param attempt_id: (int) id of the attempt
+        """
+
+        base_dir = Path(__file__).resolve().parents[2]  # → chat_exam/
+        seb_dir = base_dir / "instance" / "seb_config"
+        seb_dir.mkdir(parents=True, exist_ok=True)
+        seb_path = seb_dir / f"exam_{attempt_id}.seb"
+
+        try:
+            os.remove(seb_path)
+            print(f"[ OK ] Deleted SEB file: {seb_path}")
+        except FileNotFoundError:
+            print(f"[ WARN ] SEB file already deleted: {seb_path}")
+        except Exception as e:
+            print(f"[ ERROR ] Could not delete SEB file {seb_path}: {e}")

@@ -46,6 +46,7 @@ class Exam(db.Model):
     date = db.Column(db.DateTime, default=datetime.now)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
     question_count = db.Column(db.Integer, nullable=False)
+    settings = db.Column(db.JSON, nullable=False)
 
     def generate_code(self):
         self.code = secrets.token_hex(3)

@@ -9,11 +9,11 @@ def index():
     return render_template("start.html")
 
 
-@main_bp.route("/seb-config/<int:exam_id>.seb")
+@main_bp.route("/seb-config/<int:attempt_id>.seb")
 #@student_required
-def seb_config(exam_id):
-    # Path to instance/seb_config/exam_<id>.seb
-    path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{exam_id}.seb"
+def seb_config(attempt_id: int):
+
+    path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt_id}.seb"
 
     return send_file(
         path,
@@ -22,11 +22,11 @@ def seb_config(exam_id):
     )
 
 
-@main_bp.route("/exam-link/<int:exam_id>")
+@main_bp.route("/exam-link/<int:attempt_id>")
 #@student_required
-def exam_link(exam_id):
+def exam_link(attempt_id: int):
     # Normal HTTPS URL for config
-    https_url = url_for("main.seb_config", exam_id=exam_id, _external=True)
+    https_url = url_for("main.seb_config", attempt_id=attempt_id, _external=True)
 
     # Replace protocol so SEB handles it
     sebs_url = https_url.replace("http://", "seb://").replace("http://", "seb://")
@@ -36,3 +36,5 @@ def exam_link(exam_id):
 
     # Redirect browser to SEB protocol
     return redirect(sebs_url)
+
+#
