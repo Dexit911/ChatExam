@@ -65,7 +65,7 @@ class Seb_manager:
           <true/>
           
           <key>blockPopUpWindows</key>
-          <false/>
+          <true/>
           
           <key>allowDownloads</key>
           <true/>
@@ -100,7 +100,7 @@ class Seb_manager:
 
     @staticmethod
     def generate_exam_url(exam_code: str, token: str) -> str:
-        return f"http://192.168.0.221/student/exam/{exam_code}?token={token}"""
+        return f"localhost:80/student/exam/{exam_code}?token={token}"""
 
     @staticmethod
     def save_seb_file(xml_str: str, attempt_id: int, encrypt: bool = True):
