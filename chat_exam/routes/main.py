@@ -1,7 +1,13 @@
-from flask import Blueprint, render_template, send_file, url_for, redirect
 from pathlib import Path
-from .student import student_required
+import logging
 
+from flask import Blueprint, render_template, send_file, url_for, redirect, jsonify
+
+from chat_exam.exceptions import AppError
+
+logger = logging.getLogger(__name__)
+
+# === Setup blueprint ===
 main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
@@ -37,4 +43,10 @@ def exam_link(attempt_id: int):
     # Redirect browser to SEB protocol
     return redirect(sebs_url)
 
-#
+@main_bp.errorhandler(AppError)
+def handle_chat_exam_error(err):
+    logger.warning(f"{err.code}: {err}")
+    return jsonify({
+        "error": err.code,
+        "message": str(err)
+    }), err.status_code

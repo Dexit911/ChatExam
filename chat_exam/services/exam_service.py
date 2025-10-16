@@ -134,6 +134,8 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
     :return: db.Model -> Exam()
     """
 
+
+
     try:
         # Create empty Exam model
         exam = Exam()

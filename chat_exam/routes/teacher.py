@@ -9,7 +9,8 @@ from flask import (
     session,
     redirect,
     url_for,
-    flash
+    flash,
+    abort
 )
 
 # ===Local===
@@ -28,6 +29,7 @@ def teacher_required(func):
     def decorated_function(*args, **kwargs):
         if "teacher_id" not in session or session.get("role") != "teacher":
             flash("You must be logged in as a teacher.", "danger")
+            abort(403)
             return redirect(url_for("teacher.login"))
         return func(*args, **kwargs)
 

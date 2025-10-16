@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from chat_exam.models import Student, Exam
 from chat_exam.repositories import get_by
 from chat_exam.models import Exam
-from chat_exam.utils.git_validator import check_github_link
+from chat_exam.utils.validators import check_github_link
 
 
 class StudentRegistrationForm(FlaskForm):

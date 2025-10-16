@@ -1,13 +1,10 @@
 import itsdangerous
 
-from flask import session
+from flask import session, abort
 
 from chat_exam.config import Config
 
 serializer = itsdangerous.URLSafeTimedSerializer(Config.SECRET_KEY)
-
-
-
 
 def end_session():
     """Clear the current session."""
@@ -28,9 +25,13 @@ def start_session(user_id: int, role: str) -> None:
         case _: raise ValueError(f"Unknown role {role}")
 
 
-def current_id(role: str) -> int:
-    """Get users id from session by role."""
-    return session.get(f"{role}_id")
+def current_id(role: str, strict: bool = True) -> int | None:
+    key = f"{role}_id"
+    user_id = session.get(key)
+    if strict and not user_id:
+        abort(403)
+    return user_id
+
 
 def current_role():
     return session.get("role")
