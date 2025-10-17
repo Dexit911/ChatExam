@@ -16,6 +16,7 @@ testability, and future scaling into API or background services.
 # === Built-in ===
 from datetime import datetime
 import json
+import logging
 # === Add-on ===
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
@@ -33,6 +34,11 @@ from chat_exam.repositories import (
 )
 from chat_exam.models import StudentExam, Exam
 from chat_exam.utils.seb_manager import Seb_manager
+from chat_exam.exceptions import ValidationError
+from chat_exam.utils.validators import validate_student
+
+
+logger = logging.getLogger(__name__)
 
 """ATTEMPT"""
 
@@ -45,12 +51,22 @@ def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
     :param github_link: link to students github code
     :return: StudentExam
     """
+    # === AUTH VALIDATION ===
+    validate_student(student_id)
+
     # Get exam by code
     exam = exam_repo.get_exam_by_code(code)
     # Look if the attempt already exists
     exists = get_by(StudentExam, student_id=student_id, exam_id=exam.id)
+
     if exists:
-        raise ValueError("Student exam attempt already exists")
+        if exists.status == "ready":
+            logger.info(f"Reusing ready attempt for student: {student_id} ID, attempt: {exists.id} ID")
+            # TODO: reopen SEB config
+            pass
+        else:
+            raise ValidationError("Student exam attempt already exists")
+
     # If not, create attempt
     attempt = StudentExam(
         student_id=student_id,
@@ -58,19 +74,46 @@ def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
         github_link=github_link,
         status="ongoing",
     )
-    # Check if student is not connected to teacher
-    student_to_teacher = student_teacher_repo.link_exists(
+    flush()
+    logger.info(f"Created new attempt for student: {student_id} ID, attempt: {attempt} ID ")
+
+    # Check if student is connected to teacher
+    student_teacher_repo.ensure_link(
         student_id=student_id,
         teacher_id=exam.teacher_id,
     )
-    # If not link student to teacher
-    if not student_to_teacher:
-        student_teacher_repo.link(
-            student_id=student_id,
-            teacher_id=exam.teacher_id,
-        )
+    logger.info(f"Linked student: {student_id} ID, to teacher {exam.teacher_id} ID")
 
     return save(attempt)
+
+
+
+
+
+def open_attempt(student_id: int, code: str) -> StudentExam:
+
+
+
+def set_attempt_status(attempt_id: StudentExam, status: str) -> StudentExam:
+    """
+    Set exam status for attempt
+    :param attempt_id: (int) StudentExam ID
+    :param status: (str) exam status. Must be one of 'ready', 'ongoing' or 'done'
+    :return: StudentExam
+    """
+    # Check if attempt exists
+    attempt = get_by_id(StudentExam, attempt_id)
+    if not attempt:
+        raise ValidationError("Invalid attempt ID - could not find attempt in database")
+
+    attempt.status = status
+    return save(attempt)
+
+
+
+
+
+
 
 
 # noinspection PyUnreachableCode

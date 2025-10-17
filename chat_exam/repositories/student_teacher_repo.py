@@ -28,3 +28,9 @@ def link_exists(student_id: int, teacher_id: int) -> bool:
         .first()
         is not None
     )
+
+
+def ensure_link(student_id: int, teacher_id: int, auto_commit: bool = True) -> None:
+    """Ensure a link exists."""
+    if not link_exists(student_id, teacher_id):
+        link(student_id=student_id, teacher_id=teacher_id, auto_commit=auto_commit)

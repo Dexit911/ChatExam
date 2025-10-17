@@ -17,7 +17,7 @@ from flask import (
 # === Local ===
 from chat_exam.extensions import db
 from chat_exam.models import Exam, Student, StudentExam
-from chat_exam.services import student_service, exam_service, ai_exam_service
+from chat_exam.services import student_service, exam_service, ai_exam_service, seb_service
 from chat_exam.services.ai_exam_service import exam_cache
 from chat_exam.templates import forms
 from chat_exam.utils import session_manager as sm
@@ -60,20 +60,13 @@ def dashboard():
                 code=form.code.data,
                 github_link=form.github_link.data,
             )
-            print("=== NEW ATTEMPT ADDED! ENTERING EXAM ===")
 
             # === CREATE AND SAVE SEB CONFIG FILE WITH TOKENIZED URL -> seb-config folder===
-            exam = exam_repo.get_exam_by_code(form.code.data)
-            seb_m = seb_manager.Seb_manager()
-            seb_m.generate_seb_file(
-                settings=exam.settings,
-                attempt_id=attempt.id,
-                exam_code=form.code.data,
-                token=sm.create_temp_token(sm.current_id("student")),
-                encrypt=False,
+            seb_service.generate_config(
+                attempt=attempt,
+                exam=exam_repo.get_exam_by_code(form.code.data),
+                student_id=sm.current_id("student")
             )
-            print("=== SAVED SEB FILE ===")
-
 
             # === REDIRECT TO SEB ENV WITH EXAM ===
             seb_url = url_for(

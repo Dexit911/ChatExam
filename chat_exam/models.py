@@ -2,8 +2,11 @@ import secrets
 
 from datetime import datetime
 
+from sqlalchemy.orm import validates
+
 from chat_exam.extensions import db
 from chat_exam.utils import security
+from chat_exam.exceptions import ValidationError
 
 
 """STUDENT DATABASE"""
@@ -54,7 +57,9 @@ class Exam(db.Model):
 
 """STUDENT LINKED TO EXAM"""
 class StudentExam(db.Model):
+    """Here we store all information about students exam attempt"""
     __tablename__ = 'student_exams'
+
     id = db.Column(db.Integer, primary_key=True)
     exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"))
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
@@ -69,6 +74,15 @@ class StudentExam(db.Model):
     ai_rating =  db.Column(db.String(1), nullable=True)
 
     status = db.Column(db.String(80), nullable=True)
+
+    @validates("status")
+    def validate_status(self, key, value):
+        """Validate the status of the attempt, must be one o the values of the tuple below ->"""
+        allowed = {"ready", "ongoing", "done"}
+        if value not in allowed:
+            raise ValidationError(f"Invalid status '{value}'. Must be one of {allowed}.")
+        return value
+
 
 
     # Relations

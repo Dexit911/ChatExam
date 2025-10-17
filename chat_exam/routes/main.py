@@ -4,6 +4,7 @@ import logging
 from flask import Blueprint, render_template, send_file, url_for, redirect, jsonify
 
 from chat_exam.exceptions import AppError
+from chat_exam.routes.student import student_required
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ def index():
 
 
 @main_bp.route("/seb-config/<int:attempt_id>.seb")
-#@student_required
+@student_required
 def seb_config(attempt_id: int):
 
     path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt_id}.seb"
@@ -29,7 +30,7 @@ def seb_config(attempt_id: int):
 
 
 @main_bp.route("/exam-link/<int:attempt_id>")
-#@student_required
+@student_required
 def exam_link(attempt_id: int):
     # Normal HTTPS URL for config
     https_url = url_for("main.seb_config", attempt_id=attempt_id, _external=True)
