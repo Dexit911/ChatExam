@@ -1,8 +1,7 @@
 # === Standard library ===
 from functools import wraps
 import json
-
-import flask
+import logging
 # === Third-Party ===
 from flask import (
     blueprints,
@@ -12,27 +11,25 @@ from flask import (
     flash,
     url_for,
     request,
-    abort,
 )
 # === Local ===
-from chat_exam.extensions import db
-from chat_exam.models import Exam, Student, StudentExam
+from chat_exam.models import StudentExam
 from chat_exam.services import student_service, exam_service, ai_exam_service, seb_service
-from chat_exam.services.ai_exam_service import exam_cache
 from chat_exam.templates import forms
 from chat_exam.utils import session_manager as sm
 from chat_exam.utils import seb_manager
 from chat_exam.utils.generate_exam_form import generate_exam_form
-from chat_exam.utils.git_fecther import fetch_github_code
-from chat_exam.repositories import exam_repo, get_by_id, get_by
+from chat_exam.utils.git_fecther import fetch_github_repo
+from chat_exam.repositories import exam_repo, get_by
 from chat_exam.utils import security
-from chat_exam.utils.session_manager import serializer
+
+logger = logging.getLogger(__name__)
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
 
 
-# === Decorator: checking if student logged by its session ===
+# === Decorator - checking if student is logged in by their session ===
 def student_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
@@ -88,17 +85,15 @@ def dashboard():
 
 @student_bp.route("/exam/<code>", methods=['GET', 'POST'])
 def exam(code):
-    """Handles student exam view and seb env."""
-
     # === Check if request happens from SEB env ===
-    #security.is_seb_request(request)
+    security.is_seb_request(request)
 
     # === Ensure session via token ===
     try:
         student_id = sm.ensure_student_session(request.args.get("token"))
     except Exception as e:
-        print(f"[ ERROR ] Session or token invalid: {e} ")
-        flash("Invalid  or expired exam link",  "danger")
+        logger.error(f"Session or token invalid: {e} ")
+        flash("Invalid  or expired exam link", "danger")
         return redirect(url_for("student.dashboard"))
 
     # === Fetch exam + attempt ===
@@ -108,10 +103,17 @@ def exam(code):
     # === Delete attempts seb configuration file ===
     seb_manager.Seb_manager().delete_seb_file(attempt.id)
 
-    # === Ensure AI questions are ready (cached or async) ===
+    # === Get student content from gitHub repo etc. Code, files their names and type ===
+    repo_data = fetch_github_repo(
+        url=exam.github_link,
+        max_files=4,
+        remove_comments=True,
+    )
+
+    # === Ensure AI questions are ready (cached or async). If not - start generating questions ===
     task_id, data, status = ai_exam_service.ensure_questions_ready(
         student_id=student_id,
-        github_link=attempt.github_link,
+        data=repo_data,
         question_count=attempt.exam.question_count
     )
 
@@ -121,16 +123,17 @@ def exam(code):
 
     """EXAM PROCESS"""
     if status == "done":
+        attempt.staus = "ongoing"
+
         print(f"=Got task id={task_id}")
         # === GET QUESTION FROM CACHE
         questions_dict = data["questions"]
 
         # === GENERATE FORM BASE ON QUESTIONS ===
         form = generate_exam_form(questions_dict)
-        code_string = fetch_github_code(attempt.github_link)
-        code_json = json.dumps(code_string)
+        repo_data = fetch_github_repo(attempt.github_link, 3, True)
+        files_json = json.dumps(repo_data)
         print(f"\n=== STUDENTS GITHUB LINK\n{attempt.github_link}\n===")
-        print(f"\n=== STUDENTS CODE\n{code_string[0:100]}\n===")
 
         # === THIS ERROR HAPPENS IF AI COULD NOT GIVE QUESTIONS IN THE RIGHT JSON FORMAT ===
         if "error" in questions_dict:
@@ -145,7 +148,7 @@ def exam(code):
 
             # CREATE VERDICT
             verdict, rating = ai_exam_service.generate_verdict(
-                code_string=code_string,
+                data=data,
                 questions_dict=questions_dict,
                 answers_dict=answers,
             )
@@ -155,17 +158,23 @@ def exam(code):
                 attempt_id=attempt.id,
                 questions_dict=questions_dict,
                 answers_dict=answers,
-                code=code_string,
+                code=data,
                 ai_verdict=verdict,
                 ai_rating=rating,
             )
             print("\n=== ATTEMPT DATA SAVED ===")
 
             # === Quit seb env with build in protocol ===
+
             return render_template("student/exam_finished.html")
 
-        return render_template("student/exam.html", form=form, code_json=code_json)
+        return render_template("student/exam.html", form=form, code_json=files_json)
     return render_template("student/loading.html")
+
+
+@student_bp.route("/exam/loading", methods=['GET', 'POST'])
+
+
 
 
 @student_bp.route('/register', methods=['GET', 'POST'])

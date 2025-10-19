@@ -5,46 +5,73 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/exam_chat.css') }}">
 </head>
 <header class="navbar">
-  <div class="navbar-brand">ChatExam</div>
+    <div class="navbar-brand">ChatExam</div>
 </header>
 
 <div class="main-content">
-  <!-- LEFT: Questions -->
-  <div class="questions-panel">
-    <form method="POST">
-      {{ form.hidden_tag() }}
+    <!-- LEFT: Questions -->
+    <div class="questions-panel">
+        <form method="POST">
+            {{ form.hidden_tag() }}
 
-      {% for field in form if field.name != 'csrf_token' and field.name != 'submit' %}
-        <div class="question">
-          <p><b>{{ field.label.text }}</b></p>
-          {{ field(rows=3, class="form-control") }}
-        </div>
-      {% endfor %}
+            {% for field in form if field.name != 'csrf_token' and field.name != 'submit' %}
+                <div class="question">
+                    <p><b>{{ field.label.text }}</b></p>
+                    {{ field(rows=3, class="form-control") }}
+                </div>
+            {% endfor %}
 
-      {{ form.submit(class="btn-submit") }}
-    </form>
-  </div>
+            {{ form.submit(class="btn-submit") }}
+        </form>
+    </div>
 
-  <!-- RIGHT: Code panel -->
-  <div class="code-panel">
-    <div id="editor"></div>
-  </div>
+    <!-- RIGHT: Code panel -->
+    <div class="code-panel">
+        <div id="editor"></div>
+    </div>
 </div>
 
 <!-- Monaco editor -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 <script>
-require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
-require(["vs/editor/editor.main"], function () {
-  monaco.editor.create(document.getElementById('editor'), {
-    value: {{ code_json | safe }},
-    language: 'python',
-    theme: 'vs-dark',
-    readOnly: true,
-    minimap: { enabled: false },
-    fontSize: 15,
-    scrollBeyondLastLine: false
-  });
-});
+    require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs'}});
+
+    require(["vs/editor/editor.main"], function () {
+        const files = {{ files_json | safe }}; // Dict that is passed in flask route
+        const tabBar = document.getElementById("tab-bar")
+
+        // Create monaco editor
+        const editor = monaco.editor.create(document.getElementById("editor"), {
+            value: Object.values(files)[0],
+            language: "html",
+            theme: "vs-dark",
+            readOnly: true,
+            fontSize: 15,
+            minimap: {enabled: false},
+            scrollBeyondLastLine: false
+        });
+
+
+        // Change editor content + syntax when switching tabs
+        function setActiveTab(tabName) {
+            editor.setValue(files[tabName]);
+            const ext = tabName.split(".").pop();
+            const lang = {html: "html", css: "css", js: "javascript", py: "python"}[ext] || "plaintext";
+            monaco.editor.setModelLanguage(editor.getModel(), lang);
+
+            document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+            document.getElementById(`tab-${tabName}`).classList.add("active");
+        }
+
+        // Create tabs dynamically
+        Object.keys(files).forEach((name, i) => {
+            const tab = document.createElement("div");
+            tab.id = `tab-${name}`;
+            tab.className = "tab" + (i === 0 ? " active" : "");
+            tab.innerText = name;
+            tab.onclick = () => setActiveTab(name);
+            tabBar.appendChild(tab);
+        });
+    });
 </script>
 

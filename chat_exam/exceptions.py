@@ -7,6 +7,7 @@ class AppError(Exception):
     # If not passing any message. Log __doc__ strings in the class
     def __init__(self, message=None, code=None, status_code=None):
         super().__init__(message or self.__doc__)
+        self.message = message or self.__doc__
         if code:
             self.code = code
         if status_code:
@@ -17,7 +18,7 @@ class AppError(Exception):
         return f"[{self.code}] {self.message}"
 
 class AuthError(AppError):
-    """User is not authrized to perform this action"""
+    """User is not authorized to perform this action"""
     code = "AUTH_ERROR"
     status_code = 401
 
@@ -30,5 +31,10 @@ class ValidationError(AppError):
     """Database validation failed"""
     code = "VALIDATION_ERROR"
     status_code = 400
+
+class RequestError(AppError):
+    """Request failed"""
+    code = "REQUEST_ERROR"
+    status_code = 502
 
 

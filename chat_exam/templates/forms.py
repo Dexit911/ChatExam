@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from chat_exam.models import Student, Exam
 from chat_exam.repositories import get_by
 from chat_exam.models import Exam
-from chat_exam.utils.validators import check_github_link
+from chat_exam.utils.validators import validate_github_url
 
 
 class StudentRegistrationForm(FlaskForm):
@@ -43,7 +43,7 @@ class TeacherLoginForm(FlaskForm):
 
 class StudentExamCode(FlaskForm):
     code = StringField("Code", validators=[DataRequired()])
-    github_link = StringField("GitHub link", validators=[DataRequired()])
+    github_link = StringField("GitHub link", validators=[DataRequired(), validate_github_url])
     submit = SubmitField("Enter Exam")
 
     def validate_code(self, field):
@@ -51,10 +51,10 @@ class StudentExamCode(FlaskForm):
         if not exam:
             raise ValidationError("Invalid code")
 
-    """def validate_github_link(self, field):
-        ok, msg = check_github_link(field.data)
-        if not ok:z
-            raise ValidationError(msg)"""
+    def validate_github_link(self, field):
+        ok, msg = validate_github_url(field.data)
+        if not ok:
+            raise ValidationError(msg)
 
 
 class CreatExamForm(FlaskForm):

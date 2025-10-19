@@ -1,7 +1,6 @@
 from pathlib import Path
 import logging
-
-from flask import Blueprint, render_template, send_file, url_for, redirect, jsonify
+from flask import Blueprint, render_template, send_file, url_for, redirect, jsonify, request, flash
 
 from chat_exam.exceptions import AppError
 from chat_exam.routes.student import student_required
@@ -17,37 +16,34 @@ def index():
 
 
 @main_bp.route("/seb-config/<int:attempt_id>.seb")
-@student_required
+# @student_required
 def seb_config(attempt_id: int):
-
     path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt_id}.seb"
-
-    return send_file(
-        path,
-        as_attachment=True,
-        mimetype="application/seb"
-    )
+    return send_file(path, as_attachment=True, mimetype="application/seb")
 
 
 @main_bp.route("/exam-link/<int:attempt_id>")
-@student_required
+# @student_required
 def exam_link(attempt_id: int):
-    # Normal HTTPS URL for config
     https_url = url_for("main.seb_config", attempt_id=attempt_id, _external=True)
+    sebs_url = https_url.replace("http://", "seb://").replace("https://", "seb://")
 
-    # Replace protocol so SEB handles it
-    sebs_url = https_url.replace("http://", "seb://").replace("http://", "seb://")
-
-    print("=== SEB LINK GENERATED ===")
-    print(sebs_url)
-
-    # Redirect browser to SEB protocol
+    logger.info(f"SEB link generated: {sebs_url}")
     return redirect(sebs_url)
 
-@main_bp.errorhandler(AppError)
-def handle_chat_exam_error(err):
-    logger.warning(f"{err.code}: {err}")
-    return jsonify({
-        "error": err.code,
-        "message": str(err)
-    }), err.status_code
+
+# === Error handler for all AppError exceptions ===
+@main_bp.app_errorhandler(AppError)
+def handle_app_error(e: AppError):
+    logger.error(f"{e.code}: {e.message}")
+
+    # JSON response for API routes
+    if request.path.startswith("/api/"):
+        return jsonify({
+            "error": e.code,
+            "message": e.message
+        }), e.status_code
+
+    # Flash for normal routes
+    flash(e.message, "danger")
+    return redirect(url_for("main.index"))

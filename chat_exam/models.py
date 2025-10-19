@@ -83,8 +83,6 @@ class StudentExam(db.Model):
             raise ValidationError(f"Invalid status '{value}'. Must be one of {allowed}.")
         return value
 
-
-
     # Relations
     student = db.relationship("Student", backref="student_exams", lazy=True)
     exam = db.relationship("Exam", backref="exam_attempts", lazy=True)

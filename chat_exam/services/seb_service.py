@@ -1,3 +1,4 @@
+# === Local ===
 from chat_exam.models import Exam, StudentExam
 from chat_exam.utils.seb_manager import Seb_manager
 from chat_exam.utils.session_manager import create_temp_token

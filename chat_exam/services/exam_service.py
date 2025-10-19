@@ -37,7 +37,6 @@ from chat_exam.utils.seb_manager import Seb_manager
 from chat_exam.exceptions import ValidationError
 from chat_exam.utils.validators import validate_student
 
-
 logger = logging.getLogger(__name__)
 
 """ATTEMPT"""
@@ -87,11 +86,8 @@ def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
     return save(attempt)
 
 
-
-
-
 def open_attempt(student_id: int, code: str) -> StudentExam:
-
+    pass
 
 
 def set_attempt_status(attempt_id: StudentExam, status: str) -> StudentExam:
@@ -108,12 +104,6 @@ def set_attempt_status(attempt_id: StudentExam, status: str) -> StudentExam:
 
     attempt.status = status
     return save(attempt)
-
-
-
-
-
-
 
 
 # noinspection PyUnreachableCode
@@ -176,9 +166,6 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
         }
     :return: db.Model -> Exam()
     """
-
-
-
     try:
         # Create empty Exam model
         exam = Exam()
@@ -198,4 +185,3 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
 
     except SQLAlchemyError as e:
         raise ValueError(f"###Failed to create exam, SQLAlchemyError:\n{e}\n###")
-

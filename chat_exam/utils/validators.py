@@ -32,9 +32,10 @@ def validate_student(student_id: int):
 
 
 """SPECIFIC VALIDATORS"""
-def check_github_link(url: str) -> tuple[bool, str]:
+def validate_github_url(url: str) -> tuple[bool, str]:
     """
     Validate if a string is a valid GitHub link and check if it exists.
+
     :param url: (str) The URL of the GitHub link to CODE!.
     :return: (status (bool), message (str))
     """
