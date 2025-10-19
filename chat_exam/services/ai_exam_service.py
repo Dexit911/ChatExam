@@ -117,9 +117,9 @@ def _generate_content_string(data: dict) -> str:
         }
     """
     content_string = "Student files: "
-    data = {"test1": "1", "test2": "2", "test3": "3", "test4": "4"}
 
     for key, value in data.items():
         content_string += f"\n{key}: {value}"
 
+    print(content_string)
     return content_string

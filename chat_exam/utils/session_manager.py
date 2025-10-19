@@ -3,12 +3,15 @@ import itsdangerous
 from flask import session, abort
 
 from chat_exam.config import Config
+from chat_exam.exceptions import AuthError
 
 serializer = itsdangerous.URLSafeTimedSerializer(Config.SECRET_KEY)
+
 
 def end_session():
     """Clear the current session."""
     session.clear()
+
 
 def start_session(user_id: int, role: str) -> None:
     """
@@ -20,9 +23,12 @@ def start_session(user_id: int, role: str) -> None:
     session.clear()
     session['role'] = role
     match role:
-        case "student": session["student_id"] = user_id
-        case "teacher": session["teacher_id"] = user_id
-        case _: raise ValueError(f"Unknown role {role}")
+        case "student":
+            session["student_id"] = user_id
+        case "teacher":
+            session["teacher_id"] = user_id
+        case _:
+            raise ValueError(f"Unknown role {role}")
 
 
 def current_id(role: str, strict: bool = True) -> int | None:
@@ -42,6 +48,7 @@ def create_temp_token(student_id: int):
     """Create short-lived token (valid 5 min) for student auto-login."""
     return serializer.dumps({"student_id": student_id})
 
+
 def validate_temp_token(token, max_age=300):
     """Decode token and return student_id if valid."""
     data = serializer.loads(token, max_age=max_age)
@@ -53,8 +60,6 @@ def ensure_student_session(token: str | None) -> int:
     if token:
         student_id = validate_temp_token(token)
         start_session(user_id=student_id, role="student")
-        print(f"[ OK ] Auto logged student {student_id}")
     if not current_id("student"):
-        raise PermissionError("You must be logged in as a student.")
+        raise AuthError("You must be logged in as a student.", public=True)
     return current_id("student")
-

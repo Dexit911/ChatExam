@@ -4,7 +4,8 @@ import requests
 from pathlib import Path
 
 # === Local ===
-from chat_exam.exceptions import RequestError
+from chat_exam.exceptions import RequestError, TimeoutError, AppError, EmptyRepo
+
 
 def github_blob_to_raw(url: str) -> str:
     if "github.com" in url and "/blob/" in url:
@@ -36,7 +37,8 @@ def fetch_github_code(url: str, remove_comments: bool = False) -> str:
 
 
 def strip_comments(code: str) -> str:
-    """Remove comments from Python code.
+    """
+    Remove comments from Python code.
     - Removes lines starting with #
     - Removes inline # comments
     """
@@ -68,32 +70,43 @@ def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) ->
     :return: (dict) with filtered data that is going to be passed to template
     """
 
-    # === Request response ===
-    api_url = _repo_to_api(url)
-    res = requests.get(api_url)
+    try:
+        # === Request response ===
+        api_url = _repo_to_api(url)
+        res = requests.get(api_url, timeout=8)
 
-    # === Defensive check ===
-    if res.status_code != 200:
-        raise RequestError(f"Failed to fetch repo: {res.status_code}, url: {url}")
+        try:
+            api_res = res.json()
+        except ValueError:
+            raise AppError("Invalid response from GitHub.", public=True)
 
-    # === Get api list response with files info ===
-    api_res = res.json()
+        # === Check if there is any content in repo ===
+        if not isinstance(api_res, list) or not api_res:
+            raise EmptyRepo(public=True)
 
-    # === Instructions for filter data, should be editable ===
-    instructions = {
-        ".html": ["index.html", "base.html", "main.html"],
-        ".css": ["index.css", "base.css", "main.css", "style.css"],
-    }
+        # === Instructions for filter data, should be editable ===
+        instructions = {
+            ".html": ["index.html", "base.html", "main.html"],
+            ".css": ["index.css", "base.css", "main.css", "style.css"],
+        }
 
-    # === Get data that passes the filter instructions ===
-    data = _get_allowed_data(instructions, api_res, max_files)
+        # === Get data that passes the filter instructions ===
+        data = _get_allowed_data(instructions, api_res, max_files)
 
-    # === Remove comments if needed ===
-    if remove_comments:
-        data = _remove_comments(data, url)
+        # === Remove comments if needed ===
+        if remove_comments:
+            data = _remove_comments(data, url)
 
-    # === Return dict ready for monaco code viewer ===
-    return data
+        # === Return dict ready for monaco code viewer ===
+        return data
+
+    # === If internet drops ===
+    except requests.exceptions.Timeout:
+        raise TimeoutError("GitHub didn’t respond in time. Please try again later.", public=True)
+
+    except Exception as e:
+        raise AppError(f"Unexpected internal error: {e}", public=False)
+
 
 
 def _remove_comments(code: dict | str, filename=None) -> dict:
@@ -172,7 +185,8 @@ def _get_allowed_data(instructions: dict, api_res: list, max_files: int) -> dict
                 "sha": "f9f8b90f2d2e7f...",
                 "size": 512,
                 and a lot more...,
-            }
+            },
+            ...
         ]
 
     :return: (dict) with allowed data. It's ready to be putted in monaco editor
@@ -181,6 +195,7 @@ def _get_allowed_data(instructions: dict, api_res: list, max_files: int) -> dict
         {
             "index.html": "<"<!DOCTYPE html> ...",
             "style.css": "body {...} ...",
+            ...
         }
     """
 
@@ -192,7 +207,7 @@ def _get_allowed_data(instructions: dict, api_res: list, max_files: int) -> dict
     for f in api_res:
         name = f["name"].lower()
         ext = Path(name).suffix
-        if ext in allowed and name in instructions[ext]:
+        if ext in allowed:
             files.append(f)
         if len(files) >= max_files:
             break
@@ -202,3 +217,4 @@ def _get_allowed_data(instructions: dict, api_res: list, max_files: int) -> dict
     return data
 
 
+print(1)

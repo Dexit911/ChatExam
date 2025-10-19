@@ -43,7 +43,7 @@ class TeacherLoginForm(FlaskForm):
 
 class StudentExamCode(FlaskForm):
     code = StringField("Code", validators=[DataRequired()])
-    github_link = StringField("GitHub link", validators=[DataRequired(), validate_github_url])
+    github_link = StringField("GitHub link", validators=[DataRequired()])
     submit = SubmitField("Enter Exam")
 
     def validate_code(self, field):

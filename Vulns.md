@@ -2,6 +2,8 @@
 - No auth check for create_exam api, anyone can create an exam.
 - Creates the exam for the sessions teacher_id but if this session is null it will still create it AND for EVERY TEACHER.
 
+
+
 ### Information Disclosure
 - Leaking seb config files for all exams. Can see ANYONES EXAMS just by changing /seb-config/4.seb .
 - This leaks the session cookie of all students making people able to login as them.

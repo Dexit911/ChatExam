@@ -2,76 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Exam - ChatExam</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/exam_chat.css') }}">
 </head>
+<body>
+<!-- NAVBAR -->
 <header class="navbar">
     <div class="navbar-brand">ChatExam</div>
 </header>
 
+<!-- MAIN CONTENT -->
 <div class="main-content">
-    <!-- LEFT: Questions -->
+    <!-- LEFT: QUESTIONS -->
     <div class="questions-panel">
         <form method="POST">
             {{ form.hidden_tag() }}
 
             {% for field in form if field.name != 'csrf_token' and field.name != 'submit' %}
-                <div class="question">
-                    <p><b>{{ field.label.text }}</b></p>
-                    {{ field(rows=3, class="form-control") }}
-                </div>
+            <div class="question">
+                <p><b>{{ field.label.text }}</b></p>
+                {{ field(rows=3, class="form-control") }}
+            </div>
             {% endfor %}
 
             {{ form.submit(class="btn-submit") }}
         </form>
     </div>
 
-    <!-- RIGHT: Code panel -->
+    <!-- RIGHT: CODE PANEL -->
     <div class="code-panel">
+        <div class="tab-bar" id="tab-bar"></div>
         <div id="editor"></div>
     </div>
 </div>
 
-<!-- Monaco editor -->
+<!-- MONACO EDITOR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 <script>
-    require.config({paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs'}});
+require.config({ paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs" } });
+require(["vs/editor/editor.main"], function () {
+    // === Data passed from Flask ===
+    const files = {{ files_json | tojson | default('{}', true) }};
 
-    require(["vs/editor/editor.main"], function () {
-        const files = {{ files_json | safe }}; // Dict that is passed in flask route
-        const tabBar = document.getElementById("tab-bar")
+    console.log("✅ Loaded files:", files);
 
-        // Create monaco editor
-        const editor = monaco.editor.create(document.getElementById("editor"), {
-            value: Object.values(files)[0],
-            language: "html",
-            theme: "vs-dark",
-            readOnly: true,
-            fontSize: 15,
-            minimap: {enabled: false},
-            scrollBeyondLastLine: false
-        });
+    // === Get elements ===
+    const tabBar = document.getElementById("tab-bar");
+    const editorContainer = document.getElementById("editor");
 
+    if (!files || Object.keys(files).length === 0) {
+        editorContainer.innerHTML = "<p style='padding:20px;color:#aaa;'>No files to display</p>";
+        return;
+    }
 
-        // Change editor content + syntax when switching tabs
-        function setActiveTab(tabName) {
-            editor.setValue(files[tabName]);
-            const ext = tabName.split(".").pop();
-            const lang = {html: "html", css: "css", js: "javascript", py: "python"}[ext] || "plaintext";
-            monaco.editor.setModelLanguage(editor.getModel(), lang);
-
-            document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-            document.getElementById(`tab-${tabName}`).classList.add("active");
-        }
-
-        // Create tabs dynamically
-        Object.keys(files).forEach((name, i) => {
-            const tab = document.createElement("div");
-            tab.id = `tab-${name}`;
-            tab.className = "tab" + (i === 0 ? " active" : "");
-            tab.innerText = name;
-            tab.onclick = () => setActiveTab(name);
-            tabBar.appendChild(tab);
-        });
+    // === Create Monaco editor ===
+    const firstFile = Object.keys(files)[0];
+    const editor = monaco.editor.create(editorContainer, {
+        value: files[firstFile],
+        language: "plaintext",
+        theme: "vs-dark",
+        readOnly: true,
+        fontSize: 15,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
     });
+
+    // === Create tabs dynamically ===
+    Object.keys(files).forEach((name, i) => {
+        const tab = document.createElement("div");
+        tab.id = `tab-${name}`;
+        tab.className = "tab" + (i === 0 ? " active" : "");
+        tab.innerText = name;
+        tab.onclick = () => setActiveTab(name);
+        tabBar.appendChild(tab);
+    });
+
+    // === Switch tabs ===
+    function setActiveTab(tabName) {
+        const ext = tabName.split(".").pop();
+        const lang = { html: "html", css: "css", js: "javascript", py: "python" }[ext] || "plaintext";
+        monaco.editor.setModelLanguage(editor.getModel(), lang);
+        editor.setValue(files[tabName]);
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(`tab-${tabName}`).classList.add("active");
+    }
+
+    // === Initial language setup ===
+    const ext = firstFile.split(".").pop();
+    monaco.editor.setModelLanguage(editor.getModel(), { html: "html", css: "css", js: "javascript", py: "python" }[ext] || "plaintext");
+});
 </script>
 
+</body>
+</html>

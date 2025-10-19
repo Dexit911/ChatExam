@@ -1,5 +1,15 @@
-Problem:
-Not getting response from the exam when entering it with .seb
+Recheck github url validator
 
-Maybe the seb protocol does not find the localhost link ->  try with server hosting
-.seb config is wronlgy created, turn of encryptor and check the file manually
+Check on error handling in whole project
+
+Create a module for backgorund process
+or just make another async for verdict
+
+Set security and uth protocol for main routes
+
+make a code viewer for teacher
+
+Gunicorn and key rotation for higher rpm
+
+
+

@@ -37,13 +37,14 @@ def exam_link(attempt_id: int):
 def handle_app_error(e: AppError):
     logger.error(f"{e.code}: {e.message}")
 
-    # JSON response for API routes
+    # API responses
     if request.path.startswith("/api/"):
-        return jsonify({
-            "error": e.code,
-            "message": e.message
-        }), e.status_code
+        return jsonify({"error": e.code, "message": e.message}), e.status_code
 
-    # Flash for normal routes
-    flash(e.message, "danger")
+    # Flash only if public
+    if e.public:
+        flash(e.message, "danger")
+    else:
+        flash("An unexpected error occurred. Please try again later.", "danger")
+
     return redirect(url_for("main.index"))

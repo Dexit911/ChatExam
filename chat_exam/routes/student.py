@@ -12,6 +12,8 @@ from flask import (
     url_for,
     request,
 )
+
+from chat_exam.config import DEBUG
 # === Local ===
 from chat_exam.models import StudentExam
 from chat_exam.services import student_service, exam_service, ai_exam_service, seb_service
@@ -27,6 +29,8 @@ logger = logging.getLogger(__name__)
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
+
+DEBUG = True
 
 
 # === Decorator - checking if student is logged in by their session ===
@@ -56,6 +60,7 @@ def dashboard():
                 student_id=sm.current_id("student"),
                 code=form.code.data,
                 github_link=form.github_link.data,
+                debug=DEBUG,
             )
 
             # === CREATE AND SAVE SEB CONFIG FILE WITH TOKENIZED URL -> seb-config folder===
@@ -83,6 +88,93 @@ def dashboard():
     )
 
 
+@student_bp.route("/exam-test/<code>", methods=['GET', 'POST'])
+@student_required
+def exam_test(code):
+    """
+    Local testing route for running the exam without SEB validation.
+    Allows debugging exam generation, question rendering, and submission.
+    """
+
+    # === Mock current student session for testing ===
+    student_id = sm.current_id("student") or 1  # fallback if no session
+    # === Fetch exam and attempt ===
+    exam = exam_repo.get_exam_by_code(code)
+    attempt = get_by(StudentExam, exam_id=exam.id, student_id=student_id)
+
+    if not attempt:
+        flash("No attempt found. Please create one from dashboard.", "danger")
+        return redirect(url_for("student.dashboard"))
+
+    # === Get repo data ===
+    repo_data = fetch_github_repo(
+        url=attempt.github_link,
+        max_files=4,
+        remove_comments=True,
+    )
+
+    # === Ensure AI questions are ready (cached or generate fresh) ===
+    task_id, data, status = ai_exam_service.ensure_questions_ready(
+        student_id=student_id,
+        data=repo_data,
+        question_count=attempt.exam.question_count
+    )
+
+    # === Handle pending status ===
+    if status == "pending":
+        print(f"=Rendering loading page for TEST student {student_id}=")
+        return render_template("student/loading.html", status="pending")
+
+    """EXAM TEST PROCESS"""
+    if status == "done":
+        attempt.status = "ongoing"
+
+        print(f"=Got task id={task_id}")
+        # === Get questions ===
+        questions_dict = data["questions"]
+
+        # === Generate form based on questions ===
+        form = generate_exam_form(questions_dict)
+
+        # === Handle bad JSON / AI error ===
+        if "error" in questions_dict:
+            print(f"[ ERROR ] Failed to generate questions for: {attempt.github_link}")
+            flash(questions_dict["error"], "danger")
+            return redirect(url_for("student.dashboard"))
+
+        # === When submitting ===
+        if form.validate_on_submit():
+            answers = {key: getattr(form, key).data for key in questions_dict.keys()}
+            print(f"\n=== STUDENT TEST ANSWERS ===\n{answers}\n===")
+
+            verdict, rating = ai_exam_service.generate_verdict(
+                data=data,
+                questions_dict=questions_dict,
+                answers_dict=answers,
+            )
+
+            # Save to DB for test
+            exam_service.save_attempt_results(
+                attempt_id=attempt.id,
+                questions_dict=questions_dict,
+                answers_dict=answers,
+                code=data,
+                ai_verdict=verdict,
+                ai_rating=rating,
+            )
+            print("✅ TEST ATTEMPT DATA SAVED")
+
+            flash("Test exam finished successfully.", "success")
+            return render_template("student/exam_finished.html")
+
+        print("\n\nREPO JSON PASSED TO TEMPLATES: ", repo_data, "\n\n")
+
+        return render_template("student/exam.html", form=form, files_json=repo_data)
+
+    # === Fallback ===
+    return render_template("student/loading.html")
+
+
 @student_bp.route("/exam/<code>", methods=['GET', 'POST'])
 def exam(code):
     # === Check if request happens from SEB env ===
@@ -105,7 +197,7 @@ def exam(code):
 
     # === Get student content from gitHub repo etc. Code, files their names and type ===
     repo_data = fetch_github_repo(
-        url=exam.github_link,
+        url=attempt.github_link,
         max_files=4,
         remove_comments=True,
     )
@@ -170,11 +262,6 @@ def exam(code):
 
         return render_template("student/exam.html", form=form, code_json=files_json)
     return render_template("student/loading.html")
-
-
-@student_bp.route("/exam/loading", methods=['GET', 'POST'])
-
-
 
 
 @student_bp.route('/register', methods=['GET', 'POST'])

@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 """ATTEMPT"""
 
 
-def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
+def create_attempt(student_id: int, code: str, github_link: str, debug: bool =False) -> StudentExam:
     """
     Create student exam attempt.
     :param student_id: id of student who attempts
@@ -58,13 +58,15 @@ def create_attempt(student_id: int, code: str, github_link: str) -> StudentExam:
     # Look if the attempt already exists
     exists = get_by(StudentExam, student_id=student_id, exam_id=exam.id)
 
-    if exists:
-        if exists.status == "ready":
-            logger.info(f"Reusing ready attempt for student: {student_id} ID, attempt: {exists.id} ID")
-            # TODO: reopen SEB config
-            pass
-        else:
-            raise ValidationError("Student exam attempt already exists")
+
+    if debug:
+        if exists:
+            if exists.status == "ready":
+                logger.info(f"Reusing ready attempt for student: {student_id} ID, attempt: {exists.id} ID")
+                # TODO: reopen SEB config
+                pass
+            else:
+                raise ValidationError("Student exam attempt already exists")
 
     # If not, create attempt
     attempt = StudentExam(
