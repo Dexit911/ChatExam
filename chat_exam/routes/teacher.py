@@ -16,7 +16,7 @@ from flask import (
 # ===Local===
 from chat_exam.models import Exam, StudentTeacher, Student, StudentExam, Teacher
 from chat_exam.templates import forms
-from chat_exam.services import teacher_service, exam_service
+from chat_exam.services import user_service, exam_service
 from chat_exam.utils import session_manager as sm
 from chat_exam.repositories import get_by, delete
 
@@ -46,7 +46,7 @@ def login():
     if form.validate_on_submit():
         try:
             # Try login
-            teacher = teacher_service.login_teacher(
+            teacher = user_service.login_teacher(
                 email=form.email.data,
                 password=form.password.data
             )
@@ -105,7 +105,7 @@ def create_exam():
                 title=form.title.data,
                 teacher_id=sm.current_id("teacher"),
                 question_count=form.question_count.data,
-                settings={
+                seb_settings={
                     "browserViewMode": form.browser_view_mode.data,
                     "allowQuit": form.allow_quit.data,
                     "allowClipboard": form.allow_clipboard.data,

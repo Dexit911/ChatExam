@@ -27,7 +27,7 @@ class AuthError(AppError):
 
 
 class DataError(AppError):
-    """Database  operation failed"""
+    """Database operation failed"""
     code = "DB_ERROR"
     status_code = 500
 

@@ -23,54 +23,52 @@ from sqlalchemy.exc import SQLAlchemyError
 # === Local ===
 from chat_exam.repositories import (
     exam_repo,
+    user_repo,
+    supervision_repo,
     save,
     get_by,
-    student_teacher_repo,
     flush,
     get_by_id,
     delete,
     add,
     commit
 )
-from chat_exam.models import StudentExam, Exam
-from chat_exam.utils.seb_manager import Seb_manager
+from chat_exam.models import Attempt, Exam
+from chat_exam.utils.validators import validate_user
 from chat_exam.exceptions import ValidationError
-from chat_exam.utils.validators import validate_student
 
 logger = logging.getLogger(__name__)
 
 """ATTEMPT"""
 
 
-def create_attempt(student_id: int, code: str, github_link: str, debug: bool =False) -> StudentExam:
+def create_attempt(student_id: int, code: str, github_link: str) -> Attempt:
     """
     Create student exam attempt.
     :param student_id: id of student who attempts
     :param code: the unique code of the exam
-    :param github_link: link to students github code
-    :return: StudentExam
+    :param github_link: link to students gitHub code
+    :return: Attempt
     """
     # === AUTH VALIDATION ===
-    validate_student(student_id)
+    validate_user(student_id, "student")
 
     # Get exam by code
     exam = exam_repo.get_exam_by_code(code)
     # Look if the attempt already exists
-    exists = get_by(StudentExam, student_id=student_id, exam_id=exam.id)
+    exists = get_by(Attempt, user_id=student_id, exam_id=exam.id)
 
-
-    if debug:
-        if exists:
-            if exists.status == "ready":
-                logger.info(f"Reusing ready attempt for student: {student_id} ID, attempt: {exists.id} ID")
-                # TODO: reopen SEB config
-                pass
-            else:
-                raise ValidationError("Student exam attempt already exists")
+    if exists:
+        if exists.status == "ready":
+            logger.info(f"Reusing ready attempt for student: {student_id} ID, attempt: {exists.id} ID")
+            # TODO: reopen SEB config
+            pass
+        else:
+            raise ValidationError("Student exam attempt already exists")
 
     # If not, create attempt
-    attempt = StudentExam(
-        student_id=student_id,
+    attempt = Attempt(
+        user_id=student_id,
         exam_id=exam.id,
         github_link=github_link,
         status="ongoing",
@@ -79,7 +77,7 @@ def create_attempt(student_id: int, code: str, github_link: str, debug: bool =Fa
     logger.info(f"Created new attempt for student: {student_id} ID, attempt: {attempt} ID ")
 
     # Check if student is connected to teacher
-    student_teacher_repo.ensure_link(
+    supervision_repo.ensure_link(
         student_id=student_id,
         teacher_id=exam.teacher_id,
     )
@@ -88,19 +86,19 @@ def create_attempt(student_id: int, code: str, github_link: str, debug: bool =Fa
     return save(attempt)
 
 
-def open_attempt(student_id: int, code: str) -> StudentExam:
+def open_attempt(student_id: int, code: str) -> Attempt:
     pass
 
 
-def set_attempt_status(attempt_id: StudentExam, status: str) -> StudentExam:
+def set_attempt_status(attempt_id: int, status: str) -> Attempt:
     """
     Set exam status for attempt
-    :param attempt_id: (int) StudentExam ID
+    :param attempt_id: (int) Attempt ID
     :param status: (str) exam status. Must be one of 'ready', 'ongoing' or 'done'
-    :return: StudentExam
+    :return: Attempt
     """
     # Check if attempt exists
-    attempt = get_by_id(StudentExam, attempt_id)
+    attempt = get_by_id(Attempt, attempt_id)
     if not attempt:
         raise ValidationError("Invalid attempt ID - could not find attempt in database")
 
@@ -111,7 +109,7 @@ def set_attempt_status(attempt_id: StudentExam, status: str) -> StudentExam:
 # noinspection PyUnreachableCode
 def delete_attempt(attempt_id: int) -> None:
     """Delete student exam attempt"""
-    attempt = get_by_id(StudentExam, attempt_id)
+    attempt = get_by_id(Attempt, attempt_id)
     if not attempt:
         raise ValueError("Student exam attempt does not exist")
 
@@ -122,7 +120,7 @@ def get_attempt_data():
     pass
 
 
-def save_attempt_results(attempt_id: int, **kwargs):
+def save_attempt_results(attempt_id: int, **kwargs) -> None:
     """
     Update and save exam results.
 
@@ -131,17 +129,15 @@ def save_attempt_results(attempt_id: int, **kwargs):
     **kwargs:
         - questions_dict (dict): All questions student were answering on the exam
         - answers_dict (dict): All answers student gave to questions
-        - code_string (str): student provided code
         - ai_verdict (str): Short verdict from AI how did student do on the exam
         - ai_rating (str): Rating, 1 - 5
     """
 
     # Get attempt by id
-    attempt = get_by_id(StudentExam, attempt_id)
+    attempt = get_by_id(Attempt, attempt_id)
 
     attempt.questions_json = json.dumps(kwargs.get("questions_dict"))
     attempt.answers_json = json.dumps(kwargs.get("answers_dict"))
-    attempt.code = kwargs.get("code_string")
     attempt.ai_verdict = kwargs.get("ai_verdict")
     attempt.ai_rating = kwargs.get("ai_rating")
 
@@ -154,13 +150,13 @@ def save_attempt_results(attempt_id: int, **kwargs):
 """CREATE EXAM"""
 
 
-def create_exam(title: str, teacher_id: int, question_count: str, settings: dict) -> Exam:
+def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: dict) -> Exam:
     """
     Creates exam.
     :param title: exam title
     :param teacher_id: id of teacher that is creating this exam
     :param question_count: question count for this exam
-    :param settings: exam settings in dict format. Example:
+    :param seb_settings: exam settings in dict format. Example:
         {
             "browserViewMode": form.browser_view_mode.data,
             "allowQuit": form.allow_quit.data,
@@ -176,8 +172,7 @@ def create_exam(title: str, teacher_id: int, question_count: str, settings: dict
         exam.generate_code()
         exam.title = title
         exam.teacher_id = teacher_id
-        exam.settings = settings
-        exam.date = datetime.now()
+        exam.seb_settings = settings
         exam.question_count = question_count
 
         add(exam)

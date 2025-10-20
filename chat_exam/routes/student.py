@@ -16,7 +16,7 @@ from flask import (
 from chat_exam.config import DEBUG
 # === Local ===
 from chat_exam.models import StudentExam
-from chat_exam.services import student_service, exam_service, ai_exam_service, seb_service
+from chat_exam.services import exam_service, user_service, ai_exam_service, seb_service
 from chat_exam.templates import forms
 from chat_exam.utils import session_manager as sm
 from chat_exam.utils import seb_manager
@@ -60,7 +60,6 @@ def dashboard():
                 student_id=sm.current_id("student"),
                 code=form.code.data,
                 github_link=form.github_link.data,
-                debug=DEBUG,
             )
 
             # === CREATE AND SAVE SEB CONFIG FILE WITH TOKENIZED URL -> seb-config folder===
@@ -273,7 +272,7 @@ def register():
     if form.validate_on_submit():
         try:
             # Try register
-            student = student_service.create_student(
+            student = user_service.create_student(
                 email=form.email.data,
                 password=form.password.data,
                 username=form.username.data,
@@ -305,7 +304,7 @@ def login():
     if form.validate_on_submit():
         try:
             # Try login
-            student = student_service.login_student(
+            student = user_service.login_student(
                 email=form.email.data,
                 password=form.password.data,
             )

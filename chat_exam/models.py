@@ -1,21 +1,20 @@
 import secrets
-
 from datetime import datetime
-
 from sqlalchemy.orm import validates
-
 from chat_exam.extensions import db
 from chat_exam.utils import security
 from chat_exam.exceptions import ValidationError
 
 
-"""STUDENT DATABASE"""
-class Student(db.Model):
-    __tablename__ = 'students'
+# === USER MODEL ===
+class User(db.Model):
+    __tablename__ = 'users'
+
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
+    role = db.Column(db.String(80), nullable=False)  # "teacher", "student", "admin"
 
     def set_password(self, password):
         self.password_hash = security.hash_password(password)
@@ -24,76 +23,67 @@ class Student(db.Model):
         return security.verify_password(password, self.password_hash)
 
     def __repr__(self):
-        return f"<User {self.username}>"
-
-"""TEACHER DATABASE"""
-class Teacher(db.Model):
-    __tablename__ = 'teachers'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
-
-    def set_password(self, password):
-        self.password_hash = security.hash_password(password)
-
-    def check_password(self, password):
-        return security.verify_password(password, self.password_hash)
-
-"""EXAMS DATABASE"""
-class Exam(db.Model):
-    __tablename__ = 'exams'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), unique=True, nullable=False)
-    code = db.Column(db.String(8), unique=True, nullable=False)
-    date = db.Column(db.DateTime, default=datetime.now)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
-    question_count = db.Column(db.Integer, nullable=False)
-    settings = db.Column(db.JSON, nullable=False)
-
-    def generate_code(self):
-        self.code = secrets.token_hex(3)
+        return f"<User {self.username}, role: {self.role}>"
 
 
-"""STUDENT LINKED TO EXAM"""
-class StudentExam(db.Model):
-    """Here we store all information about students exam attempt"""
-    __tablename__ = 'student_exams'
+# === ATTEMPT MODEL ===
+class Attempt(db.Model):
+    __tablename__ = 'attempts'
 
     id = db.Column(db.Integer, primary_key=True)
-    exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"))
-    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-    github_link = db.Column(db.String(80), nullable=True)
+    exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # ✅ fixed FK
 
-    questions_json = db.Column(db.JSON, nullable=True)
-    answers_json = db.Column(db.JSON, nullable=True)
-    code_text = db.Column(db.String(3000), nullable=True)
+    github_link = db.Column(db.String(200))
+    questions_json = db.Column(db.JSON)
+    answers_json = db.Column(db.JSON)
 
-    ai_verdict = db.Column(db.String(80), nullable=True)
-    ai_conversation = db.Column(db.String(256), nullable=True)
-    ai_rating =  db.Column(db.String(1), nullable=True)
+    ai_verdict = db.Column(db.String(80))
+    ai_conversation = db.Column(db.Text)
+    ai_rating = db.Column(db.String(1))
 
-    status = db.Column(db.String(80), nullable=True)
+    status = db.Column(db.String(80), default="ready", nullable=False)
+
+    exam = db.relationship("Exam", backref="attempts")
+    user = db.relationship("User", backref="attempts")  # ✅ fixed relationship
 
     @validates("status")
     def validate_status(self, key, value):
-        """Validate the status of the attempt, must be one o the values of the tuple below ->"""
         allowed = {"ready", "ongoing", "done"}
         if value not in allowed:
             raise ValidationError(f"Invalid status '{value}'. Must be one of {allowed}.")
         return value
 
-    # Relations
-    student = db.relationship("Student", backref="student_exams", lazy=True)
-    exam = db.relationship("Exam", backref="exam_attempts", lazy=True)
 
-"""STUDENT LINKED TO TEACHER"""
-class StudentTeacher(db.Model):
-    __tablename__ = 'student_teachers'
+# === EXAM MODEL ===
+class Exam(db.Model):
+    __tablename__ = "exams"
+
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-    teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
+    date = db.Column(db.DateTime, default=datetime.now)
+    code = db.Column(db.String(8), unique=True, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(30), default="code_github", nullable=False)
 
-    student = db.relationship("Student", backref="teacher_links", lazy=True)
-    teacher = db.relationship("Teacher", backref="student_links", lazy=True)
+    question_count = db.Column(db.Integer, default=1, nullable=False)
 
+    seb_settings = db.Column(db.JSON, default={})
+    logic_settings = db.Column(db.JSON, default={})
+
+    teacher = db.relationship("User", backref="exams", foreign_keys=[teacher_id])
+
+    def generate_code(self):
+        self.code = secrets.token_hex(3)
+
+
+# === SUPERVISION MODEL ===
+class Supervision(db.Model):
+    __tablename__ = "supervisions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullabnulle=False)
+
+    teacher = db.relationship("User", foreign_keys=[teacher_id], backref="students")
+    student = db.relationship("User", foreign_keys=[student_id], backref="teachers")

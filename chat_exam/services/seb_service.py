@@ -1,15 +1,16 @@
 # === Local ===
-from chat_exam.models import Exam, StudentExam
+from chat_exam.models import Exam, Attempt
 from chat_exam.utils.seb_manager import Seb_manager
 from chat_exam.utils.session_manager import create_temp_token
-from chat_exam.utils.validators import validate_student
+from chat_exam.utils.validators import validate_user
 from chat_exam.exceptions import ValidationError, AuthError
 
 
+
 # noinspection PyUnreachableCode
-def generate_config(attempt: StudentExam, exam: Exam, student_id: int):
+def generate_config(attempt: Attempt, exam: Exam, student_id: int) -> None:
     """Generate seb config for student attempt"""
-    validate_student(student_id)
+    validate_user(student_id, "student")
 
     if not attempt:
         raise ValidationError('Student attempt not found')

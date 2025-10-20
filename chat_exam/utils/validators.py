@@ -3,31 +3,23 @@ import re
 import requests
 
 from chat_exam.repositories import get_by_id
-from chat_exam.models import Teacher, Student
+from chat_exam.repositories import user_repo
+from chat_exam.models import User
 from chat_exam.exceptions import ValidationError, AuthError
 
 logger = logging.getLogger(__name__)
 
-
-"""AUTH VALIDATORS"""
-def validate_teacher(teacher_id: int):
-    """Raises ValueError if teacher is missing or invalid."""
-    if not teacher_id:
+def validate_user(user_id: int, required_role: str) -> User:
+    """Raises ValueError if user is missing or invalid."""
+    user = user_repo.get_user_by_id(user_id)
+    if not user:
         raise AuthError("Missing teacher id ID - unauthorized request")
+    if user.role != required_role:
+        raise AuthError("Invalid or non-existent user ID - could not find user in database")
+    return user
 
-    teacher = get_by_id(Teacher, teacher_id)
-    if not teacher:
-        raise ValidationError("Invalid or non-existent teacher ID - could not find teacher in database")
 
 
-def validate_student(student_id: int):
-    """Raises ValueError if student is missing or invalid."""
-    if not student_id:
-        raise AuthError("Missing student id ID - unauthorized request")
-
-    teacher = get_by_id(Student, student_id)
-    if not teacher:
-        raise ValidationError("Invalid or non-existent student ID - could not find student in database")
 
 
 

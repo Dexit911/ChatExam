@@ -3,10 +3,11 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 
 #  === APPS MODELS AND UTILS ===
-from chat_exam.models import Student, Exam
-from chat_exam.repositories import get_by
+from chat_exam.models import Student, User
+from chat_exam.repositories import get_by, user_repo, exam_repo
 from chat_exam.models import Exam
 from chat_exam.utils.validators import validate_github_url
+
 
 
 class StudentRegistrationForm(FlaskForm):
@@ -17,13 +18,13 @@ class StudentRegistrationForm(FlaskForm):
     submit = SubmitField("Sign Up")
 
     def validate_username(self, username):
-        student = Student.query.filter_by(username=username.data).first()
-        if student:
+        user = get_by(User, username=username.data)
+        if user:
             raise ValidationError("Username already in use.")
 
     def validate_email(self, email):
-        student = Student.query.filter_by(email=email.data).first()
-        if student:
+        user = user_repo.get_user_by_email(email.data)
+        if user:
             raise ValidationError("Email already registered")
 
 
@@ -47,7 +48,7 @@ class StudentExamCode(FlaskForm):
     submit = SubmitField("Enter Exam")
 
     def validate_code(self, field):
-        exam = Exam.query.filter_by(code=field.data).first()
+        exam = exam_repo.get_exam_by_code(field.data).first()
         if not exam:
             raise ValidationError("Invalid code")
 
