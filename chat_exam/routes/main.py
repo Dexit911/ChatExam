@@ -3,12 +3,14 @@ import logging
 from flask import Blueprint, render_template, send_file, url_for, redirect, jsonify, request, flash
 
 from chat_exam.exceptions import AppError
-from chat_exam.routes.student import student_required
+from chat_exam.services import seb_service
+from chat_exam.utils import session_manager as sm
 
 logger = logging.getLogger(__name__)
 
 # === Setup blueprint ===
 main_bp = Blueprint("main", __name__)
+
 
 @main_bp.route("/")
 def index():
@@ -16,14 +18,19 @@ def index():
 
 
 @main_bp.route("/seb-config/<int:attempt_id>.seb")
-# @student_required
+# TOKEN CHECK
 def seb_config(attempt_id: int):
-    path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt_id}.seb"
+    attempt = seb_service.validate_seb_access(
+        attempt_id,
+        request.args.get("token"),
+        sm.current_id(),
+    )
+
+    path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt.id}.seb"
     return send_file(path, as_attachment=True, mimetype="application/seb")
 
 
 @main_bp.route("/exam-link/<int:attempt_id>")
-# @student_required
 def exam_link(attempt_id: int):
     https_url = url_for("main.seb_config", attempt_id=attempt_id, _external=True)
     sebs_url = https_url.replace("http://", "seb://").replace("https://", "seb://")

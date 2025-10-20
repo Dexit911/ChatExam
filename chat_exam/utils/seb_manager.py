@@ -100,7 +100,7 @@ class Seb_manager:
 
     @staticmethod
     def generate_exam_url(exam_code: str, token: str) -> str:
-        return f"localhost:80/student/exam/{exam_code}?token={token}"""
+        return f"192.168.0.221:80/student/exam/{exam_code}?token={token}"""
 
     @staticmethod
     def save_seb_file(xml_str: str, attempt_id: int, encrypt: bool = True):
@@ -122,6 +122,7 @@ class Seb_manager:
         seb_path = seb_dir / f"exam_{attempt_id}.seb"
 
         # Write down .seb file and save it
+
         with open(seb_path, "w") as f:
             f.write(xml_str)
 

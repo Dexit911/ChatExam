@@ -2,6 +2,8 @@
 - No auth check for create_exam api, anyone can create an exam.
 - Creates the exam for the sessions teacher_id but if this session is null it will still create it AND for EVERY TEACHER.
 
+# I think I solved most of the functions used in routes - Dex
+
 
 
 ### Information Disclosure
@@ -17,10 +19,14 @@
 - This also allows anyone to see any exam beforehand by changing their user agent to be SafeExamBrowser as seen in security.py.
 - Thus this is a chained attack.
 
+# Still in progress...
+
+
 ### GitHub link vulnerable
 
 - Able to put whatever as link so chatgpt etc work.
 - But also able to put localhost:80/ which can lead to csrf, example i put link to localhost/api/get_exams and boom ez.
 
+# I validate link with recompile. Try to mess it up... I dare you - Dex
 
 # provided by yours truly - alanoo 

@@ -15,7 +15,7 @@ from flask import (
 
 from chat_exam.config import DEBUG
 # === Local ===
-from chat_exam.models import StudentExam
+from chat_exam.models import Attempt
 from chat_exam.services import exam_service, user_service, ai_exam_service, seb_service
 from chat_exam.templates import forms
 from chat_exam.utils import session_manager as sm
@@ -24,60 +24,44 @@ from chat_exam.utils.generate_exam_form import generate_exam_form
 from chat_exam.utils.git_fecther import fetch_github_repo
 from chat_exam.repositories import exam_repo, get_by
 from chat_exam.utils import security
+from chat_exam.utils.validators import role_required
 
 logger = logging.getLogger(__name__)
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
 
-DEBUG = True
-
-
-# === Decorator - checking if student is logged in by their session ===
-def student_required(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        if "student_id" not in session or session.get("role") != "student":
-            flash("You must be logged in as a student.", "danger")
-            return redirect(url_for("student.login"))
-        return func(*args, **kwargs)
-
-    return decorated_function
-
 
 @student_bp.route('/dashboard', methods=['GET', 'POST'])
-@student_required
+@role_required("student")
 def dashboard():
     # === Get the form template ===
     form = forms.StudentExamCode()
 
     # === If submit is valid, (The code, and github link) ===
     if form.validate_on_submit():
-        # Try to create student attempt
-        try:
-            # === CREATE ATTEMPT -> db===
-            attempt = exam_service.create_attempt(
-                student_id=sm.current_id("student"),
-                code=form.code.data,
-                github_link=form.github_link.data,
-            )
 
-            # === CREATE AND SAVE SEB CONFIG FILE WITH TOKENIZED URL -> seb-config folder===
-            seb_service.generate_config(
-                attempt=attempt,
-                exam=exam_repo.get_exam_by_code(form.code.data),
-                student_id=sm.current_id("student")
-            )
+        # === CREATE ATTEMPT -> db===
+        attempt = exam_service.create_attempt(
+            student_id=sm.current_id(),
+            code=form.code.data,
+            github_link=form.github_link.data,
+        )
 
-            # === REDIRECT TO SEB ENV WITH EXAM ===
-            seb_url = url_for(
-                "main.exam_link",
-                attempt_id=attempt.id,
-                _external=True)
-            return redirect(seb_url)
+        # === CREATE AND SAVE SEB CONFIG FILE WITH TOKENIZED URL -> seb-config folder===
+        seb_service.generate_config(
+            attempt=attempt,
+            exam=exam_repo.get_exam_by_code(form.code.data),
+            student_id=sm.current_id()
+        )
 
-        except ValueError as e:
-            flash(str(e), "danger")
+        # === REDIRECT TO SEB ENV WITH EXAM ===
+        seb_url = url_for(
+            "main.exam_link",
+            attempt_id=attempt.id,
+            _external=True)
+        return redirect(seb_url)
+
 
     # === Render the page. Pass username and form ===
     return render_template(
@@ -88,7 +72,6 @@ def dashboard():
 
 
 @student_bp.route("/exam-test/<code>", methods=['GET', 'POST'])
-@student_required
 def exam_test(code):
     """
     Local testing route for running the exam without SEB validation.
@@ -96,10 +79,10 @@ def exam_test(code):
     """
 
     # === Mock current student session for testing ===
-    student_id = sm.current_id("student") or 1  # fallback if no session
+    student_id = sm.current_id() or 1  # fallback if no session
     # === Fetch exam and attempt ===
     exam = exam_repo.get_exam_by_code(code)
-    attempt = get_by(StudentExam, exam_id=exam.id, student_id=student_id)
+    attempt = get_by(Attempt, exam_id=exam.id, student_id=student_id)
 
     if not attempt:
         flash("No attempt found. Please create one from dashboard.", "danger")
@@ -161,7 +144,7 @@ def exam_test(code):
                 ai_verdict=verdict,
                 ai_rating=rating,
             )
-            print("✅ TEST ATTEMPT DATA SAVED")
+
 
             flash("Test exam finished successfully.", "success")
             return render_template("student/exam_finished.html")
@@ -189,7 +172,7 @@ def exam(code):
 
     # === Fetch exam + attempt ===
     exam = exam_repo.get_exam_by_code(code)
-    attempt = get_by(StudentExam, exam_id=exam.id, student_id=sm.current_id("student"))
+    attempt = get_by(Attempt, exam_id=exam.id, student_id=sm.current_id("student"))
 
     # === Delete attempts seb configuration file ===
     seb_manager.Seb_manager().delete_seb_file(attempt.id)
@@ -197,7 +180,7 @@ def exam(code):
     # === Get student content from gitHub repo etc. Code, files their names and type ===
     repo_data = fetch_github_repo(
         url=attempt.github_link,
-        max_files=4,
+        max_files=5,
         remove_comments=True,
     )
 
@@ -222,20 +205,16 @@ def exam(code):
 
         # === GENERATE FORM BASE ON QUESTIONS ===
         form = generate_exam_form(questions_dict)
-        repo_data = fetch_github_repo(attempt.github_link, 3, True)
-        files_json = json.dumps(repo_data)
-        print(f"\n=== STUDENTS GITHUB LINK\n{attempt.github_link}\n===")
 
-        # === THIS ERROR HAPPENS IF AI COULD NOT GIVE QUESTIONS IN THE RIGHT JSON FORMAT ===
+        # === Handle bad JSON / AI error ===
         if "error" in questions_dict:
-            print(f"\n[ ERROR ] Failed to generate questions for: {attempt.github_link}===")
             flash(questions_dict["error"], "danger")
-            return redirect("student.dashboard")
+            return redirect(url_for("student.dashboard"))
 
         # === IF STUDENT SUBMITS ANSWERS ===
         if form.validate_on_submit():
+            # Get all answers
             answers = {key: getattr(form, key).data for key in questions_dict.keys()}
-            print(f"\n=== STUDENT ANSWERS\n{answers}\n===")
 
             # CREATE VERDICT
             verdict, rating = ai_exam_service.generate_verdict(
@@ -244,7 +223,7 @@ def exam(code):
                 answers_dict=answers,
             )
 
-            # Save attempt results to db
+            # Save to DB for test
             exam_service.save_attempt_results(
                 attempt_id=attempt.id,
                 questions_dict=questions_dict,
@@ -253,13 +232,14 @@ def exam(code):
                 ai_verdict=verdict,
                 ai_rating=rating,
             )
-            print("\n=== ATTEMPT DATA SAVED ===")
 
             # === Quit seb env with build in protocol ===
-
+            flash("Test exam finished successfully.", "success")
             return render_template("student/exam_finished.html")
 
-        return render_template("student/exam.html", form=form, code_json=files_json)
+        return render_template("student/exam.html", form=form, files_json=repo_data)
+
+    # ===  Fallback ===
     return render_template("student/loading.html")
 
 

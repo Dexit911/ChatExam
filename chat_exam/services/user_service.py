@@ -16,6 +16,7 @@ testability, and future scaling into API or background services.
 from chat_exam.repositories import user_repo, supervision_repo
 from chat_exam.models import User
 from chat_exam.exceptions import ValidationError
+from chat_exam.utils.validators import validate_user
 
 
 def create_student(username: str, email: str, password: str) -> User:
@@ -45,15 +46,6 @@ def login_student(email: str, password: str) -> User:
     return user
 
 
-def login_teacher(email: str, password: str) -> User:
-    user = user_repo.get_user_by_email(email)
-    if not user or user.role != "teacher":
-        raise ValueError("Invalid email or password")
-    if not user.check_password(password):
-        raise ValueError("Invalid email or password")
-
-    return user
-
 
 def assign_supervision(student_id: int, teacher_id: int) -> None:
     """Link a student to a teacher (supervision)."""
@@ -73,3 +65,27 @@ def assign_supervision(student_id: int, teacher_id: int) -> None:
         return
 
     student_teacher_repo.link(student_id, teacher_id)
+
+
+
+# === Teacher related ===
+
+def login_teacher(email: str, password: str) -> User:
+    user = user_repo.get_user_by_email(email)
+    if not user or user.role != "teacher":
+        raise ValueError("Invalid email or password")
+    if not user.check_password(password):
+        raise ValueError("Invalid email or password")
+
+    return user
+
+def get_students(teacher_id: int) -> list:
+    # === Auth check ===
+    validate_user(teacher_id, "teacher")
+
+    # === Get all student that belongs to this teacher ===
+    students = user_repo.get_students_by_teacher(teacher_id)
+    return students
+
+
+

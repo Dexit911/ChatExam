@@ -17,6 +17,7 @@ testability, and future scaling into API or background services.
 from datetime import datetime
 import json
 import logging
+from typing import Tuple,  List
 # === Add-on ===
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
@@ -31,15 +32,17 @@ from chat_exam.repositories import (
     get_by_id,
     delete,
     add,
-    commit
+    commit,
+    filter_by,
 )
 from chat_exam.models import Attempt, Exam
-from chat_exam.utils.validators import validate_user
+from chat_exam.utils.validators import validate_user, validate_exam_ownership
 from chat_exam.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
-"""ATTEMPT"""
+
+# === ATTEMPT SERVICES ===
 
 
 def create_attempt(student_id: int, code: str, github_link: str) -> Attempt:
@@ -56,7 +59,7 @@ def create_attempt(student_id: int, code: str, github_link: str) -> Attempt:
     # Get exam by code
     exam = exam_repo.get_exam_by_code(code)
     # Look if the attempt already exists
-    exists = get_by(Attempt, user_id=student_id, exam_id=exam.id)
+    exists = get_by(Attempt, student_id=student_id, exam_id=exam.id)
 
     if exists:
         if exists.status == "ready":
@@ -68,7 +71,7 @@ def create_attempt(student_id: int, code: str, github_link: str) -> Attempt:
 
     # If not, create attempt
     attempt = Attempt(
-        user_id=student_id,
+        student_id=student_id,
         exam_id=exam.id,
         github_link=github_link,
         status="ongoing",
@@ -86,7 +89,16 @@ def create_attempt(student_id: int, code: str, github_link: str) -> Attempt:
     return save(attempt)
 
 
-def open_attempt(student_id: int, code: str) -> Attempt:
+def delete_attempt(attempt_id: int) -> None:
+    """Delete student exam attempt"""
+    attempt = get_by_id(Attempt, attempt_id)
+    if not attempt:
+        raise ValidationError("Student exam attempt does not exist")
+
+    return delete(attempt, auto_commit=True)
+
+
+def open_attempt():
     pass
 
 
@@ -104,20 +116,6 @@ def set_attempt_status(attempt_id: int, status: str) -> Attempt:
 
     attempt.status = status
     return save(attempt)
-
-
-# noinspection PyUnreachableCode
-def delete_attempt(attempt_id: int) -> None:
-    """Delete student exam attempt"""
-    attempt = get_by_id(Attempt, attempt_id)
-    if not attempt:
-        raise ValueError("Student exam attempt does not exist")
-
-    return delete(attempt, auto_commit=True)
-
-
-def get_attempt_data():
-    pass
 
 
 def save_attempt_results(attempt_id: int, **kwargs) -> None:
@@ -147,7 +145,20 @@ def save_attempt_results(attempt_id: int, **kwargs) -> None:
     commit()
 
 
-"""CREATE EXAM"""
+def get_attempts(teacher_id: int, exam_id: int) -> Tuple[Exam, List]:
+    """Get exam and all attempts related to it"""
+    #  === Auth check ===
+    validate_user(teacher_id, "teacher")
+    exam = validate_exam_ownership(teacher_id, exam_id)
+
+    # === Get list of all attempt for this exam ===
+    attempts = filter_by(Attempt, exam_id=exam.id)
+    return exam, attempts
+
+
+
+
+# === EXAM SERVICES ===
 
 
 def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: dict) -> Exam:
@@ -164,6 +175,9 @@ def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: 
         }
     :return: db.Model -> Exam()
     """
+    # === Auth check ===
+    validate_user(teacher_id, "teacher")
+
     try:
         # Create empty Exam model
         exam = Exam()
@@ -172,7 +186,7 @@ def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: 
         exam.generate_code()
         exam.title = title
         exam.teacher_id = teacher_id
-        exam.seb_settings = settings
+        exam.seb_settings = seb_settings
         exam.question_count = question_count
 
         add(exam)
@@ -182,3 +196,19 @@ def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: 
 
     except SQLAlchemyError as e:
         raise ValueError(f"###Failed to create exam, SQLAlchemyError:\n{e}\n###")
+
+
+def delete_exam(teacher_id: int, exam_id: int) -> None:
+    # === Auth check ===
+    validate_user(teacher_id, "teacher")
+    exam = validate_exam_ownership(teacher_id, exam_id)
+
+    # === Delete Exam ===
+    delete(exam.teacher_id, exam.exam_id)
+
+
+def view_exams(teacher_id: int) -> list:
+    # === Auth check ===
+    validate_user(teacher_id, "teacher")
+    exams = filter_by(Exam, teacher_id=teacher_id)
+    return exams

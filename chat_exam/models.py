@@ -32,7 +32,7 @@ class Attempt(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # ✅ fixed FK
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # ✅ fixed FK
 
     github_link = db.Column(db.String(200))
     questions_json = db.Column(db.JSON)
@@ -83,7 +83,12 @@ class Supervision(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     teacher_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullabnulle=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     teacher = db.relationship("User", foreign_keys=[teacher_id], backref="students")
     student = db.relationship("User", foreign_keys=[student_id], backref="teachers")
+
+
+class UsedToken(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(255), unique=True)

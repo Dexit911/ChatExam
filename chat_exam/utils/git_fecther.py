@@ -56,7 +56,7 @@ def strip_comments(code: str) -> str:
     return "\n".join(no_hash)
 
 
-"""In progress ..."""
+# === Fetch for repo ===
 
 
 def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) -> dict:
@@ -91,7 +91,9 @@ def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) ->
         }
 
         # === Get data that passes the filter instructions ===
-        data = _get_allowed_data(instructions, api_res, max_files)
+        data = _get_allowed_data(instructions, api_res, max_files) # Main files
+        data = _get_connected_html_files(data, url, max_files) # Main file + files connected to main .html file
+
 
         # === Remove comments if needed ===
         if remove_comments:
@@ -106,7 +108,6 @@ def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) ->
 
     except Exception as e:
         raise AppError(f"Unexpected internal error: {e}", public=False)
-
 
 
 def _remove_comments(code: dict | str, filename=None) -> dict:
@@ -207,14 +208,64 @@ def _get_allowed_data(instructions: dict, api_res: list, max_files: int) -> dict
     for f in api_res:
         name = f["name"].lower()
         ext = Path(name).suffix
+
         if ext in allowed:
             files.append(f)
+
         if len(files) >= max_files:
             break
 
+        if f.get("type") != "file" or "download_url" not in f:
+            continue # skip dirs
+
     # === Create dict with format that is ready to be passed in template ===
     data = {f["name"]: requests.get(f["download_url"]).text for f in files}
+
     return data
+
+
+def _get_connected_html_files(data: dict, base_url: str, max_files: int) -> dict:
+    """
+    Fetch .html files linked from the main HTML file only.
+
+    :param data: (dict) in format that (func) _get_allowed_data(...) returns
+    :param base_url: (str) gitHub repo url
+    :param max_files: (int) maximum number of files to fetch
+
+    :return data: (dict) allowed data + connected html files
+    """
+    # === Do nothing if no data provided ===
+    if not data:
+        return data
+
+    # === The only .html file from base data ===
+    main_name = next((n for n in data if n.endswith(".html")), None)
+
+    # === Do nothing if no data ===
+    if not main_name:
+        return data
+
+    # === Look for links to other files in main .html file ===
+    main_html = data[main_name]
+    linked = re.findall(r'href=["\']([^"\']+\.html)["\']', main_html)
+    new_files = {}
+
+    # === Try to fetch data from linked files, if succeed - store file content ===
+    for href in linked[:max_files - len(data)]:
+        raw_url = base_url.rstrip("/") + "/" + href.lstrip("/")
+        try:
+            resp = requests.get(raw_url, timeout=8)
+            if resp.status_code == 200:
+                new_files[href] = resp.text
+        except Exception:
+            continue
+
+    # === Add all stored file content to main data and return it ===
+    data.update(new_files)
+    return data
+
+
+
 
 
 print(1)

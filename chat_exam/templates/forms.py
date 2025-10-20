@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 
 #  === APPS MODELS AND UTILS ===
-from chat_exam.models import Student, User
+from chat_exam.models import User
 from chat_exam.repositories import get_by, user_repo, exam_repo
 from chat_exam.models import Exam
 from chat_exam.utils.validators import validate_github_url
@@ -48,7 +48,7 @@ class StudentExamCode(FlaskForm):
     submit = SubmitField("Enter Exam")
 
     def validate_code(self, field):
-        exam = exam_repo.get_exam_by_code(field.data).first()
+        exam = exam_repo.get_exam_by_code(field.data)
         if not exam:
             raise ValidationError("Invalid code")
 

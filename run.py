@@ -1,4 +1,4 @@
-from chat_exam  import  create_app
+from chat_exam  import create_app
 
 app = create_app()
 
