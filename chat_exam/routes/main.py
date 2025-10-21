@@ -17,28 +17,29 @@ def index():
     return render_template("start.html")
 
 
-"""@main_bp.route("/seb-config/<int:attempt_id>.seb")
-# TOKEN CHECK
-def seb_config(attempt_id: int):
-    attempt = seb_service.validate_seb_access(
-        attempt_id,
-        request.args.get("token"),
-        sm.current_id(),
-    )
-
-    path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt.id}.seb"
-    return send_file(path, as_attachment=True, mimetype="application/seb")
-"""
-
-
 @main_bp.route("/seb-config/<int:attempt_id>.seb")
 # @student_required
 def seb_config(attempt_id: int):
+    """
+    TODO: Check if attempt id is valid, then check if the session has same token as the attempt.
+
+    If tokens don’t expire — a leaked token could be reused later.
+    → Fix: set seb_token_expires (e.g., 5–10 min).
+
+    If SEB crashes mid-exam — student might need a new token.
+    → Fix: allow teacher/admin to “regenerate token” for that attempt.
+
+    Server clock drift — can make tokens expire too early/late.
+    → Fix: small buffer or NTP sync.
+
+    Token should store both user_id and attempt_id
+
+    """
+
+
+
     path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt_id}.seb"
     return send_file(path, as_attachment=True, mimetype="application/seb")
-
-
-
 
 
 @main_bp.route("/exam-link/<int:attempt_id>")
