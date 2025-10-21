@@ -42,52 +42,52 @@ class Seb_manager:
         <dict>
           <key>startURL</key>
           <string>{exam_url}</string>
-        
+
           <key>sebConfigPurpose</key>
           <integer>0</integer>
-        
+
           <key>browserViewMode</key>
           <integer>{view_mode}</integer>
-        
+
           <key>allowQuit</key>
           <{allow_quit}/>
-        
+
           <key>allowClipboard</key>
           <{allow_clipboard}/>
-            
+
           <key>ignoreServerCertificate</key>
           <true/>
 
           <key>allowBrowsingBackForward</key>
           <true/>
-          
+
           <key>enableJavaScript</key>
           <true/>
-          
+
           <key>blockPopUpWindows</key>
           <true/>
-          
+
           <key>allowDownloads</key>
           <true/>
-        
+
           <key>additionalResources</key><array/>
 
           <key>allowURLFilter</key>
           <false/>
-          
+
           <key>allowQuitURL</key>
           <true/>
-          
+
           <key>quitURL</key>
           <string>safeexambrowser://quit</string>
-          
+
           <key>allowContentReload</key>
           <true/>
-          
+
           <key>ignoreServerCertificate</key>
           <true/>
-          
-          
+
+
         </dict>
         </plist>"""
 
@@ -100,7 +100,7 @@ class Seb_manager:
 
     @staticmethod
     def generate_exam_url(exam_code: str, token: str) -> str:
-        return f"192.168.0.221:80/student/exam/{exam_code}?token={token}"""
+        return f"localhost:80/student/exam/{exam_code}?token={token}"""
 
     @staticmethod
     def save_seb_file(xml_str: str, attempt_id: int, encrypt: bool = True):
@@ -122,7 +122,6 @@ class Seb_manager:
         seb_path = seb_dir / f"exam_{attempt_id}.seb"
 
         # Write down .seb file and save it
-
         with open(seb_path, "w") as f:
             f.write(xml_str)
 

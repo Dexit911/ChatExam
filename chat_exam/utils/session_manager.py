@@ -46,8 +46,25 @@ def create_temp_token(user_id: int) -> str:
     return serializer.dumps({"user_id": user_id})
 
 
-def validate_temp_token(token, max_age=300) -> int:
-    """Decode token and return user_id if valid, else raise AuthError."""
+def validate_temp_token(token, max_age=300):
+    """Decode token and return student_id if valid."""
+    data = serializer.loads(token, max_age=max_age)
+    return data["user_id"]
+
+
+def ensure_student_session(token: str | None) -> int:
+    """Validate SEB token or use active session. Returns student_id."""
+    if token:
+        student_id = validate_temp_token(token)
+        start_session(user_id=student_id, role="student")
+    if not current_id():
+        raise AuthError("You must be logged in as a student.", public=True)
+    return current_id()
+
+
+
+"""def validate_temp_token(token, max_age=300) -> int:
+    Decode token and return user_id if valid, else raise AuthError.
     try:
         #  === Check if token already used ===
         if repo.filter_by(UsedToken, token=token):
@@ -68,7 +85,7 @@ def validate_temp_token(token, max_age=300) -> int:
 
 # FOR STUDENT SEB ENV
 def ensure_student_session(token: str | None) -> int:
-    """Validate SEB token or use active session. Returns user_id for a student."""
+    Validate SEB token or use active session. Returns user_id for a student.
     if token:
         user_id = validate_temp_token(token)
         start_session(user_id=user_id, role="student")
@@ -79,4 +96,4 @@ def ensure_student_session(token: str | None) -> int:
     if not user_id or role != "student":
         raise AuthError("You must be logged in as a student.", public=True)
 
-    return user_id
+    return user_id"""

@@ -4099,3 +4099,544 @@
 2025-10-21 01:57:20,128 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 01:57:20] "[32mGET /exam-link/35 HTTP/1.1[0m" 302 -
 2025-10-21 01:57:23,233 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 01:57:23] "[31m[1mHEAD /seb-config/35.seb HTTP/1.1[0m" 403 -
 2025-10-21 01:57:23,237 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 01:57:23] "[31m[1mGET /seb-config/35.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:15:10,683 [INFO] root: Logging configured
+2025-10-21 12:15:11,596 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.0.221:80
+2025-10-21 12:15:11,596 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-10-21 12:15:11,597 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:15:12,562 [INFO] root: Logging configured
+2025-10-21 12:15:12,593 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:15:12,596 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:17:57,815 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:57] "GET / HTTP/1.1" 200 -
+2025-10-21 12:17:57,906 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:57] "GET /static/css/main.css HTTP/1.1" 200 -
+2025-10-21 12:17:57,907 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:57] "GET /static/css/nav.css HTTP/1.1" 200 -
+2025-10-21 12:17:57,917 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:57] "GET /static/css/form.css HTTP/1.1" 200 -
+2025-10-21 12:17:57,920 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:57] "GET /static/css/table.css HTTP/1.1" 200 -
+2025-10-21 12:17:57,931 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:57] "GET /static/css/flash.css HTTP/1.1" 200 -
+2025-10-21 12:17:58,065 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:58] "GET /static/img/background.png HTTP/1.1" 200 -
+2025-10-21 12:17:58,320 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:58] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:17:59,200 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "GET /teacher/login HTTP/1.1" 200 -
+2025-10-21 12:17:59,252 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:17:59,260 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:17:59,260 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:17:59,260 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:17:59,261 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:17:59,271 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:17:59] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:04,436 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[32mPOST /teacher/login HTTP/1.1[0m" 302 -
+2025-10-21 12:18:04,444 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "GET /teacher/dashboard HTTP/1.1" 200 -
+2025-10-21 12:18:04,465 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:04,470 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:04,471 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:04,473 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:04,474 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:04,486 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:04] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:05,642 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "GET /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:18:05,668 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:05,675 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:05,675 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:05,676 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:05,676 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:05,698 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:05] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:09,295 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "POST /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:18:09,321 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:09,329 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:09,330 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:09,330 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:09,331 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:09,356 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:09] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:12,410 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "GET /teacher/view-exams HTTP/1.1" 200 -
+2025-10-21 12:18:12,432 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:12,438 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:12,438 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:12,439 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:12,440 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:12,440 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "GET /static/img/icons/eye.png HTTP/1.1" 200 -
+2025-10-21 12:18:12,450 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "GET /static/img/icons/pen.png HTTP/1.1" 200 -
+2025-10-21 12:18:12,454 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "GET /static/img/icons/settings.png HTTP/1.1" 200 -
+2025-10-21 12:18:12,454 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "GET /static/img/icons/trash.png HTTP/1.1" 200 -
+2025-10-21 12:18:12,462 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:12] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:13,751 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:13] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:18:14,060 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:14] "[32mGET /student/exam-test/d43ccb HTTP/1.1[0m" 302 -
+2025-10-21 12:18:14,066 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:14] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:18:14,264 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:14] "[36mGET /student/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:14,523 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:14] "[31m[1mGET /teacher/delete-exam/1 HTTP/1.1[0m" 405 -
+2025-10-21 12:18:16,292 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[35m[1mGET /teacher/view-exams/6/attempts HTTP/1.1[0m" 500 -
+2025-10-21 12:18:16,453 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /teacher/view-exams/6/attempts?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:16,789 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "GET /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:18:16,809 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:16,817 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:16,817 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:16,817 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:16,817 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:16,821 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:16] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:17,248 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:17] "GET /teacher/login HTTP/1.1" 200 -
+2025-10-21 12:18:21,467 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "GET /teacher/view-exams HTTP/1.1" 200 -
+2025-10-21 12:18:21,485 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,491 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,492 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,492 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,492 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/img/icons/eye.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,493 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,493 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/img/icons/pen.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,500 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/img/icons/settings.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,500 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/img/icons/trash.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:21,505 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:21] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:22,210 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "GET /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:18:22,229 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:22,236 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:22,237 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:22,237 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:22,237 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:22,246 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:22] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,043 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "GET /teacher/view-exams HTTP/1.1" 200 -
+2025-10-21 12:18:24,061 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,070 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,070 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,071 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,071 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/img/icons/pen.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,071 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,072 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/img/icons/eye.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,077 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/img/icons/settings.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,078 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/img/icons/trash.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:24,082 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:24] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:25,652 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:25] "[31m[1mGET /teacher/delete-exam/1 HTTP/1.1[0m" 405 -
+2025-10-21 12:18:28,327 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "GET /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:18:28,346 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:28,352 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:28,353 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:28,353 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:28,354 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:28,364 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:28] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:32,309 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[32mPOST /teacher/create-exam HTTP/1.1[0m" 302 -
+2025-10-21 12:18:32,315 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "GET /teacher/dashboard HTTP/1.1" 200 -
+2025-10-21 12:18:32,343 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:32,351 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:32,352 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:32,352 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:32,353 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:32,367 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:32] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,270 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "GET /teacher/view-exams HTTP/1.1" 200 -
+2025-10-21 12:18:33,289 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,298 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,299 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,299 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/img/icons/eye.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,299 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/img/icons/pen.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,299 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,299 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,306 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/img/icons/settings.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,307 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/img/icons/trash.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:33,311 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:33] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:37,306 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:37] "GET /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:18:37,453 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:37] "GET /teacher/dashboard HTTP/1.1" 200 -
+2025-10-21 12:18:38,414 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:38] "GET /teacher/login HTTP/1.1" 200 -
+2025-10-21 12:18:39,286 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:18:39,311 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:39,317 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:39,317 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:39,318 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:39,318 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:39,328 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:39] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:45,178 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:18:45,187 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:18:45,208 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:45,211 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:45,212 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:45,212 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:45,212 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:18:45,223 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:45] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:18:50,241 [INFO] chat_exam.services.exam_service: Created new attempt for student: 2 ID, attempt: <Attempt (transient 2343990897568)> ID 
+2025-10-21 12:18:50,249 [INFO] chat_exam.services.exam_service: Linked student: 2 ID, to teacher 1 ID
+2025-10-21 12:18:50,257 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:50] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:18:50,260 [INFO] chat_exam.routes.main: SEB link generated: seb://192.168.0.221/seb-config/36.seb
+2025-10-21 12:18:50,260 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:18:50] "[32mGET /exam-link/36 HTTP/1.1[0m" 302 -
+2025-10-21 12:19:04,864 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:19:04] "GET /student/exam-test/478cce HTTP/1.1" 200 -
+2025-10-21 12:19:07,863 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:19:07] "GET /student/exam-test/478cce HTTP/1.1" 200 -
+2025-10-21 12:19:10,891 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:19:10] "GET /student/exam-test/478cce HTTP/1.1" 200 -
+2025-10-21 12:19:13,927 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:19:13] "GET /student/exam-test/478cce HTTP/1.1" 200 -
+2025-10-21 12:19:13,939 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:19:13] "GET /static/css/exam_chat.css HTTP/1.1" 200 -
+2025-10-21 12:23:48,432 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\utils\\seb_manager.py', reloading
+2025-10-21 12:23:50,567 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:23:51,625 [INFO] root: Logging configured
+2025-10-21 12:23:51,658 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:23:51,661 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:23:53,735 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "GET /teacher/login HTTP/1.1" 200 -
+2025-10-21 12:23:53,753 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:53,762 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:53,763 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:53,763 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:53,764 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:53,779 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:53] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:23:56,311 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:23:56,329 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:56,334 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:56,334 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:56,334 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:56,334 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:23:56,344 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:23:56] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:24:00,461 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:24:00,471 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:24:00,489 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:00,492 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:00,493 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:00,493 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:00,494 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:00,516 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:00] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:24:25,829 [ERROR] chat_exam.routes.main: VALIDATION_ERROR: Student exam attempt already exists
+2025-10-21 12:24:25,830 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:24:25,834 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "GET / HTTP/1.1" 200 -
+2025-10-21 12:24:25,862 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:25,869 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:25,870 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:25,870 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:25,871 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:25,878 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:25] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:24:28,173 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:24:28,189 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:28,193 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:28,193 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:28,193 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:28,194 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:28,203 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:28] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:24:31,573 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:24:31,577 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:24:31,599 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:31,603 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:31,604 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:31,605 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:31,606 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:24:31,613 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:31] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:24:42,115 [INFO] chat_exam.services.exam_service: Created new attempt for student: 3 ID, attempt: <Attempt (transient 1830069245968)> ID 
+2025-10-21 12:24:42,122 [INFO] chat_exam.services.exam_service: Linked student: 3 ID, to teacher 1 ID
+2025-10-21 12:24:42,130 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:42] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:24:42,132 [INFO] chat_exam.routes.main: SEB link generated: seb://192.168.0.221/seb-config/37.seb
+2025-10-21 12:24:42,133 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:42] "[32mGET /exam-link/37 HTTP/1.1[0m" 302 -
+2025-10-21 12:24:50,331 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:50] "[31m[1mHEAD /seb-config/37.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:24:50,334 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:24:50] "[31m[1mGET /seb-config/37.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:28:56,314 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\utils\\seb_manager.py', reloading
+2025-10-21 12:28:56,433 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:28:57,424 [INFO] root: Logging configured
+2025-10-21 12:28:57,455 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:28:57,458 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:29:07,127 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\utils\\seb_manager.py', reloading
+2025-10-21 12:29:07,312 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:29:08,312 [INFO] root: Logging configured
+2025-10-21 12:29:08,344 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:29:08,347 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:29:09,527 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:29:09,544 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:09,551 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:09,552 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:09,552 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:09,553 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:09,573 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:09] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:29:12,529 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:29:12,538 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:29:12,559 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:12,563 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:12,563 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:12,563 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:12,563 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:29:12,574 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:12] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:29:31,202 [INFO] chat_exam.services.exam_service: Created new attempt for student: 4 ID, attempt: <Attempt (transient 1660752275040)> ID 
+2025-10-21 12:29:31,209 [INFO] chat_exam.services.exam_service: Linked student: 4 ID, to teacher 1 ID
+2025-10-21 12:29:31,217 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:31] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:29:31,220 [INFO] chat_exam.routes.main: SEB link generated: seb://192.168.0.221/seb-config/38.seb
+2025-10-21 12:29:31,220 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:31] "[32mGET /exam-link/38 HTTP/1.1[0m" 302 -
+2025-10-21 12:29:34,157 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:34] "[31m[1mHEAD /seb-config/38.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:29:34,160 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:29:34] "[31m[1mGET /seb-config/38.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:32:59,754 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\routes\\main.py', reloading
+2025-10-21 12:32:59,922 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:33:00,914 [INFO] root: Logging configured
+2025-10-21 12:33:00,945 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:33:00,949 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:33:09,678 [INFO] flask_wtf.csrf: The CSRF tokens do not match.
+2025-10-21 12:33:09,687 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "POST /student/login HTTP/1.1" 200 -
+2025-10-21 12:33:09,701 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:09,703 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:09,704 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:09,705 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:09,706 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:09,717 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:09] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:33:11,392 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "POST /student/login HTTP/1.1" 200 -
+2025-10-21 12:33:11,408 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:11,412 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:11,412 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:11,413 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:11,413 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:11,420 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:11] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:33:13,063 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:33:13,072 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:33:13,087 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:13,090 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:13,090 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:13,090 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:13,090 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:33:13,099 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:13] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:33:26,492 [INFO] chat_exam.services.exam_service: Created new attempt for student: 5 ID, attempt: <Attempt (transient 1987038771392)> ID 
+2025-10-21 12:33:26,503 [INFO] chat_exam.services.exam_service: Linked student: 5 ID, to teacher 1 ID
+2025-10-21 12:33:26,512 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:26] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:33:26,515 [INFO] chat_exam.routes.main: SEB link generated: seb://192.168.0.221/seb-config/39.seb
+2025-10-21 12:33:26,515 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:26] "[32mGET /exam-link/39 HTTP/1.1[0m" 302 -
+2025-10-21 12:33:30,352 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:30] "[35m[1mHEAD /seb-config/39.seb HTTP/1.1[0m" 500 -
+2025-10-21 12:33:30,361 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:33:30] "[35m[1mGET /seb-config/39.seb HTTP/1.1[0m" 500 -
+2025-10-21 12:35:16,405 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:16] "[35m[1mGET /seb-config/39.seb HTTP/1.1[0m" 500 -
+2025-10-21 12:35:16,423 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:16] "GET /seb-config/39.seb?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-10-21 12:35:16,429 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:16] "GET /seb-config/39.seb?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-10-21 12:35:16,461 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:16] "GET /seb-config/39.seb?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-10-21 12:35:38,266 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:38] "[35m[1mGET /seb-config/39.seb HTTP/1.1[0m" 500 -
+2025-10-21 12:35:38,275 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\routes\\main.py', reloading
+2025-10-21 12:35:38,419 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:35:39,409 [INFO] root: Logging configured
+2025-10-21 12:35:39,441 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:35:39,445 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:35:39,511 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:39] "[36mGET /seb-config/39.seb?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-10-21 12:35:39,512 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:39] "[36mGET /seb-config/39.seb?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-10-21 12:35:39,526 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:39] "[36mGET /seb-config/39.seb?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-10-21 12:35:43,611 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:43] "GET /seb-config/39.seb HTTP/1.1" 200 -
+2025-10-21 12:35:52,767 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:52] "GET /student/exam/478cce?token=eyJ1c2VyX2lkIjo1fQ.aPdhdg.-S71rCjFo6P5x3hMJfAyRrZ97y0 HTTP/1.1" 200 -
+2025-10-21 12:35:56,054 [ERROR] chat_exam.routes.student: Session or token invalid: [AUTH_ERROR] Invalid or expired token. 
+2025-10-21 12:35:56,055 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "[32mGET /student/exam/478cce?token=eyJ1c2VyX2lkIjo1fQ.aPdhdg.-S71rCjFo6P5x3hMJfAyRrZ97y0 HTTP/1.1[0m" 302 -
+2025-10-21 12:35:56,065 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:35:56,069 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:35:56,094 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /static/css/main.css HTTP/1.1" 200 -
+2025-10-21 12:35:56,095 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /static/css/nav.css HTTP/1.1" 200 -
+2025-10-21 12:35:56,096 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /static/css/form.css HTTP/1.1" 200 -
+2025-10-21 12:35:56,097 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /static/css/table.css HTTP/1.1" 200 -
+2025-10-21 12:35:56,098 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /static/css/flash.css HTTP/1.1" 200 -
+2025-10-21 12:35:56,107 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:35:56,184 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "GET /static/img/background.png HTTP/1.1" 200 -
+2025-10-21 12:35:56,189 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:35:56,192 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:35:56] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:42:39,404 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:39] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:42:44,034 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:42:44,038 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:42:44,057 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:42:44,061 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:42:44,061 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:42:44,061 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:42:44,062 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:42:44,071 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:44] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:42:58,484 [INFO] chat_exam.services.exam_service: Created new attempt for student: 6 ID, attempt: <Attempt (transient 1738130797456)> ID 
+2025-10-21 12:42:58,492 [INFO] chat_exam.services.exam_service: Linked student: 6 ID, to teacher 1 ID
+2025-10-21 12:42:58,498 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:58] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:42:58,501 [INFO] chat_exam.routes.main: SEB link generated: seb://192.168.0.221/seb-config/40.seb
+2025-10-21 12:42:58,501 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:42:58] "[32mGET /exam-link/40 HTTP/1.1[0m" 302 -
+2025-10-21 12:43:12,238 [ERROR] chat_exam.routes.main: AUTH_ERROR: Unauthorized attempt access.
+2025-10-21 12:43:12,239 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[32mGET /seb-config/39.seb HTTP/1.1[0m" 302 -
+2025-10-21 12:43:12,243 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "GET / HTTP/1.1" 200 -
+2025-10-21 12:43:12,270 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:12,280 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:12,280 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:12,280 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:12,280 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:12,288 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:12] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:43:16,865 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:43:16,881 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:16,885 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:16,885 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:16,886 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:16,886 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:16,894 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:16] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:43:21,859 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:43:21,864 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:43:21,885 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:21,889 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:21,889 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:21,889 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:21,889 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:21,898 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:21] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:43:23,523 [ERROR] chat_exam.routes.main: AUTH_ERROR: Unauthorized attempt access.
+2025-10-21 12:43:23,524 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[32mGET /seb-config/39.seb HTTP/1.1[0m" 302 -
+2025-10-21 12:43:23,529 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "GET / HTTP/1.1" 200 -
+2025-10-21 12:43:23,538 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:23,538 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:23,542 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:23,557 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:23,558 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:23,573 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:23] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:43:24,591 [ERROR] chat_exam.routes.main: AUTH_ERROR: Unauthorized attempt access.
+2025-10-21 12:43:24,592 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[32mGET /seb-config/39.seb HTTP/1.1[0m" 302 -
+2025-10-21 12:43:24,595 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "GET / HTTP/1.1" 200 -
+2025-10-21 12:43:24,613 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:24,616 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:24,617 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:24,617 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:24,618 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:43:24,625 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:43:24] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:44:29,264 [INFO] chat_exam.routes.main: SEB link generated: seb://192.168.0.221/seb-config/40.seb
+2025-10-21 12:44:29,265 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:44:29] "[32mGET /exam-link/40 HTTP/1.1[0m" 302 -
+2025-10-21 12:44:32,724 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:44:32] "[31m[1mHEAD /seb-config/40.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:44:32,728 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:44:32] "[31m[1mGET /seb-config/40.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:45:11,912 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:11] "GET /student/exam/478cce?token=eyJ1c2VyX2lkIjo2fQ.aPdjsg.DA2ghx4BPXE_h9XIvaj_8XahTGk HTTP/1.1" 200 -
+2025-10-21 12:45:13,851 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:45:13,874 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:45:13,961 [ERROR] chat_exam.routes.student: Session or token invalid: [AUTH_ERROR] Invalid or expired token. 
+2025-10-21 12:45:13,962 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "[32mGET /student/exam/478cce?token=eyJ1c2VyX2lkIjo2fQ.aPdjsg.DA2ghx4BPXE_h9XIvaj_8XahTGk HTTP/1.1[0m" 302 -
+2025-10-21 12:45:13,967 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:45:13,981 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "GET /static/css/main.css HTTP/1.1" 200 -
+2025-10-21 12:45:13,982 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "GET /static/css/nav.css HTTP/1.1" 200 -
+2025-10-21 12:45:13,983 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "GET /static/css/form.css HTTP/1.1" 200 -
+2025-10-21 12:45:13,984 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "GET /static/css/table.css HTTP/1.1" 200 -
+2025-10-21 12:45:13,985 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:13] "GET /static/css/flash.css HTTP/1.1" 200 -
+2025-10-21 12:45:14,069 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:14] "GET /static/img/background.png HTTP/1.1" 200 -
+2025-10-21 12:45:14,074 [INFO] werkzeug: 192.168.0.221 - - [21/Oct/2025 12:45:14] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:45:43,022 [INFO] root: Logging configured
+2025-10-21 12:45:43,932 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.0.221:80
+2025-10-21 12:45:43,932 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-10-21 12:45:43,933 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:45:57,083 [INFO] root: Logging configured
+2025-10-21 12:46:01,982 [INFO] root: Logging configured
+2025-10-21 12:46:02,873 [INFO] werkzeug: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:80
+ * Running on http://192.168.0.221:80
+2025-10-21 12:46:02,873 [INFO] werkzeug: [33mPress CTRL+C to quit[0m
+2025-10-21 12:46:02,874 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:46:03,881 [INFO] root: Logging configured
+2025-10-21 12:46:03,913 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:46:03,916 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:46:04,943 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:04] "GET / HTTP/1.1" 200 -
+2025-10-21 12:46:04,962 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:04] "GET /static/css/form.css HTTP/1.1" 200 -
+2025-10-21 12:46:04,962 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:04] "GET /static/css/main.css HTTP/1.1" 200 -
+2025-10-21 12:46:04,962 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:04] "GET /static/css/nav.css HTTP/1.1" 200 -
+2025-10-21 12:46:04,964 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:04] "GET /static/css/table.css HTTP/1.1" 200 -
+2025-10-21 12:46:04,964 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:04] "GET /static/css/flash.css HTTP/1.1" 200 -
+2025-10-21 12:46:05,057 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:05] "GET /static/img/background.png HTTP/1.1" 200 -
+2025-10-21 12:46:05,166 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:46:07,523 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:46:07,537 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:07,544 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:07,544 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:07,544 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:07,544 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:07,562 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:07] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:10,950 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "GET /teacher/login HTTP/1.1" 200 -
+2025-10-21 12:46:10,965 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:10,970 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:10,970 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:10,972 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:10,973 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:10,982 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:10] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:15,312 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[32mPOST /teacher/login HTTP/1.1[0m" 302 -
+2025-10-21 12:46:15,318 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "GET /teacher/dashboard HTTP/1.1" 200 -
+2025-10-21 12:46:15,339 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:15,342 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:15,343 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:15,343 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:15,343 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:15,353 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:15] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:16,602 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "GET /teacher/create-exam HTTP/1.1" 200 -
+2025-10-21 12:46:16,615 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:16,621 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:16,622 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:16,623 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:16,623 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:16,634 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:16] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:21,904 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[32mPOST /teacher/create-exam HTTP/1.1[0m" 302 -
+2025-10-21 12:46:21,909 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "GET /teacher/dashboard HTTP/1.1" 200 -
+2025-10-21 12:46:21,929 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:21,934 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:21,934 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:21,934 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:21,935 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:21,942 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:21] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:22,775 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "GET /teacher/view-exams HTTP/1.1" 200 -
+2025-10-21 12:46:22,791 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:22,796 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:22,797 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:22,797 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "GET /static/img/icons/eye.png HTTP/1.1" 200 -
+2025-10-21 12:46:22,797 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:22,797 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:22,797 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "GET /static/img/icons/pen.png HTTP/1.1" 200 -
+2025-10-21 12:46:22,803 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "GET /static/img/icons/settings.png HTTP/1.1" 200 -
+2025-10-21 12:46:22,803 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "GET /static/img/icons/trash.png HTTP/1.1" 200 -
+2025-10-21 12:46:22,812 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:22] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:27,527 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:46:27,543 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:27,548 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:27,548 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:27,549 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:27,549 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:27,561 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:27] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:30,777 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:46:30,785 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:46:30,803 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:30,807 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:30,808 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:30,809 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:30,810 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:46:30,818 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:30] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:46:35,182 [INFO] chat_exam.services.exam_service: Created new attempt for student: 2 ID, attempt: <Attempt (transient 2060274673920)> ID 
+2025-10-21 12:46:35,189 [INFO] chat_exam.services.exam_service: Linked student: 2 ID, to teacher 1 ID
+2025-10-21 12:46:35,196 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:35] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:46:35,199 [INFO] chat_exam.routes.main: SEB link generated: seb://127.0.0.1/seb-config/26.seb
+2025-10-21 12:46:35,199 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:46:35] "[32mGET /exam-link/26 HTTP/1.1[0m" 302 -
+2025-10-21 12:47:19,325 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:47:19] "[31m[1mHEAD /seb-config/26.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:47:19,328 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:47:19] "[31m[1mGET /seb-config/26.seb HTTP/1.1[0m" 403 -
+2025-10-21 12:50:32,457 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\routes\\main.py', reloading
+2025-10-21 12:50:32,602 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:50:33,570 [INFO] root: Logging configured
+2025-10-21 12:50:33,600 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:50:33,604 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:50:34,757 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\utils\\seb_manager.py', reloading
+2025-10-21 12:50:34,908 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:50:35,865 [INFO] root: Logging configured
+2025-10-21 12:50:35,904 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:50:35,908 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:51:05,761 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\routes\\main.py', reloading
+2025-10-21 12:51:05,882 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:51:06,846 [INFO] root: Logging configured
+2025-10-21 12:51:06,876 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:51:06,880 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:53:56,726 [INFO] werkzeug:  * Detected change in 'C:\\Users\\Den4ik\\PycharmProjects\\ExamD\\chat_exam\\utils\\session_manager.py', reloading
+2025-10-21 12:53:56,828 [INFO] werkzeug:  * Restarting with stat
+2025-10-21 12:53:57,803 [INFO] root: Logging configured
+2025-10-21 12:53:57,835 [WARNING] werkzeug:  * Debugger is active!
+2025-10-21 12:53:57,838 [INFO] werkzeug:  * Debugger PIN: 134-911-783
+2025-10-21 12:54:01,006 [ERROR] chat_exam.routes.main: VALIDATION_ERROR: Student exam attempt already exists
+2025-10-21 12:54:01,007 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:54:01,014 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "GET / HTTP/1.1" 200 -
+2025-10-21 12:54:01,033 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:01,040 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:01,041 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:01,042 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:01,042 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:01,060 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:01] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:54:02,625 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "GET /student/login HTTP/1.1" 200 -
+2025-10-21 12:54:02,640 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:02,645 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:02,646 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:02,647 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:02,647 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:02,658 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:02] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:54:07,009 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[32mPOST /student/login HTTP/1.1[0m" 302 -
+2025-10-21 12:54:07,017 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "GET /student/dashboard HTTP/1.1" 200 -
+2025-10-21 12:54:07,038 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:07,043 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[36mGET /static/css/nav.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:07,043 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[36mGET /static/css/table.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:07,043 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:07,043 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[36mGET /static/css/flash.css HTTP/1.1[0m" 304 -
+2025-10-21 12:54:07,052 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:07] "[36mGET /static/img/background.png HTTP/1.1[0m" 304 -
+2025-10-21 12:54:24,692 [INFO] chat_exam.services.exam_service: Created new attempt for student: 3 ID, attempt: <Attempt (transient 2075198278864)> ID 
+2025-10-21 12:54:24,699 [INFO] chat_exam.services.exam_service: Linked student: 3 ID, to teacher 1 ID
+2025-10-21 12:54:24,707 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:24] "[32mPOST /student/dashboard HTTP/1.1[0m" 302 -
+2025-10-21 12:54:24,710 [INFO] chat_exam.routes.main: SEB link generated: seb://127.0.0.1/seb-config/27.seb
+2025-10-21 12:54:24,710 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:24] "[32mGET /exam-link/27 HTTP/1.1[0m" 302 -
+2025-10-21 12:54:27,982 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:27] "HEAD /seb-config/27.seb HTTP/1.1" 200 -
+2025-10-21 12:54:27,986 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:27] "GET /seb-config/27.seb HTTP/1.1" 200 -
+2025-10-21 12:54:32,934 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:32] "GET /student/exam/65c6d5?token=eyJ1c2VyX2lkIjozfQ.aPdmYA.mCttsLO52oChfUVNi6y-lVTTnI0 HTTP/1.1" 200 -
+2025-10-21 12:54:34,880 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:34] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:54:35,997 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:35] "GET /student/exam/65c6d5?token=eyJ1c2VyX2lkIjozfQ.aPdmYA.mCttsLO52oChfUVNi6y-lVTTnI0 HTTP/1.1" 200 -
+2025-10-21 12:54:36,935 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:36] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:54:38,038 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:38] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:54:39,156 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:39] "GET /student/exam/65c6d5?token=eyJ1c2VyX2lkIjozfQ.aPdmYA.mCttsLO52oChfUVNi6y-lVTTnI0 HTTP/1.1" 200 -
+2025-10-21 12:54:39,164 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:39] "GET /static/css/exam_chat.css HTTP/1.1" 200 -
+2025-10-21 12:54:39,582 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:39] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:54:54,540 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:54] "POST /student/exam/65c6d5?token=eyJ1c2VyX2lkIjozfQ.aPdmYA.mCttsLO52oChfUVNi6y-lVTTnI0 HTTP/1.1" 200 -
+2025-10-21 12:54:54,554 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:54] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -
+2025-10-21 12:54:56,572 [INFO] werkzeug: 127.0.0.1 - - [21/Oct/2025 12:54:56] "[33mHEAD /favicon.ico HTTP/1.1[0m" 404 -

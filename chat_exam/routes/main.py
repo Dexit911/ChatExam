@@ -17,7 +17,7 @@ def index():
     return render_template("start.html")
 
 
-@main_bp.route("/seb-config/<int:attempt_id>.seb")
+"""@main_bp.route("/seb-config/<int:attempt_id>.seb")
 # TOKEN CHECK
 def seb_config(attempt_id: int):
     attempt = seb_service.validate_seb_access(
@@ -28,6 +28,17 @@ def seb_config(attempt_id: int):
 
     path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt.id}.seb"
     return send_file(path, as_attachment=True, mimetype="application/seb")
+"""
+
+
+@main_bp.route("/seb-config/<int:attempt_id>.seb")
+# @student_required
+def seb_config(attempt_id: int):
+    path = Path(__file__).resolve().parents[2] / "instance" / "seb_config" / f"exam_{attempt_id}.seb"
+    return send_file(path, as_attachment=True, mimetype="application/seb")
+
+
+
 
 
 @main_bp.route("/exam-link/<int:attempt_id>")
