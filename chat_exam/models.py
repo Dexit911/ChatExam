@@ -1,18 +1,20 @@
 import secrets
-
 from datetime import datetime
-
+from sqlalchemy.orm import validates
 from chat_exam.extensions import db
 from chat_exam.utils import security
+from chat_exam.exceptions import ValidationError
 
 
-"""STUDENT DATABASE"""
-class Student(db.Model):
-    __tablename__ = 'students'
+# === USER MODEL ===
+class User(db.Model):
+    __tablename__ = 'users'
+
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
+    role = db.Column(db.String(80), nullable=False)  # "teacher", "student", "admin"
 
     def set_password(self, password):
         self.password_hash = security.hash_password(password)
@@ -21,60 +23,72 @@ class Student(db.Model):
         return security.verify_password(password, self.password_hash)
 
     def __repr__(self):
-        return f"<User {self.username}>"
+        return f"<User {self.username}, role: {self.role}>"
 
-"""TEACHER DATABASE"""
-class Teacher(db.Model):
-    __tablename__ = 'teachers'
+
+# === ATTEMPT MODEL ===
+class Attempt(db.Model):
+    __tablename__ = 'attempts'
+
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # ✅ fixed FK
 
-    def set_password(self, password):
-        self.password_hash = security.hash_password(password)
+    github_link = db.Column(db.String(200))
+    questions_json = db.Column(db.JSON)
+    answers_json = db.Column(db.JSON)
 
-    def check_password(self, password):
-        return security.verify_password(password, self.password_hash)
+    ai_verdict = db.Column(db.String(80))
+    ai_conversation = db.Column(db.Text)
+    ai_rating = db.Column(db.String(1))
 
-"""EXAMS DATABASE"""
+    status = db.Column(db.String(80), default="ready", nullable=False)
+
+    exam = db.relationship("Exam", backref="attempts")
+    user = db.relationship("User", backref="attempts")  # ✅ fixed relationship
+
+    @validates("status")
+    def validate_status(self, key, value):
+        allowed = {"ready", "ongoing", "done"}
+        if value not in allowed:
+            raise ValidationError(f"Invalid status '{value}'. Must be one of {allowed}.")
+        return value
+
+
+# === EXAM MODEL ===
 class Exam(db.Model):
-    __tablename__ = 'exams'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), unique=True, nullable=False)
-    code = db.Column(db.String(8), unique=True, nullable=False)
-    date = db.Column(db.DateTime, default=datetime.now)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
-    question_count = db.Column(db.Integer, nullable=False)
+    __tablename__ = "exams"
 
-    def question_count(self):
-        pass
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, default=datetime.now)
+    code = db.Column(db.String(8), unique=True, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(30), default="code_github", nullable=False)
+
+    question_count = db.Column(db.Integer, default=1, nullable=False)
+
+    seb_settings = db.Column(db.JSON, default={})
+    logic_settings = db.Column(db.JSON, default={})
+
+    teacher = db.relationship("User", backref="exams", foreign_keys=[teacher_id])
 
     def generate_code(self):
         self.code = secrets.token_hex(3)
 
-"""STUDENT LINKED TO EXAM"""
-class StudentExam(db.Model):
-    __tablename__ = 'student_exams'
+
+# === SUPERVISION MODEL ===
+class Supervision(db.Model):
+    __tablename__ = "supervisions"
+
     id = db.Column(db.Integer, primary_key=True)
-    exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"))
-    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-    github_link = db.Column(db.String(80), nullable=False)
-    ai_verdict = db.Column(db.String(80), nullable=True)
-    ai_conversation = db.Column(db.String(256), nullable=True)
-    ai_rating =  db.Column(db.String(1), nullable=True)
-    status = db.Column(db.String(80), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    student = db.relationship("Student", backref="student_exams", lazy=True)
-    exam = db.relationship("Exam", backref="exam_attempts", lazy=True)
+    teacher = db.relationship("User", foreign_keys=[teacher_id], backref="students")
+    student = db.relationship("User", foreign_keys=[student_id], backref="teachers")
 
-"""STUDENT LINKED TO TEACHER"""
-class StudentTeacher(db.Model):
-    __tablename__ = 'student_teachers'
+
+class UsedToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-    teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
-
-    student = db.relationship("Student", backref="teacher_links", lazy=True)
-    teacher = db.relationship("Teacher", backref="student_links", lazy=True)
-
+    token = db.Column(db.String(255), unique=True)

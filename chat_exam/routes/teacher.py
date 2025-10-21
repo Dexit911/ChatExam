@@ -9,38 +9,26 @@ from flask import (
     session,
     redirect,
     url_for,
-    flash
+    flash,
+    abort
 )
 
 # ===Local===
-from chat_exam.models import Exam, StudentTeacher, Student, StudentExam, Teacher
-from chat_exam.extensions import db
+from chat_exam.models import Exam, Attempt, User, Supervision
 from chat_exam.templates import forms
-from chat_exam.repositories import teacher_repo
-from chat_exam.services import teacher_service
-from chat_exam.utils import session_manager
-from chat_exam.repositories import get_by
-from chat_exam.utils.seb_manager import Seb_manager
-from chat_exam.utils.seb_encryptor import encrypt_seb_config
+from chat_exam.services import user_service, exam_service
+from chat_exam.utils import session_manager as sm
+from chat_exam.repositories import get_by, delete, user_repo
+from chat_exam.utils.validators import role_required
 
 # === Blueprint for teache route ===
 teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
 
 
-def teacher_required(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        if "teacher_id" not in session or session.get("role") != "teacher":
-            flash("You must be logged in as a teacher.", "danger")
-            return redirect(url_for("teacher.login"))
-        return func(*args, **kwargs)
-
-    return decorated_function
-
-
 @teacher_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = forms.TeacherLoginForm()
+    print("Created forms")
 
     # === If form is submitted ===
     print("Form validated:", form.validate_on_submit())
@@ -48,11 +36,12 @@ def login():
     if form.validate_on_submit():
         try:
             # Try login
-            teacher = teacher_service.login_teacher(
+            teacher = user_service.login_teacher(
                 email=form.email.data,
                 password=form.password.data
             )
-            session_manager.start_session(
+            print("User logged in:", teacher)
+            sm.start_session(
                 user_id=teacher.id,
                 role="teacher",
             )
@@ -65,25 +54,24 @@ def login():
             flash(str(e), "danger")
 
     # === If no method, render the page ===
-    return render_template("teacher_login.html", title="Test Login", form=form)
+    return render_template("teacher_login.html", title="TeacherLogin", form=form)
 
 
-"""DASHBOARD ROUTES"""
-
+# === Dashboard routes ===
 
 # noinspection PyUnreachableCode
 @teacher_bp.route("/dashboard", methods=["GET", "POST"])
-@teacher_required
+@role_required("teacher")
 def dashboard() -> str:
     """
     Render the teacher dashboard if the account exists.
     """
-    teacher_id = session_manager.current_id("teacher")
-    teacher = get_by(Teacher, id=teacher_id)
+    teacher_id = sm.current_id()
+    teacher = user_repo.get_user_by_id(teacher_id)
 
     if not teacher:
         flash("Your account no longer exists.", "danger")
-        session_manager.end_session()
+        sm.end_session()
         return redirect(url_for("main.index"))
 
     return render_template(
@@ -93,70 +81,58 @@ def dashboard() -> str:
 
 
 @teacher_bp.route('/create-exam', methods=['GET', 'POST'])
-@teacher_required
+@role_required("teacher")
 def create_exam():
     # === Get form template ===
     form = forms.CreatExamForm()
 
     # === If submit is valid ===
     if form.validate_on_submit():  # If teacher clicks on create exam -> POST
-        settings = {  # Write down values from form checkboxes
-            "browserViewMode": form.browser_view_mode.data,
-            "allowQuit": form.allow_quit.data,
-            "allowClipboard": form.allow_clipboard.data,
-        }
 
-        # ==SAVE EXAM TO DB==
-        new_exam = Exam(title=form.title.data)
-        new_exam.generate_code()
-        new_exam.teacher_id = session["teacher_id"]
+        try:
+            # Try to create exam
+            exam_service.create_exam(
+                title=form.title.data,
+                teacher_id=sm.current_id(),
+                question_count=form.question_count.data,
+                seb_settings={
+                    "browserViewMode": form.browser_view_mode.data,
+                    "allowQuit": form.allow_quit.data,
+                    "allowClipboard": form.allow_clipboard.data,
+                }
+            )
 
-        db.session.add(new_exam)
-        db.session.flush()  # ensures new_exam.id is generated
+            # If created exam, redirect to dashboard
+            flash("You have successfully created a new exam.")
+            return redirect(url_for("teacher.dashboard"))
 
-        # === CREATE EXAM URL AND SEB CONFIG ===
-        exam_url = url_for("student.exam", code=new_exam.code, _external=True)
-        seb_config = Seb_manager().create_config(settings=settings, exam_url=exam_url)
-        encrypted = encrypt_seb_config(seb_config)
+        except ValueError as e:
+            flash(str(e), "danger")
 
-        # === SAVE .SEB FILE ===
-        seb_dir = "seb_config"
-        os.makedirs(seb_dir, exist_ok=True)
-        seb_path = os.path.join(seb_dir, f"exam_{new_exam.id}.seb")
-
-        with open(seb_path, "w") as f:
-            f.write(seb_config)
-
-        # === Fina commit() ===
-        db.session.commit()
-
-        # Debug
-        print(new_exam.code)
-
-        # === When exam created redirect teacher to dashboard ===
-        return redirect(url_for('teacher.dashboard'))
-    else:
-        # === GIVE ERROR ===
-        flask.flash("Create exam failed", "danger")
-
-    # === If nothing happens render page ===
-    return render_template("teacher/create_exam.html", form=form)  # When no method -> render page
+    return render_template("teacher/create_exam.html", form=form)
 
 
 @teacher_bp.route("/view-exams", methods=['GET', 'POST'])
-@teacher_required
+@role_required("teacher")
 def view_exams():
     # === Get list of all exams created by current teacher ===
-    exams = Exam.query.filter_by(teacher_id=session["teacher_id"]).all()
+    exams = exam_service.view_exams(sm.current_id())
     return render_template("teacher/view_exams.html", exams=exams)
 
 
-@teacher_bp.route("/view-exams/<int:exam_id>/attempts", methods=['GET', 'POST'])
-@teacher_required
-def view_exam_attempts(exam_id):
-    exam = Exam.query.filter_by(id=exam_id, teacher_id=session["teacher_id"]).first_or_404()
-    attempts = StudentExam.query.filter_by(exam_id=exam.id).all()
+@teacher_bp.route("/delete-exam/<exam_id>", methods=['POST'])
+@role_required("teacher")
+def delete_exam(exam_id):
+    # === Deletes exam that teacher have created ===
+    exam_service.delete_exam(sm.current_id(), exam_id)
+    flash("Successfully deleted exam", "success")
+    return redirect(url_for("teacher.view_exams"))
 
+@teacher_bp.route("/view-exams/<int:exam_id>/attempts", methods=['GET', 'POST'])
+@role_required("teacher")
+def view_exam_attempts(exam_id):
+    # === View all attempts for current viewed exam ===
+    exam, attempts = exam_service.get_attempts(sm.current_id(), exam_id)
     return render_template(
         "teacher/view_exam_attempts.html",
         exam=exam,
@@ -165,14 +141,8 @@ def view_exam_attempts(exam_id):
 
 
 @teacher_bp.route("/view-students", methods=['GET', 'POST'])
-@teacher_required
+@role_required("teacher")
 def view_students():
     # === Get list of all Students that belongs to current teacher ===
-    students = (
-        Student.query
-        .join(StudentTeacher, Student.id == StudentTeacher.student_id)
-        .filter(StudentTeacher.teacher_id == session["teacher_id"])
-        .all()
-    )
-
+    students = user_service.get_students(sm.current_id())
     return render_template("teacher/view_students.html", students=students)

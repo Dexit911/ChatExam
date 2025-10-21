@@ -13,6 +13,8 @@ def generate_exam_form(questions: dict) -> FlaskForm:
 
     """
     class DynamicExamForm(FlaskForm):
+        class Meta:
+            csrf = False
         submit = SubmitField("Submit Answers")
 
     for key, text in questions.items():

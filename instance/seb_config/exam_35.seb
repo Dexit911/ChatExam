@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+          <key>startURL</key>
+          <string>192.168.0.221:80/student/exam/5ad046?token=eyJ1c2VyX2lkIjo0fQ.aPbMYA.VlFz6Qcq-6kM_j3JdyaBWyhx3Ys</string>
+        
+          <key>sebConfigPurpose</key>
+          <integer>0</integer>
+        
+          <key>browserViewMode</key>
+          <integer>0</integer>
+        
+          <key>allowQuit</key>
+          <true/>
+        
+          <key>allowClipboard</key>
+          <false/>
+            
+          <key>ignoreServerCertificate</key>
+          <true/>
+
+          <key>allowBrowsingBackForward</key>
+          <true/>
+          
+          <key>enableJavaScript</key>
+          <true/>
+          
+          <key>blockPopUpWindows</key>
+          <true/>
+          
+          <key>allowDownloads</key>
+          <true/>
+        
+          <key>additionalResources</key><array/>
+
+          <key>allowURLFilter</key>
+          <false/>
+          
+          <key>allowQuitURL</key>
+          <true/>
+          
+          <key>quitURL</key>
+          <string>safeexambrowser://quit</string>
+          
+          <key>allowContentReload</key>
+          <true/>
+          
+          <key>ignoreServerCertificate</key>
+          <true/>
+          
+          
+        </dict>
+        </plist>

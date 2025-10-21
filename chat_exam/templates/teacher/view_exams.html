@@ -1,17 +1,42 @@
 {% extends "teacher/teacher_dashboard.html" %}
-
 {% block dashboard %}
 
-<h2>My Exams</h2>
-<ul>
-  {% for exam in exams %}
-    <li>
-        {{ exam.title }}: <a href="{{ url_for('teacher.view_exam_attempts', exam_id=exam.id) }}">View</a>
-        <ul>
-            <li>code: {{ exam.code }}</li>
-            <li>date: {{ exam.date.strftime("%Y-%m-%d") }}</li>
-        </ul>
-    </li>
-  {% endfor %}
-</ul>
+<div class="exam-dashboard">
+    <button class="exam-add-btn" onclick="window.location.href='{{ url_for('teacher.create_exam') }}'">+</button>
+
+    <div class="exam-grid">
+        {% for exam in exams %}
+        <div class="exam-card">
+            <div class="exam-header">
+                <h3>{{ exam.title }}</h3>
+                <p class="exam-date">{{ exam.date.strftime('%Y-%m-%d') }}</p>
+            </div>
+
+            <p class="exam-key">
+                <span class="exam-code">{{ exam.code }}</span>
+            </p>
+
+            <div class="exam-footer">
+                <button class="exam-eye-btn"
+                        onclick="window.location.href='{{ url_for('teacher.view_exam_attempts', exam_id=exam.id) }}'">
+                    <img src="{{ url_for('static', filename='img/icons/eye.png') }}" alt="View" class="eye-icon">
+                    <span>View Results</span>
+                </button>
+
+                <div class="exam-icons">
+                    <img src="{{ url_for('static', filename='img/icons/pen.png') }}" alt="Rename">
+                    <img src="{{ url_for('static', filename='img/icons/settings.png') }}" alt="Settings">
+                    <a href="{{ url_for('teacher.delete_exam', exam_id=exam.id) }}"
+                       onclick="return confirm('Delete this exam?');">
+                        <img src="{{ url_for('static', filename='img/icons/trash.png') }}" alt="Delete">
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
 {% endblock %}

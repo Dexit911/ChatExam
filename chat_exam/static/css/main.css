@@ -4,29 +4,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
 
 /* ===============================
+   Color Variables
+================================= */
+:root {
+    --text-primary: #f5efef;
+    --text-muted: #e0e0e0;
+    --code-text: #aee1ff;
+
+    --accent-blue: rgba(0, 150, 255, 0.9);
+    --accent-blue-dark: rgba(0, 130, 220, 0.9);
+
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(50, 90, 160, 0.25);
+
+    --border-light: rgba(255, 255, 255, 0.4);
+    --border-medium: rgba(255, 255, 255, 0.3);
+    --border-dark: rgba(255, 255, 255, 0.25);
+    --border-faint: rgba(255, 255, 255, 0.2);
+
+    --shadow-strong: rgba(0, 0, 0, 0.4);
+    --shadow-soft: rgba(0, 0, 0, 0.25);
+
+    --glow-blue: rgba(0, 150, 255, 0.5);
+    --glow-blue-soft: rgba(90, 160, 255, 0.3);
+    --glow-blue-strong: rgba(120, 180, 255, 0.8);
+}
+
+/* ===============================
    Global Body & Background
 ================================= */
 body {
     margin: 0;
     height: 100vh;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
+    background-color: #0a0f1a; /* deep navy / blue-black */
     background: url("../img/background.png") center/cover no-repeat;
     animation: panBG 20s ease-in-out infinite;
-
     font-family: 'Montserrat', sans-serif;
+    color: var(--text-primary);
 }
 
 /* Background animation */
 @keyframes panBG {
-    0%, 100% { background-position: 50% 50%; }
-    30% { background-position: 20% 70%; }
-    60% { background-position: 80% 40%; }
+    0%, 100% {
+        background-position: 50% 50%;
+    }
+    30% {
+        background-position: 20% 70%;
+    }
+    60% {
+        background-position: 80% 40%;
+    }
 }
-
 
 /* ===============================
    Layout Helpers
@@ -38,63 +69,49 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;   /* horizontal center */
-    justify-content: center; /* vertical center */
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    color: #f5efef;
+    color: var(--text-primary);
 }
 
 /* ===============================
    Glass Panels
 ================================= */
-/* Small glassy panel (e.g. login/register forms) */
 .glass-panel {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 20px;
     padding: 40px;
-
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-
+    border: 1px solid var(--border-medium);
+    box-shadow: 0 8px 32px var(--shadow-soft);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     max-width: 400px;
     margin: auto;
-
-    color: #f5efef;
+    color: var(--text-primary);
 }
 
-/* Large dashboard panel */
 .glass-dashboard {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 20px;
     padding: 40px;
-
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-
-    color: #f5efef;
-
-    /* fixed size in center */
+    border: 1px solid var(--border-medium);
+    box-shadow: 0 8px 32px var(--shadow-soft);
+    color: var(--text-primary);
     position: fixed;
-    top: 80px;      /* space from top */
-    bottom: 40px;   /* space from bottom */
+    top: 80px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-
-    width: 80%;     /* horizontal stretch */
+    width: 80%;
     max-width: 1200px;
-
-    overflow-y: auto; /* scroll if content is tall */
+    overflow-y: auto;
 }
 
 /* ===============================
@@ -104,24 +121,19 @@ body {
     width: 220px;
     height: 100px;
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-
+    border: 2px solid var(--border-light);
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: transparent;
     backdrop-filter: url(#distorsion);
     -webkit-backdrop-filter: url(#distorsion);
-
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-
     margin: 30px;
-
     text-decoration: none;
-    color: #f5efef;
+    color: var(--text-primary);
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 1.3rem;
@@ -129,20 +141,13 @@ body {
 }
 
 .crystal-btn span {
-    font-family: 'Exo', sans-serif;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #f5efef;
-    opacity: 0.3;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: var(--text-primary);
 }
 
 .crystal-btn:hover {
     transform: scale(1.1) rotate(-1deg);
-    text-decoration: none;
-    color: #f5efef;
-    text-shadow: #f5efef 0 0 3px;
+    color: var(--text-primary);
+    text-shadow: var(--text-primary) 0 0 3px;
 }
 
 /* glowing sweep effect */
@@ -167,4 +172,189 @@ body {
 ================================= */
 .border-top.pt-3 {
     text-align: right;
+}
+
+/* ===============================
+   Teacher Exam Dashboard
+================================= */
+.exam-dashboard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 20px;
+}
+
+/* Floating "+" button */
+.exam-add-btn {
+    position: absolute;
+    top: auto;
+    right: 9px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 1px solid var(--border-light);
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.25s ease;
+    backdrop-filter: blur(10px);
+}
+
+.exam-add-btn:hover {
+    background: var(--glow-blue-soft);
+    transform: scale(1.1);
+}
+
+/* Grid layout */
+.exam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1.5rem;
+    width: 80%;
+    margin-top: 70px;
+}
+
+/* === Card structure === */
+.exam-card {
+    width: 280px;
+    height: 210px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-faint);
+    border-radius: 16px;
+    color: var(--text-primary);
+    padding: 18px 16px 16px 16px;
+    box-shadow: 0 8px 20px var(--shadow-soft);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.exam-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px var(--shadow-strong);
+}
+
+/* Header + key grouping */
+.exam-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.exam-header h3 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
+.exam-date {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: var(--text-muted);
+}
+
+/* Key sits tight under title */
+.exam-key {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: -2px;
+    margin-bottom: 8px;
+    margin-left: 1px;
+}
+
+.exam-code {
+    background: var(--glass-bg);
+    border: 1px solid var(--border-dark);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: "Courier New", monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    color: var(--code-text);
+}
+
+/* Footer layout tweak */
+.exam-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-right: 4px;
+    padding-bottom: 2px;
+}
+
+/* Eye button — slight optical recenter */
+.exam-eye-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+    border: none;
+    border-radius: 40px;
+    width: 45px;
+    height: 45px;
+    padding-left: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    transform: translateX(-2px);
+}
+
+.exam-eye-btn:hover {
+    width: 145px;
+    box-shadow: 0 0 12px var(--glow-blue);
+}
+
+.exam-eye-btn span {
+    white-space: nowrap;
+    opacity: 0;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    margin-left: 8px;
+    transition: opacity 0.25s ease 0.1s;
+}
+
+.exam-eye-btn:hover span {
+    opacity: 1;
+}
+
+.eye-icon {
+    width: 22px;
+    height: 22px;
+    filter: brightness(250%);
+    flex-shrink: 0;
+}
+
+/* Right icons perfectly centered */
+.exam-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(-3px);
+}
+
+.exam-icons img {
+    width: 22px;
+    height: 22px;
+    opacity: 0.8;
+    filter: brightness(220%);
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.exam-icons img:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 5px var(--glow-blue-strong));
 }

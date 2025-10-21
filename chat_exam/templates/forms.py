@@ -1,10 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 
 #  === APPS MODELS AND UTILS ===
-from chat_exam.models import Student, Exam
-from chat_exam.utils.git_validator import check_github_link
+from chat_exam.models import User
+from chat_exam.repositories import get_by, user_repo, exam_repo
+from chat_exam.models import Exam
+from chat_exam.utils.validators import validate_github_url
+
 
 
 class StudentRegistrationForm(FlaskForm):
@@ -15,13 +18,13 @@ class StudentRegistrationForm(FlaskForm):
     submit = SubmitField("Sign Up")
 
     def validate_username(self, username):
-        student = Student.query.filter_by(username=username.data).first()
-        if student:
+        user = get_by(User, username=username.data)
+        if user:
             raise ValidationError("Username already in use.")
 
     def validate_email(self, email):
-        student = Student.query.filter_by(email=email.data).first()
-        if student:
+        user = user_repo.get_user_by_email(email.data)
+        if user:
             raise ValidationError("Email already registered")
 
 
@@ -45,22 +48,31 @@ class StudentExamCode(FlaskForm):
     submit = SubmitField("Enter Exam")
 
     def validate_code(self, field):
-        exam = Exam.query.filter_by(code=field.data).first()
+        exam = exam_repo.get_exam_by_code(field.data)
         if not exam:
             raise ValidationError("Invalid code")
 
-    """def validate_github_link(self, field):
-        ok, msg = check_github_link(field.data)
+    def validate_github_link(self, field):
+        ok, msg = validate_github_url(field.data)
         if not ok:
-            raise ValidationError(msg)"""
+            raise ValidationError(msg)
 
 
 class CreatExamForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired()])
+    title = StringField("Title", validators=[DataRequired(), Length(min=1, max=50)])
+    question_count = IntegerField("Number of questions", validators=[DataRequired(), NumberRange(min=1, max=10)])
     browser_view_mode = BooleanField("Lock Down")
     allow_quit = BooleanField("Allow Quit")
     allow_clipboard = BooleanField("Allow Clipboard")
-
     submit = SubmitField("Create Exam")
 
+    def validate_title(self, title):
+        if get_by(Exam, title=title.data):
+            raise ValidationError("Exam with this title already exists, please choose a different one.")
 
+class RenameExamForm(FlaskForm):
+    class RenameExamForm(FlaskForm):
+        title = StringField("New Title", validators=[
+            DataRequired(message="Title cannot be empty"),
+            Length(min=1, max=50, message="Title must be between 1 and 50 characters")
+        ])

@@ -5,17 +5,15 @@ import re
 
 genai.configure(api_key=AI_KEY)
 
-
 class AIExaminator:
-    def __init__(self, question_count: int):
+    def __init__(self, question_count: int = 10):
         # === GENAI SETUP ===
-        genai.configure(api_key=AI_KEY)
         self.model = genai.GenerativeModel("models/gemini-2.5-flash")
 
         # === SETTINGS ===
         self.max_words = 12
         self.max_questions = 10
-        self.question_count = min(question_count, self.max_questions)
+        self.question_count = min(question_count or 10, self.max_questions)
 
         # === QUESTION PROMPT ===
         self.question_prompt = f"""
@@ -23,7 +21,7 @@ class AIExaminator:
         No text outside JSON.
         Write exactly {self.question_count} short exam questions (max {self.max_words} words each)
         Return ONLY this format:
-        {{"q1": "Question 1","q2": "Question 2","q3": "Question 3"}}
+        {{"q1": "Question 1", ...}}
         """
 
         self.verdict_prompt = """
@@ -65,6 +63,7 @@ class AIExaminator:
             print("\n=== PARSED QUESTIONS DICT ===")
             print(data)
             return data
+
         except json.JSONDecodeError as e:
             print(f"\n### ERROR PARSING JSON QUESTIONS: {e} ###")
             print("Response text:", response_text)

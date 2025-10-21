@@ -1,7 +1,7 @@
 # === Standard library ===
 from functools import wraps
 import json
-
+import logging
 # === Third-Party ===
 from flask import (
     blueprints,
@@ -10,162 +10,237 @@ from flask import (
     redirect,
     flash,
     url_for,
+    request,
 )
+
+from chat_exam.config import DEBUG
 # === Local ===
-from chat_exam.extensions import db
-from chat_exam.models import Exam, Student, StudentExam, StudentTeacher
-from chat_exam.services import student_service, exam_service
+from chat_exam.models import Attempt
+from chat_exam.services import exam_service, user_service, ai_exam_service, seb_service
 from chat_exam.templates import forms
-from chat_exam.utils import session_manager
-from chat_exam.utils.ai_examinator import AIExaminator
+from chat_exam.utils import session_manager as sm
+from chat_exam.utils import seb_manager
 from chat_exam.utils.generate_exam_form import generate_exam_form
-from chat_exam.utils.git_fecther import fetch_github_code
-from chat_exam.repositories import get_by
+from chat_exam.utils.git_fecther import fetch_github_repo
+from chat_exam.repositories import exam_repo, get_by
+from chat_exam.utils import security
+from chat_exam.utils.validators import role_required
+
+logger = logging.getLogger(__name__)
 
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
 
 
-# === Decorator: checking if student logged by its session ===
-def student_required(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        if "student_id" not in session or session.get("role") != "student":
-            flash("You must be logged in as a student.", "danger")
-            return redirect(url_for("student.login"))
-        return func(*args, **kwargs)
-
-    return decorated_function
-
-
 @student_bp.route('/dashboard', methods=['GET', 'POST'])
-@student_required
+@role_required("student")
 def dashboard():
     # === Get the form template ===
     form = forms.StudentExamCode()
 
     # === If submit is valid, (The code, and github link) ===
     if form.validate_on_submit():
-        try:
-            attempt = exam_service.create_attempt(
-                student_id=session_manager.current_id("student"),
-                code=form.code.data,
-                github_link=form.github_link.data,
-            )
-            print("===NEW ATTEMPT ADDED! ENTERING EXAM===")
 
-        except ValueError as e:
-            flash(str(e), "danger")
-
-
-
-        # === Get exam_id and github_link from form ===
-
-        exam_id = Exam.query.filter_by(code=form.code.data).first().id
-        teacher_id = Exam.query.filter_by(code=form.code.data).first().teacher_id
-
-        github_link = form.github_link.data
-
-        # === Save student linked to exam ===
-        attempt = StudentExam(
-            exam_id=exam_id,
-            student_id=session["student_id"],
-            github_link=github_link,
-            status="ongoing",
+        # === CREATE ATTEMPT -> db===
+        attempt = exam_service.create_attempt(
+            student_id=sm.current_id(),
+            code=form.code.data,
+            github_link=form.github_link.data,
         )
-        db.session.add(attempt)
-        print("===NEW ATTEMPT ADDED===")
 
-        # === Check if the Teacher had this student, if not: link student to teacher ===
-        old_student = StudentTeacher.query.filter_by(student_id=session["student_id"]).first()
-        if not old_student:
-            student_to_teacher = StudentTeacher(
-                student_    id=session["student_id"],
-                teacher_id=teacher_id,
-            )
-            db.session.add(student_to_teacher)
-            print("===NEW STUDENT ADDED TO TEACHER===")
+        # === CREATE AND SAVE SEB CONFIG FILE WITH TOKENIZED URL -> seb-config folder===
+        seb_service.generate_config(
+            attempt=attempt,
+            exam=exam_repo.get_exam_by_code(form.code.data),
+            student_id=sm.current_id()
+        )
 
-        db.session.commit()
-
-        # === Redirect student to exam by the exam code ===
-        seb_url = url_for("main.exam_link", exam_id=exam_id, _external=True)
+        # === REDIRECT TO SEB ENV WITH EXAM ===
+        seb_url = url_for(
+            "main.exam_link",
+            attempt_id=attempt.id,
+            _external=True)
         return redirect(seb_url)
 
-    # === Get the username by the session user id ===
-    student = Student.query.filter_by(id=session['student_id']).first()  # Else get student id from session
-    username = student.username
 
-    # === Render the page and pass the username ===
-    return render_template("student_dashboard.html", title="Enter exam", username=username, form=form)
+    # === Render the page. Pass username and form ===
+    return render_template(
+        template_name_or_list="student_dashboard.html",
+        title="Enter exam",
+        form=form,
+    )
+
+
+@student_bp.route("/exam-test/<code>", methods=['GET', 'POST'])
+def exam_test(code):
+    """
+    Local testing route for running the exam without SEB validation.
+    Allows debugging exam generation, question rendering, and submission.
+    """
+
+    # === Mock current student session for testing ===
+    student_id = sm.current_id() or 1  # fallback if no session
+    # === Fetch exam and attempt ===
+    exam = exam_repo.get_exam_by_code(code)
+    attempt = get_by(Attempt, exam_id=exam.id, student_id=student_id)
+
+    if not attempt:
+        flash("No attempt found. Please create one from dashboard.", "danger")
+        return redirect(url_for("student.dashboard"))
+
+    # === Get repo data ===
+    repo_data = fetch_github_repo(
+        url=attempt.github_link,
+        max_files=4,
+        remove_comments=True,
+    )
+
+    # === Ensure AI questions are ready (cached or generate fresh) ===
+    task_id, data, status = ai_exam_service.ensure_questions_ready(
+        student_id=student_id,
+        data=repo_data,
+        question_count=attempt.exam.question_count
+    )
+
+    # === Handle pending status ===
+    if status == "pending":
+        print(f"=Rendering loading page for TEST student {student_id}=")
+        return render_template("student/loading.html", status="pending")
+
+    """EXAM TEST PROCESS"""
+    if status == "done":
+        attempt.status = "ongoing"
+
+        print(f"=Got task id={task_id}")
+        # === Get questions ===
+        questions_dict = data["questions"]
+
+        # === Generate form based on questions ===
+        form = generate_exam_form(questions_dict)
+
+        # === Handle bad JSON / AI error ===
+        if "error" in questions_dict:
+            print(f"[ ERROR ] Failed to generate questions for: {attempt.github_link}")
+            flash(questions_dict["error"], "danger")
+            return redirect(url_for("student.dashboard"))
+
+        # === When submitting ===
+        if form.validate_on_submit():
+            answers = {key: getattr(form, key).data for key in questions_dict.keys()}
+            print(f"\n=== STUDENT TEST ANSWERS ===\n{answers}\n===")
+
+            verdict, rating = ai_exam_service.generate_verdict(
+                data=data,
+                questions_dict=questions_dict,
+                answers_dict=answers,
+            )
+
+            # Save to DB for test
+            exam_service.save_attempt_results(
+                attempt_id=attempt.id,
+                questions_dict=questions_dict,
+                answers_dict=answers,
+                code=data,
+                ai_verdict=verdict,
+                ai_rating=rating,
+            )
+
+
+            flash("Test exam finished successfully.", "success")
+            return render_template("student/exam_finished.html")
+
+        print("\n\nREPO JSON PASSED TO TEMPLATES: ", repo_data, "\n\n")
+
+        return render_template("student/exam.html", form=form, files_json=repo_data)
+
+    # === Fallback ===
+    return render_template("student/loading.html")
 
 
 @student_bp.route("/exam/<code>", methods=['GET', 'POST'])
-# @student_required
 def exam(code):
-    # === Check if the request happens from SEB protocol ===
-    """ ua = request.headers.get("User-Agent", "")
-    if "SafeExamBrowser" not in ua:
-        abort(403, description="This exam must be taken in Safe Exam Browser")
-    print("===THE EXAM IS TAKEN IN SEB ENV ===")"""
+    # === Check if request happens from SEB env ===
+    security.is_seb_request(request)
 
-    # === GET STUDENTS GITHUB LINK ===
-    exam_id = Exam.query.filter_by(code=code).first().id
-    student_github_link = StudentExam.query.filter_by(exam_id=exam_id,
-                                                      student_id=session["student_id"]).first().github_link
-    print(f"\n\n===GITHUB LINK===\n\n{student_github_link}")
-
-    # === FETCH CODE, CONVERT TO TEXT AND JSON. TEXT -> AI, JSON -> WEB PAGE ===
-    code_text = fetch_github_code(student_github_link)
-    code_json = json.dumps(code_text)
-    print(f"\n\n===EXTRACTED CODE FROM GITHUB LINK===\n\n{code_text[0:100]}\n...")
-
-    # === CREATE AI EXAMINATOR AND CREATE QUESTION BASED ON CODE ===
-    question_count = 10  # Parse this from exam setting in future
-    examinator = AIExaminator(question_count=question_count)
-    questions_dict = examinator.create_questions(code_text)
-
-    # === IF AI FAILED TO CREATE QUESTIONS -> SHOW ERROR ===
-    if "error" in questions_dict:
-        print("### AI FAILED TO CREATE QUESTIONS. QUESTIONS ARE NOT PASSED TO EXAM FORM ###")
-        flash(questions_dict["error"], "danger")
+    # === Ensure session via token ===
+    try:
+        student_id = sm.ensure_student_session(request.args.get("token"))
+    except Exception as e:
+        logger.error(f"Session or token invalid: {e} ")
+        flash("Invalid  or expired exam link", "danger")
         return redirect(url_for("student.dashboard"))
 
-    # === IF QUESTIONS ARE VALID -> CREATE EXAM FORM ===
-    form = generate_exam_form(questions_dict)
-    print(f"\n\n===GENERATED VALID QUESTIONS===\n\n{questions_dict})")
+    # === Fetch exam + attempt ===
+    exam = exam_repo.get_exam_by_code(code)
+    attempt = get_by(Attempt, exam_id=exam.id, student_id=sm.current_id("student"))
 
-    # === IF STUDENT SUBMITS QUESTIONS ===
-    if form.validate_on_submit():
-        # Get answers
-        answers = {key: getattr(form, key).data for key in questions_dict.keys()}
-        print("=== STUDENT ANSWERS ===")
-        print(answers)
+    # === Delete attempts seb configuration file ===
+    seb_manager.Seb_manager().delete_seb_file(attempt.id)
 
-        # Create verdict and rating
-        verdict, rating = examinator.create_verdict(
-            code=code_text,
-            questions=questions_dict,
-            answers=answers
-        )
-        print("=== AI VERDICT, RATING ===")
-        print(verdict, rating)
+    # === Get student content from gitHub repo etc. Code, files their names and type ===
+    repo_data = fetch_github_repo(
+        url=attempt.github_link,
+        max_files=5,
+        remove_comments=True,
+    )
 
-        # Update StudentExam status, verdict, rating
-        exam_id = Exam.query.filter_by(code=code).first().id
-        attempt = StudentExam.query.filter_by(student_id=session['student_id'], exam_id=exam_id).first()
+    # === Ensure AI questions are ready (cached or async). If not - start generating questions ===
+    task_id, data, status = ai_exam_service.ensure_questions_ready(
+        student_id=student_id,
+        data=repo_data,
+        question_count=attempt.exam.question_count
+    )
 
-        attempt.status = "submitted"
-        attempt.ai_verdict = verdict
-        attempt.ai_rating = str(rating)
+    if status == "pending":
+        print(f"=Rendering loading page for student {student_id}=")
+        return render_template("student/loading.html", status="pending")
 
-        db.session.commit()
-        print("=== STUDENT ANSWER ADDED TO EXAM, STATUS UPDATED ===")
+    """EXAM PROCESS"""
+    if status == "done":
+        attempt.staus = "ongoing"
 
-        # Redirect back to dashboard
-        return redirect(url_for("student.dashboard"))
+        print(f"=Got task id={task_id}")
+        # === GET QUESTION FROM CACHE
+        questions_dict = data["questions"]
 
-    return render_template("student/exam.html", form=form, code_json=code_json)
+        # === GENERATE FORM BASE ON QUESTIONS ===
+        form = generate_exam_form(questions_dict)
+
+        # === Handle bad JSON / AI error ===
+        if "error" in questions_dict:
+            flash(questions_dict["error"], "danger")
+            return redirect(url_for("student.dashboard"))
+
+        # === IF STUDENT SUBMITS ANSWERS ===
+        if form.validate_on_submit():
+            # Get all answers
+            answers = {key: getattr(form, key).data for key in questions_dict.keys()}
+
+            # CREATE VERDICT
+            verdict, rating = ai_exam_service.generate_verdict(
+                data=data,
+                questions_dict=questions_dict,
+                answers_dict=answers,
+            )
+
+            # Save to DB for test
+            exam_service.save_attempt_results(
+                attempt_id=attempt.id,
+                questions_dict=questions_dict,
+                answers_dict=answers,
+                code=data,
+                ai_verdict=verdict,
+                ai_rating=rating,
+            )
+
+            # === Quit seb env with build in protocol ===
+            flash("Test exam finished successfully.", "success")
+            return render_template("student/exam_finished.html")
+
+        return render_template("student/exam.html", form=form, files_json=repo_data)
+
+    # ===  Fallback ===
+    return render_template("student/loading.html")
 
 
 @student_bp.route('/register', methods=['GET', 'POST'])
@@ -177,18 +252,19 @@ def register():
     if form.validate_on_submit():
         try:
             # Try register
-            student = student_service.create_student(
+            student = user_service.create_student(
                 email=form.email.data,
                 password=form.password.data,
                 username=form.username.data,
             )
 
-            # Set session adn redirect to dashboard
-            session_manager.start_session(
+            # Set session and redirect to dashboard
+            sm.start_session(
                 user_id=student.id,
                 role="student"
             )
 
+            # Redirect student to dashboard
             flash(f"Account created for {form.username.data}!", "success")
             return redirect(url_for('student.dashboard'))
 
@@ -208,11 +284,11 @@ def login():
     if form.validate_on_submit():
         try:
             # Try login
-            student = student_service.login_student(
+            student = user_service.login_student(
                 email=form.email.data,
                 password=form.password.data,
             )
-            session_manager.start_session(
+            sm.start_session(
                 user_id=student.id,
                 role="student"
             )

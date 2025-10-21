@@ -4,7 +4,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))  # chat_exam/
 DB_PATH = os.path.join(BASE_DIR, "..", "instance", "app.db")
 DEBUG = True
 
-AI_KEY = "AIzaSyDot3SEP_yoBihXNvS55k7TB4AscgF546c"
+AI_KEY = "AIzaSyALxtsSkFVyLiHJLRmJXlkC1JJYRY1jiwI"
 TEST_LINK = "https://github.com/Dexit911/StudentTest/blob/master/main.py"
 
 MAX_QUESTION_COUNT = 10

@@ -1,0 +1,37 @@
+.flash-container {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  pointer-events: none;
+}
+
+.flash-message {
+  background: #222;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+  font-size: 15px;
+  pointer-events: auto;
+  animation: fadeInOut 3.5s ease-in-out forwards;
+}
+
+/* consistent alert colors */
+.flash-message.alert-success { background-color: #28a745; }
+.flash-message.alert-danger  { background-color: #dc3545; }
+.flash-message.alert-warning { background-color: #ffc107; color: #000; }
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateY(20px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
+}

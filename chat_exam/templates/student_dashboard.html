@@ -3,27 +3,51 @@
 {% endblock %}
 {% block content %}
 <div class="glass-panel">
-<div class="content-section">
-    <h2>Hello {{ username }}</h2>
+    <div class="content-section">
+        <h2>Hello {{ username }}</h2>
+        <form method="POST" novalidate action="">
+            {{ form.hidden_tag() }}
 
-    <form method="POST" novalidate action="">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4"></legend>
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4"></legend>
+
+                <div class="form-group">
+                    {{ form.code.label(class="form-control-label") }}
+                    {% if form.code.errors %}
+                    {{ form.code(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.code.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.code(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.github_link.label(class="form-con trol-label") }}
+                    {% if form.github_link.errors %}
+                    {{ form.github_link(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.github_link.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.github_link(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+            </fieldset>
             <div class="form-group">
-                {{ form.code.label(class="form-control-label") }}
-                {{ form.code(class="form-control form-control-lg") }}
+                {{ form.submit(class="btn btn-outline-info") }}
             </div>
-            <div class="form-group">
-                {{ form.github_link.label(class="form-control-label") }}
-                {{ form.github_link(class="form-control form-control-lg") }}
-            </div>
-        </fieldset>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 </div>
 
 {% endblock %}
+
+
+<
