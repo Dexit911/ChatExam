@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/exam_chat.css') }}">
+    <title>Attempt inspector</title>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="navbar-brand">ChatExam</div>
+</header>
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+
+    <!-- LEFT: Questions + Answers -->
+    <div class="questions-panel">
+        <h2>{{ username }} Responses</h2>
+        <h5>{{ email }}</h5>
+
+        <div class="rating-section">
+            <div class="rating-box">
+                <span class="rating-label">Grade</span>
+                <input type="number" name="teacher_grade" min="1" max="5" class="rating-input">
+            </div>
+
+            <div class="rating-box">
+                <span class="rating-label">AI Rating 1-5</span>
+                <div class="ai-rating">{{ ai_rating }}</div>
+            </div>
+        </div>
+
+
+
+        {% for key, question in questions.items() %}
+            <div class="question-block">
+                <div class="question-text">
+                    <strong>{{ key | upper }}:</strong> {{ question }}
+                </div>
+
+                <div class="answer-text">
+                    <strong>Answer:</strong>
+                    <div class="answer-box">
+                        {{ answers.get(key) or "No answer provided" }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- RIGHT: Content panel with code: -->
+    <div class="code-panel">
+        <div class="tab-bar" id="tab-bar"></div>
+        <div id="editor"></div>
+    </div>
+</div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<script src="{{ url_for('static', filename='js/monaco_viewer.js') }}"></script>
+<script>
+    const files = {{ attempt_files | tojson | default('{}', true) }};
+    initMonacoViewer(files);
+</script>
+</html>

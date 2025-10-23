@@ -40,7 +40,6 @@ def current_role():
     return session.get("role")
 
 
-
 def create_temp_token(user_id: int) -> str:
     """Create short-lived token (valid 5 min) for student auto-login."""
     return serializer.dumps({"user_id": user_id})
@@ -60,7 +59,6 @@ def ensure_student_session(token: str | None) -> int:
     if not current_id():
         raise AuthError("You must be logged in as a student.", public=True)
     return current_id()
-
 
 
 """def validate_temp_token(token, max_age=300) -> int:

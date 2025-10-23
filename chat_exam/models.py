@@ -34,18 +34,20 @@ class Attempt(db.Model):
     exam_id = db.Column(db.Integer, db.ForeignKey("exams.id"), nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # ✅ fixed FK
 
+    # Student provided data
     github_link = db.Column(db.String(200))
-    questions_json = db.Column(db.JSON)
-    answers_json = db.Column(db.JSON)
 
+    # AI related
     ai_verdict = db.Column(db.String(80))
-    ai_conversation = db.Column(db.Text)
     ai_rating = db.Column(db.String(1))
+
+    # Path to files attempt content
+    files_path = db.Column(db.String(120))
 
     status = db.Column(db.String(80), default="ready", nullable=False)
 
     exam = db.relationship("Exam", backref="attempts")
-    user = db.relationship("User", backref="attempts")  # ✅ fixed relationship
+    user = db.relationship("User", backref="attempts")
 
     @validates("status")
     def validate_status(self, key, value):

@@ -18,7 +18,7 @@ from chat_exam.models import Exam, Attempt, User, Supervision
 from chat_exam.templates import forms
 from chat_exam.services import user_service, exam_service
 from chat_exam.utils import session_manager as sm
-from chat_exam.repositories import get_by, delete, user_repo
+from chat_exam.repositories import get_by, delete, user_repo, get_by_id
 from chat_exam.utils.validators import role_required
 
 # === Blueprint for teache route ===
@@ -120,7 +120,37 @@ def view_exams():
     return render_template("teacher/view_exams.html", exams=exams)
 
 
-@teacher_bp.route("/delete-exam/<exam_id>", methods=['POST'])
+@teacher_bp.route("inspect-attempt/<int:attempt_id>", methods=['GET', 'POST'])
+@role_required("teacher")
+def inspect_attempt(attempt_id):
+    # === Load attempt data ===
+    attempt_data = exam_service.inspect_attempt(
+        teacher_id=sm.current_id(),
+        attempt_id=attempt_id
+    )
+
+    attempt = get_by_id(Attempt, attempt_id)
+
+
+
+    # === Pass data about files, questions, answers ===
+    return render_template(
+        template_name_or_list="teacher/inspect.html",
+        attempt_files=attempt_data["content"],
+        questions=attempt_data["questions"],
+        answers=attempt_data["answers"],
+        username=attempt.user.username,
+        email=attempt.user.email,
+        ai_verdict=attempt.ai_verdict,
+        ai_rating=attempt.ai_rating,
+
+    )
+
+
+
+
+
+@teacher_bp.route("/delete-exam/<int:exam_id>", methods=['POST'])
 @role_required("teacher")
 def delete_exam(exam_id):
     # === Deletes exam that teacher have created ===

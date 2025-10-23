@@ -10,10 +10,13 @@ Integrates with Exam and StudentExam models.
 from threading import Thread
 from cachetools import TTLCache
 import uuid
+import logging
 # === Local ===
 from chat_exam.utils.ai_examinator import AIExaminator
 from chat_exam.utils.git_fecther import fetch_github_code
+from chat_exam.utils.thread_manager import run_in_thread
 
+logger = logging.getLogger(__name__)
 # === Create cache space ===
 exam_cache = TTLCache(maxsize=100, ttl=300)
 
@@ -59,6 +62,7 @@ def generate_verdict(data: dict, questions_dict: dict, answers_dict: dict) -> tu
 def _generate_questions_background(task_id: int, data: dict, question_count: int, student_id: int) -> None:
     """
     This function happens on individual thread. Here is AI response cached.
+
     :param task_id: id of the cache
     :param data: (dict) files data from gitHub repo
     :param question_count: number of questions to generate on exam
@@ -75,11 +79,11 @@ def _generate_questions_background(task_id: int, data: dict, question_count: int
             "questions": questions,
             "student_id": student_id,
         }
-        print(f"===[ OK ] Questions ready for student: {student_id} id===")
+        logger.info(f"Questions ready for student: {student_id} id")
 
     except Exception as e:
         exam_cache[str(task_id)] = {"status": "error", "error": str(e)}
-        print(f"===[ ERROR ] Generating questions for student {student_id}: {e}===")
+        logger.error(f"Failed to generate questions for student: {student_id} id")
 
 
 def _generate_questions_async(data: dict, question_count: int, student_id: int):
@@ -123,3 +127,17 @@ def _generate_content_string(data: dict) -> str:
 
     print(content_string)
     return content_string
+
+
+
+
+def ensure_verdict_ready()
+    pass
+
+
+
+
+
+
+
+

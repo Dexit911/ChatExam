@@ -6,7 +6,8 @@ from chat_exam.models import User, Exam, Attempt
 from chat_exam.exceptions import AuthError
 from functools import wraps
 from flask import session, redirect, url_for, flash
-from chat_exam.repositories import user_repo
+from chat_exam.repositories import user_repo, exam_repo
+from chat_exam.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -69,10 +70,10 @@ def validate_github_url(url: str) -> tuple[bool, str]:
 
     # Regex for github.com/user/repo or deeper
     pattern = re.compile(
-        r"^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(\/.*)?$"
+        r"^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$"
     )
     if not pattern.match(url):
-        return False, "Not a valid GitHub URL format"
+        return False, "Must be a GitHub repository root URL (e.g. https://github.com/user/repo)"
 
     try:
         response = requests.head(url, allow_redirects=True, timeout=5)

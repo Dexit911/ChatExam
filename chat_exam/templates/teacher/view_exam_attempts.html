@@ -1,93 +1,83 @@
 {% extends "teacher/teacher_dashboard.html" %}
 {% block dashboard %}
 
-{% if attempts %}
-<div class="attempts-wrapper">
-    <table class="attempts-table">
-        <thead>
-        <tr>
-            <th>Student</th>
-            <th>Git Link</th>
-            <th>Exam Conv</th>
-            <th>Verdict</th>
-            <th>Rating 1–5</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for attempt in attempts %}
-        <tr>
-            <!-- Student username -->
-            <td>{{ attempt.user.username }}</td>
+    {% if attempts %}
+        <div class="attempts-wrapper">
+            <table class="attempts-table">
+                <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Git Link</th>
+                    <th>Verdict</th>
+                    <th>Rating 1–5</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
 
-            <!-- GitHub link -->
-            <td>
-                {% if attempt.github_link %}
-                <a href="{{ attempt.github_link }}" target="_blank" class="attempt-link">
-                    <img src="{{ url_for('static', filename='img/icons/link.png') }}" alt="link" class="link-icon">
-                </a>
-                {% else %}
-                <img src="{{ url_for('static', filename='img/icons/link-off.png') }}" alt="no link"
-                     class="link-icon link-disabled">
-                {% endif %}
-            </td>
+                <tbody>
+                {% for attempt in attempts %}
+                    <tr>
+                        <!-- Student username -->
+                        <td>{{ attempt.user.username }}</td>
 
-            <!-- Exam conversation (AI verdict popup) -->
-            <td class="verdict-cell">
-                {% if attempt.ai_verdict %}
-                <span class="verdict-read">Read</span>
-                <div class="verdict-popup">{{ attempt.ai_verdict }}</div>
-                {% else %}
-                <span style="opacity:0.6;">No data</span>
-                {% endif %}
-            </td>
+                        <!-- GitHub link -->
+                        <td>
+                            {% if attempt.github_link %}
+                                <a href="{{ attempt.github_link }}" target="_blank" class="attempt-link">
+                                    <img src="{{ url_for('static', filename='img/icons/link.png') }}" alt="link"
+                                         class="link-icon">
+                                </a>
+                            {% else %}
+                                <img src="{{ url_for('static', filename='img/icons/link-off.png') }}" alt="no link"
+                                     class="link-icon link-disabled">
+                            {% endif %}
+                        </td>
 
+                        <!-- Exam conversation (AI verdict popup) -->
+                        <td class="verdict-cell">
+                            {% if attempt.ai_verdict %}
+                                <span class="verdict-read">Read</span>
+                                <div class="verdict-popup">{{ attempt.ai_verdict }}</div>
+                            {% else %}
+                                <span style="opacity: 0.6;">No data</span>
+                            {% endif %}
+                        </td>
 
-            <td>-</td>
+                        <!-- Rating -->
+                        <td>{{ attempt.ai_rating or '-' }}</td>
 
-            <!-- Rating -->
-            <td>{{ attempt.ai_rating or '-' }}</td>
-
-            <!-- Status -->
-            <td>
-                {% if attempt.status == 'submitted' %}
-                <span class="status submitted">
+                        <!-- Status -->
+                        <td>
+                            {% if attempt.status == 'done' %}
+                                <span class="status done">
             <img src="{{ url_for('static', filename='img/icons/check.png') }}" alt="submitted">
             Submitted
           </span>
-                {% elif attempt.status == 'graded' %}
-                <span class="status graded">
-            <img src="{{ url_for('static', filename='img/icons/star.png') }}" alt="graded">
-            Graded
-          </span>
-                {% else %}
-                <span class="status ongoing">
+                            {% else %}
+                                <span class="status ongoing">
             <img src="{{ url_for('static', filename='img/icons/clock.png') }}" alt="ongoing">
             Ongoing
           </span>
-                {% endif %}
-            </td>
+                            {% endif %}
+                        </td>
 
-            <!-- Action column (⋮ menu placeholder) -->
-            <td class="actions-cell">
-                <button class="actions-btn" title="Options">
-                    <img src="{{ url_for('static', filename='img/icons/more.png') }}" alt="menu">
-                </button>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        <!-- Action column (⋮ menu placeholder) -->
+                        <td class="actions-cell">
+                            <a href="{{ url_for('teacher.inspect_attempt', attempt_id=attempt.id) }}">
+                                <button class="actions-btn" title="Options">
+                                    <img src="{{ url_for('static', filename='img/icons/more.png') }}" alt="menu">
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-
-</div>
-{% else %}
-<p class="no-attempts">No student attempts yet.</p>
-{% endif %}
-
-
-
-
+    {% else %}
+        <p class="no-attempts">No student attempts yet.</p>
+    {% endif %}
 
 {% endblock %}

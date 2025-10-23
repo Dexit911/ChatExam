@@ -58,13 +58,15 @@
 }
 
 /* Specific status colors */
+.status.ready img,
 .status.ongoing img {
   filter: drop-shadow(0 0 6px rgba(0,150,255,0.5)) brightness(250%);
 }
 
-.status.submitted img {
+.status.done img {
   filter: drop-shadow(0 0 6px rgba(0,255,150,0.5)) brightness(250%);
 }
+
 
 /* Action button (⋮) */
 .actions-cell {

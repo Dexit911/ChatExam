@@ -5,9 +5,10 @@ DB_PATH = os.path.join(BASE_DIR, "..", "instance", "app.db")
 DEBUG = True
 
 AI_KEY = "AIzaSyALxtsSkFVyLiHJLRmJXlkC1JJYRY1jiwI"
-TEST_LINK = "https://github.com/Dexit911/StudentTest/blob/master/main.py"
+SINGLE_GITHUB_TEST_LINK = "https://github.com/Dexit911/StudentTest/blob/master/main.py"
 
-MAX_QUESTION_COUNT = 10
+ATTEMPT_FILES_PATH = f"instance/attempt_data/" # {attempt_id}.json"
+
 
 
 

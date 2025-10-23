@@ -52,7 +52,7 @@ body {
    LEFT: QUESTIONS PANEL
 ============================== */
 .questions-panel {
-    width: 60%;
+    width: 50%;
     padding: 32px;
     overflow-y: auto;
     background: #0e0e0e;
@@ -151,4 +151,105 @@ textarea {
     color: #fff;
     font-weight: 600;
     border-bottom: 2px solid #2d8cff;
+}
+
+/* ==============================
+   TEACHER INSPECTION: QUESTIONS
+============================== */
+.question-block {
+    background: #121212;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+
+.question-text {
+    font-weight: 600;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+
+.answer-box {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 6px;
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow-y: auto;
+    line-height: 1.3;
+    color: #ddd;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    vertical-align: top;
+    scrollbar-width: thin;
+    scrollbar-color: #444 #1a1a1a;
+}
+
+
+.answer-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* ==============================
+   TEACHER INSPECTION: RATING BOXES
+============================== */
+.rating-section {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0 30px 0;
+    align-items: center;
+}
+
+.rating-box {
+    background: #121212;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 14px 18px;
+    width: 120px;
+    text-align: center;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.rating-label {
+    display: block;
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rating-input {
+    width: 60px;
+    padding: 6px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+}
+
+.ai-rating {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d8cff;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 6px 0;
+}
+
+
+.answer-box::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
 }

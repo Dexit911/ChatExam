@@ -172,13 +172,13 @@ def exam(code):
 
     # === Fetch exam + attempt ===
     exam = exam_repo.get_exam_by_code(code)
-    attempt = get_by(Attempt, exam_id=exam.id, student_id=sm.current_id("student"))
+    attempt = get_by(Attempt, exam_id=exam.id, student_id=sm.current_id())
 
     # === Delete attempts seb configuration file ===
     seb_manager.Seb_manager().delete_seb_file(attempt.id)
 
     # === Get student content from gitHub repo etc. Code, files their names and type ===
-    repo_data = fetch_github_repo(
+    file_data = fetch_github_repo(
         url=attempt.github_link,
         max_files=5,
         remove_comments=True,
@@ -187,7 +187,7 @@ def exam(code):
     # === Ensure AI questions are ready (cached or async). If not - start generating questions ===
     task_id, data, status = ai_exam_service.ensure_questions_ready(
         student_id=student_id,
-        data=repo_data,
+        data=file_data,
         question_count=attempt.exam.question_count
     )
 
@@ -223,21 +223,23 @@ def exam(code):
                 answers_dict=answers,
             )
 
+            print("\n\nDATA: {data}\n\n")
+
             # Save to DB for test
             exam_service.save_attempt_results(
                 attempt_id=attempt.id,
                 questions_dict=questions_dict,
                 answers_dict=answers,
-                code=data,
                 ai_verdict=verdict,
                 ai_rating=rating,
+                file_data=file_data,
             )
 
             # === Quit seb env with build in protocol ===
             flash("Test exam finished successfully.", "success")
             return render_template("student/exam_finished.html")
 
-        return render_template("student/exam.html", form=form, files_json=repo_data)
+        return render_template("student/exam.html", form=form, attempt_files=file_data)
 
     # ===  Fallback ===
     return render_template("student/loading.html")
