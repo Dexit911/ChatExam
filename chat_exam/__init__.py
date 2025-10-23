@@ -11,6 +11,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object("chat_exam.config.Config")
 
+    # === Allow SQLite to be used safely from multiple threads
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "connect_args": {"check_same_thread": False},
+    }
+
     # --- Logging setup (runs once) ---
     logging.basicConfig(
         level=logging.INFO,
@@ -22,14 +27,8 @@ def create_app():
     )
     logging.info("Logging configured")
 
-
-
-
-
-
     # === DB setup ===
     db.init_app(app)
-
     with app.app_context():
         db.create_all()
 

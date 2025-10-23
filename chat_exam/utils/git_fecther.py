@@ -270,5 +270,3 @@ def _get_connected_html_files(data: dict, base_url: str, max_files: int) -> dict
 
 
 
-
-print(1)

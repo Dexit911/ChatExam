@@ -8,32 +8,59 @@
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Create Exam</legend>
+
+            <!-- Title -->
             <div class="form-group">
                 {{ form.title.label() }}
                 {% if form.title.errors %}
-                        {{ form.title(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.title.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
+                {{ form.title(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.title.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
                 {% else %}
-                    {{ form.title(class="form-control") }}
+                {{ form.title(class="form-control") }}
                 {% endif %}
             </div>
+
+            <!-- Question count -->
             <div class="form-group">
                 {{ form.question_count.label() }}
                 {% if form.question_count.errors %}
-                        {{ form.question_count(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.question_count.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
+                {{ form.question_count(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.question_count.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
                 {% else %}
-                    {{ form.question_count(class="form-control") }}
+                {{ form.question_count(class="form-control") }}
                 {% endif %}
             </div>
+
+            <!-- ai_prompt -->
+            <div class="form-group">
+                {{ form.ai_prompt.label() }}
+                {{ form.ai_prompt(class="form-control form-control-lg is-invalid") }}
+            </div>
+
+            <h4>GitHub repo settings</h4>
+            <!-- Allowed extensions -->
+            <div class="form-group">
+                {% for ext in form.allowed_extensions %}
+                <div>{{ ext() }} {{ ext.label.text }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- File count -->
+            <div class="form-group">
+                {{ form.file_count.label() }}
+                {{ form.file_count(class="form-control") }}
+            </div>
+
+            <h4>SEB settings</h4>
+            <!-- SEB settings -->
             <div class="form-group">
                 {{ form.browser_view_mode.label() }}
                 {{ form.browser_view_mode(class="custom-checkbox") }}
@@ -46,14 +73,14 @@
                 {{ form.allow_clipboard.label() }}
                 {{ form.allow_clipboard(class="custom-checkbox") }}
             </div>
+
+
         </fieldset>
         <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+            {{ form.submit(class="btn btn-outline-info") }}
         </div>
     </form>
 </div>
-
-
 
 
 {% endblock %}

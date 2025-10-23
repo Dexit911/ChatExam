@@ -7,7 +7,7 @@ Integrates with Exam and StudentExam models.
 """
 
 # === Built-in ===
-from threading import Thread
+from threading import Thread, Lock
 from cachetools import TTLCache
 import uuid
 import logging
@@ -18,13 +18,17 @@ from chat_exam.utils.git_fecther import fetch_github_code
 
 logger = logging.getLogger(__name__)
 
+
 # === Shared in-memory cache ===
 exam_cache = TTLCache(maxsize=100, ttl=300)
 
+# === Locks ===
+_question_lock = Lock()
+_verdict_lock = Lock()
 
-# ======================================================================
-# QUESTIONS
-# ======================================================================
+
+# === QUESTIONS ===
+
 
 def ensure_questions_ready(user_id: int, file_data: dict, question_count: int):
     """
@@ -43,7 +47,12 @@ def ensure_questions_ready(user_id: int, file_data: dict, question_count: int):
     else:
         task_id = existing_task
 
-    cache_entry = exam_cache.get(task_id)
+
+    # === race safe cache write/read ===
+    with _qustion_lock:
+        cache_entry = exam_cache.get(task_id)
+
+    # === If no cache with given id, return nothing with status pending ===
     if not cache_entry:
         return task_id, None, "pending"
     return task_id, cache_entry, cache_entry["status"]
@@ -52,14 +61,19 @@ def ensure_questions_ready(user_id: int, file_data: dict, question_count: int):
 def _generate_questions_async(user_id: int, file_data: dict, question_count: int) -> str:
     """Starts a background thread for generating AI exam questions."""
     task_id = str(uuid.uuid4())
-    exam_cache[task_id] = {"status": "pending"}
 
+    # === Race safe cache write/read ===
+    with _qustion_lock:
+        exam_cache[task_id] = {"status": "pending"}
+
+    # === Create a thread for question generation ===
     thread = Thread(
         target=_generate_questions_background,
         args=(task_id, user_id, file_data, question_count),
         daemon=True
     )
     thread.start()
+
     logger.info(f"[THREAD] Started question generation for user_id={user_id}")
     return task_id
 
@@ -71,22 +85,28 @@ def _generate_questions_background(task_id: str, user_id: int, file_data: dict, 
         content_string = _generate_content_string(file_data)
         questions = examinator.create_questions(content_string)
 
-        exam_cache[task_id] = {
-            "type": "question",
-            "status": "done",
-            "questions": questions,
-            "user_id": user_id,
-        }
+        # === Race safe cache write/read ===
+        with _qustion_lock:
+            exam_cache[task_id] = {
+                "type": "question",
+                "status": "done",
+                "questions": questions,
+                "user_id": user_id,
+            }
+
         logger.info(f"[QUESTIONS] Done for user_id={user_id}")
 
     except Exception as e:
-        exam_cache[task_id] = {"status": "error", "error": str(e)}
+        # === Race safe cache write/read ===
+        with _qustion_lock:
+            exam_cache[task_id] = {"status": "error", "error": str(e)}
+
         logger.error(f"[QUESTIONS] Failed for user_id={user_id}: {e}")
 
 
-# ======================================================================
-# VERDICT
-# ======================================================================
+
+# === VERDICT ===
+
 
 def ensure_verdict_ready(user_id: int, file_data: dict, question_data: dict, answer_data: dict):
     """
@@ -105,16 +125,23 @@ def ensure_verdict_ready(user_id: int, file_data: dict, question_data: dict, ans
     else:
         task_id = existing_task
 
-    cache_entry = exam_cache.get(task_id)
+    # === race safe cache write/read ===
+    with _verdict_lock:
+        cache_entry = exam_cache.get(task_id)
+
     if not cache_entry:
         return task_id, None, "pending"
+
     return task_id, cache_entry, cache_entry["status"]
 
 
 def _generate_verdict_async(user_id: int, file_data: dict, question_data: dict, answer_data: dict) -> str:
     """Starts a background thread for AI verdict generation."""
     task_id = str(uuid.uuid4())
-    exam_cache[task_id] = {"status": "pending"}
+
+    # === Race safe cache write/read ===
+    with _verdict_lock:
+        exam_cache[task_id] = {"status": "pending"}
 
     thread = Thread(
         target=_generate_verdict_background,
@@ -122,6 +149,7 @@ def _generate_verdict_async(user_id: int, file_data: dict, question_data: dict, 
         daemon=True
     )
     thread.start()
+
     logger.info(f"[THREAD] Started verdict generation for user_id={user_id}")
     return task_id
 
@@ -134,24 +162,28 @@ def _generate_verdict_background(task_id: str, user_id: int, file_data: dict, qu
             questions=question_data,
             answers=answer_data,
         )
-
-        exam_cache[task_id] = {
-            "type": "verdict",
-            "status": "done",
-            "verdict": verdict,
-            "rating": rating,
-            "user_id": user_id,
-        }
+        # === Race safe cache write/read ===
+        with _verdict_lock:
+            exam_cache[task_id] = {
+                "type": "verdict",
+                "status": "done",
+                "verdict": verdict,
+                "rating": rating,
+                "user_id": user_id,
+            }
         logger.info(f"[VERDICT] Done for user_id={user_id}")
 
     except Exception as e:
-        exam_cache[task_id] = {"status": "error", "error": str(e)}
+        # === Race safe cache write/read ===
+        with _verdict_lock:
+            exam_cache[task_id] = {"status": "error", "error": str(e)}
+
         logger.error(f"[VERDICT] Failed for user_id={user_id}: {e}")
 
 
-# ======================================================================
-# UTILS
-# ======================================================================
+
+# === UTILS ===
+
 
 def _generate_content_string(file_data: dict) -> str:
     """Convert student's repo files into a single string for AI prompts."""

@@ -12,19 +12,20 @@ Responsibilities:
 This module is part of the ChatExam service layer — designed for clarity,
 testability, and future scaling into API or background services.
 """
-import os
+
 # === Built-in ===
 from datetime import datetime
+import os
 import json
 import logging
 from typing import Tuple, List
+from threading import Lock
 # === Add-on ===
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
 # === Local ===
 from chat_exam.repositories import (
     exam_repo,
-    user_repo,
     supervision_repo,
     save,
     get_by,
@@ -39,12 +40,15 @@ from chat_exam.models import Attempt, Exam
 from chat_exam.utils.validators import validate_user, validate_exam_ownership
 from chat_exam.exceptions import ValidationError
 from chat_exam.config import ATTEMPT_FILES_PATH
+from chat_exam.schemas import ExamData
 
 logger = logging.getLogger(__name__)
 
+# === Locks ===
+_file_lock = Lock()
+
 
 # === ATTEMPT SERVICES ===
-
 
 def create_attempt(student_id: int, code: str, github_link: str) -> Attempt:
     """
@@ -180,13 +184,17 @@ def _save_attempt_data(attempt_id: int, file_data: dict, questions_data: dict, a
 
     # === Save attempt in json format ===
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(attempt_data, f, ensure_ascii=False, indent=2)
+    with _file_lock:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(attempt_data, f, ensure_ascii=False, indent=2)
+
     return path
 
+
 def _load_attempt_data(attempt_id: int) -> dict:
-    with open(f"{ATTEMPT_FILES_PATH}{attempt_id}.json", encoding="utf-8") as f:
-        return json.load(f)
+    with _file_lock:
+        with open(f"{ATTEMPT_FILES_PATH}{attempt_id}.json", encoding="utf-8") as f:
+            return json.load(f)
 
 
 def get_attempts(teacher_id: int, exam_id: int) -> Tuple[Exam, List]:
@@ -218,13 +226,10 @@ def set_attempt_status(attempt_id: int, status: str) -> Attempt:
 
 # === EXAM SERVICES ===
 
-
-def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: dict) -> Exam:
+def create_exam(exam_data: ExamData, seb_settings: dict) -> Exam:
     """
     Creates exam.
-    :param title: exam title
-    :param teacher_id: id of teacher that is creating this exam
-    :param question_count: question count for this exam
+    :param exam_data: ExamData class
     :param seb_settings: exam settings in dict format. Example:
         {
             "browserViewMode": form.browser_view_mode.data,
@@ -234,22 +239,23 @@ def create_exam(title: str, teacher_id: int, question_count: str, seb_settings: 
     :return: db.Model -> Exam()
     """
     # === Auth check ===
-    validate_user(teacher_id, "teacher")
+    validate_user(exam_data.teacher_id, "teacher")
 
     try:
         # Create empty Exam model
-        exam = Exam()
+        exam = Exam().generate_code()
 
-        # Insert values in exam
-        exam.generate_code()
-        exam.title = title
-        exam.teacher_id = teacher_id
+        # Fill in fields
+        exam.teacher_id = exam_data.teacher_id
+        exam.title = exam_data.title
+        exam.question_count = exam_data.question_count
+        exam.ai_prompt = exam_data.ai_prompt
+        exam.allowed_extensions = exam_data.allowed_extensions
+        exam.file_count = exam_data.file_count
         exam.seb_settings = seb_settings
-        exam.question_count = question_count
 
         add(exam)
         flush()
-
         return save(exam)
 
     except SQLAlchemyError as e:

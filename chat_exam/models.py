@@ -68,6 +68,16 @@ class Exam(db.Model):
     title = db.Column(db.String(100), nullable=False)
     type = db.Column(db.String(30), default="code_github", nullable=False)
 
+
+    # === TEST ===
+    ai_prompt  = db.Column(db.Text, default="")
+    allowed_extensions = db.Column(db.JSON, default=[".html", ".css", ".js"])
+    file_count = db.Column(db.Integer, default=2)
+
+
+
+
+
     question_count = db.Column(db.Integer, default=1, nullable=False)
 
     seb_settings = db.Column(db.JSON, default={})

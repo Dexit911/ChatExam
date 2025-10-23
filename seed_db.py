@@ -18,7 +18,7 @@ def create_start_db():
 
         # === Create students ===
         students = []
-        for i in range(1, 6):
+        for i in range(1, 20):
             s = User(
                 username=f"student{i}",
                 email=f"{i}@{i}.com",
@@ -36,7 +36,7 @@ def create_start_db():
         db.session.commit()
 
         # === Create exams ===
-        exams = []
+        """exams = []
         for i in range(1, 6):
             exam = Exam(
                 title=f"Exam {i}",
@@ -47,10 +47,10 @@ def create_start_db():
             exam.generate_code()
             db.session.add(exam)
             exams.append(exam)
-        db.session.commit()
+        db.session.commit()"""
 
         # === Create attempts (each student → each exam) ===
-        for s in students:
+        """for s in students:
             for e in exams:
                 attempt = Attempt(
                     exam_id=e.id,
@@ -59,7 +59,7 @@ def create_start_db():
                     status="ready"
                 )
                 db.session.add(attempt)
-        db.session.commit()
+        db.session.commit()"""
 
         print("✅ Created 1 teacher, 5 students, 5 exams, and linked all attempts!")
 

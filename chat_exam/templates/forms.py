@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField, widgets, \
+    SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 
 #  === APPS MODELS AND UTILS ===
@@ -7,6 +8,14 @@ from chat_exam.models import User
 from chat_exam.repositories import get_by, user_repo, exam_repo
 from chat_exam.models import Exam
 from chat_exam.utils.validators import validate_github_url
+
+
+# === TOOLS ===
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
+
 
 
 
@@ -65,6 +74,20 @@ class CreatExamForm(FlaskForm):
     allow_quit = BooleanField("Allow Quit")
     allow_clipboard = BooleanField("Allow Clipboard")
     submit = SubmitField("Create Exam")
+
+    ai_prompt = StringField("AI Prompt", validators=[Length(max=400)])
+    file_count = IntegerField("File Count", validators=[NumberRange(min=1, max=5)])
+
+
+    allowed_extensions = MultiCheckboxField(
+        "Allowed Extensions",
+        choices=[
+            (".html", "HTML"),
+            (".css", "CSS"),
+            (".js", "JS"),
+        ]
+    )
+
 
     def validate_title(self, title):
         if get_by(Exam, title=title.data):

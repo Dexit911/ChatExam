@@ -1,25 +1,20 @@
-# === Standard library ===
-import os
-from functools import wraps
-
 # === Third-Party ===
 from flask import (
     blueprints,
     render_template,
-    session,
     redirect,
     url_for,
     flash,
-    abort
 )
 
 # ===Local===
-from chat_exam.models import Exam, Attempt, User, Supervision
+from chat_exam.models import Attempt
 from chat_exam.templates import forms
 from chat_exam.services import user_service, exam_service
 from chat_exam.utils import session_manager as sm
-from chat_exam.repositories import get_by, delete, user_repo, get_by_id
+from chat_exam.repositories import user_repo, get_by_id
 from chat_exam.utils.validators import role_required
+from chat_exam.schemas import ExamData
 
 # === Blueprint for teache route ===
 teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
@@ -28,11 +23,8 @@ teacher_bp = blueprints.Blueprint('teacher', __name__, url_prefix='/teacher')
 @teacher_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = forms.TeacherLoginForm()
-    print("Created forms")
 
     # === If form is submitted ===
-    print("Form validated:", form.validate_on_submit())
-    print("Errors:", form.errors)
     if form.validate_on_submit():
         try:
             # Try login
@@ -40,7 +32,7 @@ def login():
                 email=form.email.data,
                 password=form.password.data
             )
-            print("User logged in:", teacher)
+
             sm.start_session(
                 user_id=teacher.id,
                 role="teacher",
@@ -87,27 +79,30 @@ def create_exam():
     form = forms.CreatExamForm()
 
     # === If submit is valid ===
-    if form.validate_on_submit():  # If teacher clicks on create exam -> POST
-
+    if form.validate_on_submit():
         try:
-            # Try to create exam
             exam_service.create_exam(
-                title=form.title.data,
-                teacher_id=sm.current_id(),
-                question_count=form.question_count.data,
+                ExamData(
+                    teacher_id=sm.current_id(),
+
+                    title=form.title.data,
+                    question_count=form.question_count.data,
+                    ai_prompt=form.ai_prompt.data,
+                    allowed_extensions=form.allowed_extensions.data,
+                    file_count=form.file_count.data
+                ),
                 seb_settings={
                     "browserViewMode": form.browser_view_mode.data,
                     "allowQuit": form.allow_quit.data,
-                    "allowClipboard": form.allow_clipboard.data,
+                    "allowClipboard": form.allow_clipboard.data
                 }
             )
 
-            # If created exam, redirect to dashboard
             flash("You have successfully created a new exam.")
             return redirect(url_for("teacher.dashboard"))
 
         except ValueError as e:
-            flash(str(e), "danger")
+            flash(str(e), category="danger")
 
     return render_template("teacher/create_exam.html", form=form)
 
@@ -131,8 +126,6 @@ def inspect_attempt(attempt_id):
 
     attempt = get_by_id(Attempt, attempt_id)
 
-
-
     # === Pass data about files, questions, answers ===
     return render_template(
         template_name_or_list="teacher/inspect.html",
@@ -147,9 +140,6 @@ def inspect_attempt(attempt_id):
     )
 
 
-
-
-
 @teacher_bp.route("/delete-exam/<int:exam_id>", methods=['POST'])
 @role_required("teacher")
 def delete_exam(exam_id):
@@ -157,6 +147,7 @@ def delete_exam(exam_id):
     exam_service.delete_exam(sm.current_id(), exam_id)
     flash("Successfully deleted exam", "success")
     return redirect(url_for("teacher.view_exams"))
+
 
 @teacher_bp.route("/view-exams/<int:exam_id>/attempts", methods=['GET', 'POST'])
 @role_required("teacher")

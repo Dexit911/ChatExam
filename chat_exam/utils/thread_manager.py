@@ -1,7 +1,10 @@
-from threading import Thread
+from threading import Thread, Lock
 import logging
 
 logger = logging.getLogger(__name__)
+
+# === Locks ===
+_thread_lock = Lock()
 
 def run_in_thread(target, *args, **kwargs):
     """Simple helper to run background task."""

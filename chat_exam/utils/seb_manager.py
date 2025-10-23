@@ -47,7 +47,7 @@ class Seb_manager:
           <integer>0</integer>
 
           <key>browserViewMode</key>
-          <integer>{view_mode}</integer>
+          <integer>1</integer>
 
           <key>allowQuit</key>
           <{allow_quit}/>

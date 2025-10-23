@@ -30,7 +30,6 @@ logger = logging.getLogger(__name__)
 # === BLUEPRINT FOR STUDENT ROUTES ===
 student_bp = blueprints.Blueprint('student', __name__, url_prefix='/student')
 
-
 @student_bp.route('/dashboard', methods=['GET', 'POST'])
 @role_required("student")
 def dashboard():
