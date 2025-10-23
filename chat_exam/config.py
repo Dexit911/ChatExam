@@ -16,7 +16,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'aee7d73d54fb1a5b16f94a693ee0c26f'
-    GITHUB_FETCH_TOKEN = "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"
+    GITHUB_FETCH_TOKEN = ""
     AI_KEY = "AIzaSyALxtsSkFVyLiHJLRmJXlkC1JJYRY1jiwI"
 
 
