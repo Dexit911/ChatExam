@@ -2,9 +2,14 @@
 import re
 import requests
 from pathlib import Path
-
 # === Local ===
 from chat_exam.exceptions import RequestError, TimeoutError, AppError, EmptyRepo
+from chat_exam.config import Config
+
+# === TOKEN ===
+
+TOKEN = Config.GITHUB_FETCH_TOKEN
+HEADERS = {"Authorization": f"Bearer {TOKEN}"} if TOKEN else {}
 
 
 def github_blob_to_raw(url: str) -> str:
@@ -57,8 +62,6 @@ def strip_comments(code: str) -> str:
 
 
 # === Fetch for repo ===
-
-
 def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) -> dict:
     """
     Fetches allowed code from the given gitHub repo url and returns it.
@@ -73,7 +76,7 @@ def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) ->
     try:
         # === Request response ===
         api_url = _repo_to_api(url)
-        res = requests.get(api_url, timeout=8)
+        res = requests.get(api_url, headers=HEADERS, timeout=8)
 
         try:
             api_res = res.json()
@@ -81,7 +84,7 @@ def fetch_github_repo(url: str, max_files: int, remove_comments: bool = True) ->
             raise AppError("Invalid response from GitHub.", public=True)
 
         # === Check if there is any content in repo ===
-        if not isinstance(api_res, list) or not api_res:
+        if not isinstance(api_res, list):
             raise EmptyRepo(public=True)
 
         # === Instructions for filter data, should be editable ===

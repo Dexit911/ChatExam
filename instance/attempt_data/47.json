@@ -1,0 +1,17 @@
+{
+  "content": {
+    "drink.html": "\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>My Favorite Drink</title>\n</head>\n<body>\n\n  \n  <h1>🥤 My Favorite Drink</h1>\n  <p>My favorite drink is fresh orange juice — cold, sweet, and full of vitamins!</p>\n  <img src=\"https://upload.wikimedia.org/wikipedia/commons/c/cd/Orange_juice_1.jpg\" alt=\"Orange Juice\" width=\"300\">\n  <br>\n  <button onclick=\"alert('Cheers! 🧃')\">Drink Now</button>\n\n</body>\n</html>",
+    "food.html": "\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>My Favorite Food</title>\n</head>\n<body>\n\n  \n  <h1>🍕 My Favorite Food</h1>\n  <p>My favorite food is pizza — crispy crust, melted cheese, and endless topping choices!</p>\n  <img src=\"https://upload.wikimedia.org/wikipedia/commons/d/d3/Supreme_pizza.jpg\" alt=\"Pizza\" width=\"300\">\n  <br>\n  <button onclick=\"alert('Time to eat! 🍽️')\">Order Pizza</button>\n\n</body>\n</html>",
+    "home.html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>My Home</title>\n</head>\n<body>\n\n  \n  <h1>🏡 My Home</h1>\n  <p>My home is a quiet and cozy place where I feel safe and happy.</p>\n  <img src=\"https://upload.wikimedia.org/wikipedia/commons/6/6b/Modern_house_interior.jpg\" alt=\"My Home\" width=\"300\">\n  <br>\n  <button onclick=\"alert('Welcome home! 🏠')\">Enter</button>\n\n</body>\n</html>\n",
+    "index.html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>My Favorite Drink</title>\n</head>\n<body>\n\n  \n  <nav>\n    \n    <a href=\"home.html\">Home</a> |\n    \n    <a href=\"food.html\">Food</a> |\n    \n    <a href=\"drink.html\">Drink</a>\n  </nav>\n\n  <hr>\n\n  \n  <h1>🥤 My Favorite Drink</h1>\n  <p>My favorite drink is fresh orange juice — cold, sweet, and full of vitamins!</p>\n\n  \n  <img src=\"https://upload.wikimedia.org/wikipedia/commons/c/cd/Orange_juice_1.jpg\" alt=\"Orange Juice\" width=\"300\">\n  <br>\n\n  \n  <button onclick=\"alert('Cheers! 🧃')\">Drink Now</button>\n\n</body>\n</html>",
+    "style.css": "body {\n  font-family: Arial, sans-serif;\n  background: #0e0e0e;\n  color: #fff;\n  margin: 0;\n  padding: 0;\n}\n\nheader {\n  background: #1e1e1e;\n  padding: 20px;\n  text-align: center;\n  border-bottom: 2px solid #2d8cff;\n}\n\nh1 {\n  color: #2d8cff;\n  margin: 0;\n}\n\np {\n  padding: 20px;\n  font-size: 18px;\n}\n\nbutton {\n  margin: 20px;\n  padding: 10px 18px;\n  background: #2d8cff;\n  border: none;\n  color: white;\n  font-weight: 600;\n  border-radius: 6px;\n  cursor: pointer;\n  transition: 0.2s;\n}\n\nbutton:hover {\n  background: #409eff;\n}\n"
+  },
+  "questions": {
+    "q1": "How can style.css be applied to the HTML documents?",
+    "q2": "What is the purpose of the navigation links in index.html?"
+  },
+  "answers": {
+    "q1": "123",
+    "q2": "123"
+  }
+}

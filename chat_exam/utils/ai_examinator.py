@@ -1,9 +1,9 @@
 import google.generativeai as genai
-from chat_exam.config import AI_KEY
+from chat_exam.config import Config
 import json
 import re
 
-genai.configure(api_key=AI_KEY)
+genai.configure(api_key=Config.AI_KEY)
 
 class AIExaminator:
     def __init__(self, question_count: int = 10):

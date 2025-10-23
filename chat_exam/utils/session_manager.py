@@ -7,6 +7,7 @@ from chat_exam.config import Config
 from chat_exam.models import UsedToken
 from chat_exam.exceptions import AuthError
 
+
 serializer = itsdangerous.URLSafeTimedSerializer(Config.SECRET_KEY)
 
 

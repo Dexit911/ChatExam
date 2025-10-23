@@ -2,7 +2,7 @@
 AI Exam Service
 ===============
 
-Handles background generation of exam questions using AI.
+Handles background generation of exam questions and verdicts using AI.
 Integrates with Exam and StudentExam models.
 """
 
@@ -11,133 +11,151 @@ from threading import Thread
 from cachetools import TTLCache
 import uuid
 import logging
+
 # === Local ===
 from chat_exam.utils.ai_examinator import AIExaminator
 from chat_exam.utils.git_fecther import fetch_github_code
-from chat_exam.utils.thread_manager import run_in_thread
 
 logger = logging.getLogger(__name__)
-# === Create cache space ===
+
+# === Shared in-memory cache ===
 exam_cache = TTLCache(maxsize=100, ttl=300)
 
 
-def ensure_questions_ready(student_id: int, data: dict, question_count: int):
+# ======================================================================
+# QUESTIONS
+# ======================================================================
+
+def ensure_questions_ready(user_id: int, file_data: dict, question_count: int):
     """
     Ensure questions exist in cache or trigger async generation.
-
-    :param student_id: (int) id of the student to generate questions for
-    :param data: (dict) files data from students gitHub repo
-    :param question_count: (int) number of questions to generate on exam
-
     """
-
     existing_task = next(
-        (tid for tid, data in exam_cache.items() if data.get("student_id") == student_id),
+        (tid for tid, entry in exam_cache.items()
+         if entry.get("user_id") == user_id
+         and entry.get("type") == "question"
+         ),
         None
     )
+
     if not existing_task:
-        task_id = _generate_questions_async(data, question_count, student_id)
+        task_id = _generate_questions_async(user_id, file_data, question_count)
     else:
         task_id = existing_task
 
-    data = exam_cache.get(task_id)
-    if not data:
+    cache_entry = exam_cache.get(task_id)
+    if not cache_entry:
         return task_id, None, "pending"
-    return task_id, data, data["status"]
+    return task_id, cache_entry, cache_entry["status"]
 
 
-def generate_verdict(data: dict, questions_dict: dict, answers_dict: dict) -> tuple[str, int]:
-    """UNDER CONSTRUCTION"""
-    code_string = _generate_content_string(data)
-
-    verdict, rating = AIExaminator().create_verdict(
-        code=code_string,
-        questions=questions_dict,
-        answers=answers_dict,
-    )
-
-    return verdict, rating
-
-
-def _generate_questions_background(task_id: int, data: dict, question_count: int, student_id: int) -> None:
-    """
-    This function happens on individual thread. Here is AI response cached.
-
-    :param task_id: id of the cache
-    :param data: (dict) files data from gitHub repo
-    :param question_count: number of questions to generate on exam
-    :param student_id: id of the student to generate questions for
-    """
-    try:
-
-        examinator = AIExaminator(question_count=question_count)
-        content_string = _generate_content_string(data)
-        questions = examinator.create_questions(content_string)
-
-        exam_cache[str(task_id)] = {
-            "status": "done",
-            "questions": questions,
-            "student_id": student_id,
-        }
-        logger.info(f"Questions ready for student: {student_id} id")
-
-    except Exception as e:
-        exam_cache[str(task_id)] = {"status": "error", "error": str(e)}
-        logger.error(f"Failed to generate questions for student: {student_id} id")
-
-
-def _generate_questions_async(data: dict, question_count: int, student_id: int):
-    """
-    Starts a thread for individual question generation.
-    Purpose of the thread is to prevent students wait in a line for every response.
-    :param data: (dict) files data from gitHub repo
-    :param question_count: number of questions to generate on exam
-    :param student_id: id of the student to generate questions for
-    """
-    # === Generate unique task id ===
+def _generate_questions_async(user_id: int, file_data: dict, question_count: int) -> str:
+    """Starts a background thread for generating AI exam questions."""
     task_id = str(uuid.uuid4())
-
-    # === Mark status as "ongoing" for this thread ===
     exam_cache[task_id] = {"status": "pending"}
 
-    # === Generate Thread ===
     thread = Thread(
         target=_generate_questions_background,
-        args=(task_id, data, question_count, student_id),
+        args=(task_id, user_id, file_data, question_count),
+        daemon=True
     )
-    thread.daemon = True
     thread.start()
-
+    logger.info(f"[THREAD] Started question generation for user_id={user_id}")
     return task_id
 
 
-def _generate_content_string(data: dict) -> str:
-    """
-    Makes fetched data from repo prompt ready
-    :param data: filtered fetched data with student gitHub files - example:
-        {
-            "index.html": "<"<!DOCTYPE html> ...",
-            "style.css": "body {...} ...",
+def _generate_questions_background(task_id: str, user_id: int, file_data: dict, question_count: int):
+    """Runs in a background thread to generate questions."""
+    try:
+        examinator = AIExaminator(question_count=question_count)
+        content_string = _generate_content_string(file_data)
+        questions = examinator.create_questions(content_string)
+
+        exam_cache[task_id] = {
+            "type": "question",
+            "status": "done",
+            "questions": questions,
+            "user_id": user_id,
         }
+        logger.info(f"[QUESTIONS] Done for user_id={user_id}")
+
+    except Exception as e:
+        exam_cache[task_id] = {"status": "error", "error": str(e)}
+        logger.error(f"[QUESTIONS] Failed for user_id={user_id}: {e}")
+
+
+# ======================================================================
+# VERDICT
+# ======================================================================
+
+def ensure_verdict_ready(user_id: int, file_data: dict, question_data: dict, answer_data: dict):
     """
-    content_string = "Student files: "
+    Ensure verdict is ready or trigger async generation.
+    """
+    existing_task = next(
+        (tid for tid, entry in exam_cache.items()
+         if entry.get("user_id") == user_id
+         and entry.get("type") == "verdict"
+         ),
+        None
+    )
 
-    for key, value in data.items():
-        content_string += f"\n{key}: {value}"
+    if not existing_task:
+        task_id = _generate_verdict_async(user_id, file_data, question_data, answer_data)
+    else:
+        task_id = existing_task
 
-    print(content_string)
+    cache_entry = exam_cache.get(task_id)
+    if not cache_entry:
+        return task_id, None, "pending"
+    return task_id, cache_entry, cache_entry["status"]
+
+
+def _generate_verdict_async(user_id: int, file_data: dict, question_data: dict, answer_data: dict) -> str:
+    """Starts a background thread for AI verdict generation."""
+    task_id = str(uuid.uuid4())
+    exam_cache[task_id] = {"status": "pending"}
+
+    thread = Thread(
+        target=_generate_verdict_background,
+        args=(task_id, user_id, file_data, question_data, answer_data),
+        daemon=True
+    )
+    thread.start()
+    logger.info(f"[THREAD] Started verdict generation for user_id={user_id}")
+    return task_id
+
+
+def _generate_verdict_background(task_id: str, user_id: int, file_data: dict, question_data: dict, answer_data: dict):
+    """Runs in a background thread to generate AI verdict."""
+    try:
+        verdict, rating = AIExaminator().create_verdict(
+            code=_generate_content_string(file_data),
+            questions=question_data,
+            answers=answer_data,
+        )
+
+        exam_cache[task_id] = {
+            "type": "verdict",
+            "status": "done",
+            "verdict": verdict,
+            "rating": rating,
+            "user_id": user_id,
+        }
+        logger.info(f"[VERDICT] Done for user_id={user_id}")
+
+    except Exception as e:
+        exam_cache[task_id] = {"status": "error", "error": str(e)}
+        logger.error(f"[VERDICT] Failed for user_id={user_id}: {e}")
+
+
+# ======================================================================
+# UTILS
+# ======================================================================
+
+def _generate_content_string(file_data: dict) -> str:
+    """Convert student's repo files into a single string for AI prompts."""
+    content_string = "Student files:\n"
+    for filename, code in file_data.items():
+        content_string += f"\n{filename}:\n{code}\n"
     return content_string
-
-
-
-
-def ensure_verdict_ready()
-    pass
-
-
-
-
-
-
-
-

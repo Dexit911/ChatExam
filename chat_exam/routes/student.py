@@ -13,7 +13,6 @@ from flask import (
     request,
 )
 
-from chat_exam.config import DEBUG
 # === Local ===
 from chat_exam.models import Attempt
 from chat_exam.services import exam_service, user_service, ai_exam_service, seb_service
@@ -97,8 +96,8 @@ def exam_test(code):
 
     # === Ensure AI questions are ready (cached or generate fresh) ===
     task_id, data, status = ai_exam_service.ensure_questions_ready(
-        student_id=student_id,
-        data=repo_data,
+        user_id=student_id,
+        file_data=repo_data,
         question_count=attempt.exam.question_count
     )
 
@@ -173,6 +172,7 @@ def exam(code):
     # === Fetch exam + attempt ===
     exam = exam_repo.get_exam_by_code(code)
     attempt = get_by(Attempt, exam_id=exam.id, student_id=sm.current_id())
+    attempt_id = attempt.id
 
     # === Delete attempts seb configuration file ===
     seb_manager.Seb_manager().delete_seb_file(attempt.id)
@@ -186,59 +186,72 @@ def exam(code):
 
     # === Ensure AI questions are ready (cached or async). If not - start generating questions ===
     task_id, data, status = ai_exam_service.ensure_questions_ready(
-        student_id=student_id,
-        data=file_data,
+        user_id=student_id,
+        file_data=file_data,
         question_count=attempt.exam.question_count
     )
 
     if status == "pending":
-        print(f"=Rendering loading page for student {student_id}=")
-        return render_template("student/loading.html", status="pending")
+        return render_template("student/loading.html", message="Loading you exam.")
 
     """EXAM PROCESS"""
     if status == "done":
-        attempt.staus = "ongoing"
+        exam_service.set_attempt_status(attempt_id, "ongoing")
 
         print(f"=Got task id={task_id}")
-        # === GET QUESTION FROM CACHE
-        questions_dict = data["questions"]
 
-        # === GENERATE FORM BASE ON QUESTIONS ===
-        form = generate_exam_form(questions_dict)
+        # === GET QUESTIONS FROM CACHE ===
+        questions_dict = data.get("questions", {})
 
         # === Handle bad JSON / AI error ===
         if "error" in questions_dict:
             flash(questions_dict["error"], "danger")
             return redirect(url_for("student.dashboard"))
 
+        # === GENERATE EXAM FORM ===
+        form = generate_exam_form(questions_dict)
+
         # === IF STUDENT SUBMITS ANSWERS ===
         if form.validate_on_submit():
-            # Get all answers
+            # === Collect student's answers ===
             answers = {key: getattr(form, key).data for key in questions_dict.keys()}
 
-            # CREATE VERDICT
-            verdict, rating = ai_exam_service.generate_verdict(
-                data=data,
-                questions_dict=questions_dict,
-                answers_dict=answers,
-            )
-
-            print("\n\nDATA: {data}\n\n")
-
-            # Save to DB for test
-            exam_service.save_attempt_results(
-                attempt_id=attempt.id,
-                questions_dict=questions_dict,
-                answers_dict=answers,
-                ai_verdict=verdict,
-                ai_rating=rating,
+            # === Trigger async verdict generation ===
+            verdict_task_id, verdict_data, verdict_status = ai_exam_service.ensure_verdict_ready(
+                user_id=student_id,
                 file_data=file_data,
+                question_data=questions_dict,
+                answer_data=answers,
             )
 
-            # === Quit seb env with build in protocol ===
-            flash("Test exam finished successfully.", "success")
-            return render_template("student/exam_finished.html")
+            if verdict_status == "pending":
+                return render_template("student/loading.html", message="Grading your exam.")
 
+            print("=== VERDICT STATUS: ", verdict_status, "===")
+
+            if verdict_status == "done":
+
+                # === Get values from cache ===
+                verdict = verdict_data["verdict"]
+                rating = verdict_data["rating"]
+
+                # === Save results to database ===
+                exam_service.save_attempt_results(
+                    attempt_id=attempt.id,
+                    questions_dict=questions_dict,
+                    answers_dict=answers,
+                    ai_verdict=verdict,
+                    ai_rating=rating,
+                    file_data=file_data,
+                )
+
+                # === Set status ===
+                exam_service.set_attempt_status(attempt_id, "done")
+
+                flash("Test exam finished successfully.", "success")
+                return render_template("student/exam_finished.html")
+
+        # === Render active exam page (if not submitted yet) ===
         return render_template("student/exam.html", form=form, attempt_files=file_data)
 
     # ===  Fallback ===
